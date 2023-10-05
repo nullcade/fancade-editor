@@ -1,8 +1,8 @@
 // import logo from './logo.svg';
 import React, { useState } from 'react';
 import './App.css';
-import MyThree from './components/MyThree';
-import { Card, Tabs, Tab, SxProps, Theme, TextField, ThemeProvider, createTheme } from '@mui/material';
+// import MyThree from './components/MyThree';
+import { Card, Tabs, Tab, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material';
 import { FileProvider } from './contexts/fileContext';
 import FileImport from './components/FileImport';
 import FileExport from './components/FileExport';
