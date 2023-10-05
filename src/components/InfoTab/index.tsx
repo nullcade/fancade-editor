@@ -1,9 +1,18 @@
+import React, { useRef, useState, useContext } from 'react'
+import { GameContext } from '../../contexts/gameContext';
 import { Checkbox, FormControlLabel, TextField } from '@mui/material';
-import React, { useRef, useState } from 'react'
+import { Game } from '../../custom_modules/GameFormat';
 
-function InfoTab() {
+function InfoTab({ setGame }: { setGame: React.Dispatch<React.SetStateAction<Game.Data>> }) {
+    const game = useContext(GameContext);
     const unstable = useRef<HTMLInputElement>(null);
     const [advanced, setAdvanced] = useState<boolean>(false);
+    const [lastInput, setLastInput] = useState<number>(0);
+
+    const forceReload = () => {
+        setLastInput(Date.now());
+    }
+    
     return (
         <div style={{
             display: 'flex',
@@ -17,63 +26,81 @@ function InfoTab() {
         }}>
             <TextField
                 label="Title"
+                value={game.title}
                 placeholder="New Game"
                 variant="standard"
-                onInput={(e) => {
-                    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.slice(
-                        0, Math.min((e.target as HTMLInputElement).value.length, unstable.current?.checked ? 255 : 16)
-                    )
+                onChange={e => {
+                    game.title = e.target.value;
+                    forceReload();
+                    setGame(game);
                 }}
             />
             <TextField
                 label="Author"
+                value={game.author}
                 placeholder="Unknown Author"
                 variant="standard"
-                onInput={(e) => {
-                    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.slice(
-                        0, Math.min((e.target as HTMLInputElement).value.length, unstable.current?.checked ? 255 : 16)
-                    )
+                onChange={e => {
+                    game.author = e.target.value;
+                    forceReload();
+                    setGame(game);
                 }}
             />
-            <FormControlLabel control={<Checkbox />} label="Locked" />
             <FormControlLabel control={<Checkbox inputRef={unstable} />} label="Unstable" />
             <TextField
                 label="Description"
+                value={game.description}
                 placeholder="A Fancade Game"
                 multiline
                 variant="standard"
                 rows={4}
-                onInput={(e) => {
-                    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.slice(
-                        0, Math.min((e.target as HTMLInputElement).value.length, unstable.current?.checked ? 255 : 132)
-                    )
+                onChange={e => {
+                    game.description = e.target.value;
+                    forceReload();
+                    setGame(game);
                 }}
                 sx={{
                     flexGrow: 5,
                     width: '100%'
                 }}
             />
-            <FormControlLabel control={<Checkbox onChange={(e)=>{
+            <FormControlLabel control={<Checkbox onChange={(e) => {
                 setAdvanced((e.target as HTMLInputElement).checked);
             }} style={{
                 marginLeft: '.75rem'
             }} />} label="Advanced" />
             <TextField
                 label="App Version"
+                value={game.appVersion}
                 type="number"
                 variant="standard"
-                sx={{
-                    display: advanced ? 'unset' : 'none'
+                onChange={e => {
+                    game.appVersion = parseInt(e.target.value);
+                    forceReload();
+                    setGame(game);
                 }}
+                sx={{
+                    opacity: advanced ? 1 : 0,
+                    transition: 'opacity 1s cubic-bezier(.4,0,.1,1)'
+                }}
+                disabled={!advanced}
                 required={advanced}
             />
             <TextField
                 label="ID Offset"
+                value={game.idOffset}
                 type="number"
                 variant="standard"
-                sx={{
-                    display: advanced ? 'unset' : 'none'
+                onChange={e => {
+                    game.idOffset = parseInt(e.target.value);
+                    forceReload();
+                    setGame(game);
                 }}
+                sx={{
+                    opacity: advanced ? 1 : 0,
+                    transition: 'opacity 1s cubic-bezier(.4,0,.1,1)'
+                }}
+                disabled={!advanced}
                 required={advanced}
             />
         </div>

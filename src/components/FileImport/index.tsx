@@ -3,9 +3,10 @@ import zlib from 'zlib';
 // import { FileConsumer } from '../../contexts/fileContext';
 import { Button } from '@mui/material';
 import PublishIcon from '@mui/icons-material/PublishRounded';
+import { GameDecoder, Game } from '../../custom_modules/GameFormat';
 
 function FileImport({ setFile }: {
-    setFile: React.Dispatch<React.SetStateAction<ArrayBuffer | null>>
+    setFile: React.Dispatch<React.SetStateAction<Game.Data>>
 }) {
     const inputFile = useRef<HTMLInputElement>(null);
     const onButtonClick = () => {
@@ -14,7 +15,11 @@ function FileImport({ setFile }: {
     };
     const onFileChange = async () => {
         if (inputFile.current?.files)
-            setFile(zlib.inflateSync(await inputFile.current?.files[0].arrayBuffer()));
+            setFile(new GameDecoder(zlib.inflateSync(
+                Buffer.from(
+                    await inputFile.current?.files[0].arrayBuffer()
+                )
+            )).decGame());
     }
     return (
         <Button variant="contained" size='large' startIcon={<PublishIcon />} onClick={onButtonClick} sx={{

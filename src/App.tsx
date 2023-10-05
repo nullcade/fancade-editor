@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import './App.css';
 // import MyThree from './components/MyThree';
 import { Card, Tabs, Tab, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material';
-import { FileProvider } from './contexts/fileContext';
+import { GameProvider } from './contexts/gameContext';
 import FileImport from './components/FileImport';
 import FileExport from './components/FileExport';
 import InfoTab from './components/InfoTab';
+import { Game, GameDataDefault } from './custom_modules/GameFormat';
 
 const tabSx: SxProps<Theme> = {
   color: '#e3e3e3',
@@ -22,7 +23,7 @@ const tabSx: SxProps<Theme> = {
 
 function App() {
   const [tab, setTab] = useState<0 | 1 | 2>(0);
-  const [file, setFile] = useState<ArrayBuffer | null>(null);
+  const [file, setFile] = useState<Game.Data>(GameDataDefault);
   const darkTheme = createTheme({
     palette: {
       mode: 'dark',
@@ -30,7 +31,7 @@ function App() {
   });
   return (
     <ThemeProvider theme={darkTheme}>
-      <FileProvider value={file}>
+      <GameProvider value={file}>
         <div className="App">
           {/* <MyThree /> */}
           <Card sx={{
@@ -80,11 +81,11 @@ function App() {
               height: '100%',
               overflowY: 'auto'
             }}>
-              <InfoTab />
+              <InfoTab setGame={setFile} />
             </div>
           </Card>
         </div>
-      </FileProvider>
+      </GameProvider>
     </ThemeProvider>
   );
 }

@@ -2,11 +2,12 @@ import React, { useContext } from 'react'
 import zlib from 'zlib';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadRounded';
 import { Button } from '@mui/material';
-import { FileContext } from '../../contexts/fileContext';
+import { GameContext } from '../../contexts/gameContext';
+import { GameEncoder, Game } from '../../custom_modules/GameFormat';
 
 function FileExport() {
-    const file = useContext(FileContext);
-    const saveFile = async (blob: ArrayBuffer, suggestedName: string) => {
+    const game = useContext(GameContext);
+    const saveFile = async (blob: Game.Data, suggestedName: string) => {
         // Feature detection. The API needs to be supported
         // and the app not run in an iframe.
         const supportsFileSystemAccess =
@@ -33,7 +34,9 @@ function FileExport() {
                 });
                 // Write the blob to the file.
                 const writable = await handle.createWritable();
-                await writable.write(zlib.deflateSync(blob));
+                await writable.write(
+                    zlib.deflateSync(new GameEncoder(blob).encGame())
+                    );
                 await writable.close();
                 return;
             } catch (err) {
@@ -46,7 +49,9 @@ function FileExport() {
         }
         // Fallback if the File System Access API is not supported…
         // Create the blob URL.
-        const blobURL = URL.createObjectURL(new Blob([zlib.deflateSync(blob)]));
+        const blobURL = URL.createObjectURL(new Blob([
+            zlib.deflateSync(new GameEncoder(blob).encGame())
+        ]));
         // Create the `<a download>` element and append it invisibly.
         const a = document.createElement('a');
         a.href = blobURL;
@@ -64,8 +69,8 @@ function FileExport() {
     return (
         <Button variant="contained" size='large' endIcon={<FileDownloadIcon />} onClick={
             () => {
-                if (file)
-                    saveFile(file, '');
+                if (game)
+                    saveFile(game, '');
             }
         } sx={{
             height: 'auto',
