@@ -11,7 +11,11 @@
         "skipLibCheck": true,
         "strict": true,
         "target": "es2020",
-        "allowImportingTsExtensions": true
+        "allowImportingTsExtensions": true,
+        "types": [
+            "@types/wicg-file-system-access",
+            "@types/node"
+        ]
     },
     "include": [
         "src"
