@@ -4,6 +4,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownloadRounded';
 import { Button } from '@mui/material';
 import { GameContext } from '../../contexts/gameContext';
 import { GameEncoder, Game } from '../../custom_modules/GameFormat';
+import { nanoid } from 'nanoid';
 
 function FileExport() {
     const game = useContext(GameContext);
@@ -70,7 +71,7 @@ function FileExport() {
         <Button variant="contained" size='large' endIcon={<FileDownloadIcon />} onClick={
             () => {
                 if (game)
-                    saveFile(game, '');
+                    saveFile(game, (game.title.length !== 0 ? game.title : nanoid(8)) + '.fc');
             }
         } sx={{
             height: 'auto',
