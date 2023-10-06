@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import './App.css';
 // import MyThree from './components/MyThree';
 import { Card, Tabs, Tab, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material';
-import { GameProvider } from './contexts/gameContext';
 import FileImport from './components/FileImport';
 import FileExport from './components/FileExport';
 import InfoTab from './components/InfoTab';
@@ -31,7 +30,6 @@ function App() {
   });
   return (
     <ThemeProvider theme={darkTheme}>
-      <GameProvider value={file}>
         <div className="App">
           {/* <MyThree /> */}
           <Card sx={{
@@ -53,7 +51,7 @@ function App() {
             }}>
               <FileImport setFile={setFile} />
               <h1>Fancade Editor</h1>
-              <FileExport />
+              <FileExport game={file} />
             </div>
             <Tabs
               value={tab}
@@ -81,11 +79,10 @@ function App() {
               height: '100%',
               overflowY: 'auto'
             }}>
-              <InfoTab setGame={setFile} />
+              <InfoTab game={file} setGame={setFile} />
             </div>
           </Card>
         </div>
-      </GameProvider>
     </ThemeProvider>
   );
 }

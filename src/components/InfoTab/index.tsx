@@ -1,10 +1,8 @@
-import React, { useRef, useState, useContext } from 'react'
-import { GameContext } from '../../contexts/gameContext';
+import React, { useRef, useState } from 'react'
 import { Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { Game } from '../../custom_modules/GameFormat';
 
-function InfoTab({ setGame }: { setGame: React.Dispatch<React.SetStateAction<Game.Data>> }) {
-    const game = useContext(GameContext);
+function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>> }) {
     const unstable = useRef<HTMLInputElement>(null);
     const [advanced, setAdvanced] = useState<boolean>(false);
     const [lastInput, setLastInput] = useState<number>(0);

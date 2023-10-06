@@ -1,13 +1,11 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import zlib from 'zlib';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadRounded';
 import { Button } from '@mui/material';
-import { GameContext } from '../../contexts/gameContext';
 import { GameEncoder, Game } from '../../custom_modules/GameFormat';
 import { nanoid } from 'nanoid';
 
-function FileExport() {
-    const game = useContext(GameContext);
+function FileExport({ game }: { game: Game.Data }) {
     const saveFile = async (blob: Game.Data, suggestedName: string) => {
         // Feature detection. The API needs to be supported
         // and the app not run in an iframe.
