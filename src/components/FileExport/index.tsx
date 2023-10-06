@@ -28,8 +28,8 @@ function FileExport() {
                     suggestedName,
                     types: [
                         {
-                          description: "Fancade game",
-                          accept: { "application/octet-stream": [".fc"] },
+                            description: "Fancade game",
+                            accept: { "application/octet-stream": [".fc"] },
                         }
                     ]
                 });
@@ -37,15 +37,15 @@ function FileExport() {
                 const writable = await handle.createWritable();
                 await writable.write(
                     zlib.deflateSync(new GameEncoder(blob).encGame())
-                    );
+                );
                 await writable.close();
                 return;
             } catch (err) {
                 // Fail silently if the user has simply canceled the dialog.
                 if (err instanceof Error && err.name !== 'AbortError') {
                     console.error(err.name, err.message);
-                    return;
                 }
+                if (err instanceof Error && err.name === 'AbortError') return;
             }
         }
         // Fallback if the File System Access API is not supported…
