@@ -11,8 +11,9 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/wicg-file-system-access": "^2023.10.0",
-    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
     "nanoid": "^5.0.1",
+    "pako": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -20,9 +21,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -45,16 +46,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.8.2",
-    "@types/three": "^0.156.0",
-    "assert": "^2.1.0",
-    "buffer": "^6.0.3",
-    "crypto-browserify": "^3.12.0",
-    "https-browserify": "^1.0.0",
-    "os-browserify": "^0.3.0",
-    "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "url": "^0.11.3"
+    "@types/pako": "^2.0.1",
+    "@types/three": "^0.156.0"
   }
 }

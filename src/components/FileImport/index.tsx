@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import zlib from 'zlib';
+import zlib from 'pako';
+import { Buffer } from 'buffer';
 // import { FileConsumer } from '../../contexts/fileContext';
 import { Button } from '@mui/material';
 import PublishIcon from '@mui/icons-material/PublishRounded';
@@ -15,11 +16,17 @@ function FileImport({ setFile }: {
     };
     const onFileChange = async () => {
         if (inputFile.current?.files)
-            setFile(new GameDecoder(zlib.inflateSync(
-                Buffer.from(
-                    await inputFile.current?.files[0].arrayBuffer()
-                )
-            )).decGame());
+            try {
+                setFile(new GameDecoder(Buffer.from(
+                    zlib.inflate(
+                        await inputFile.current?.files[0].arrayBuffer()
+                    )
+                )).decGame());
+            } catch (e) {
+                if ((e as Error).message === 'incorrect header check')
+                    alert('Wrong file format!\nPlease choose a fancade game file.');
+                else console.error(e);
+            }
     }
     return (
         <Button variant="contained" size='large' startIcon={<PublishIcon />} onClick={onButtonClick} sx={{

@@ -1,5 +1,5 @@
 import React from 'react'
-import zlib from 'zlib';
+import zlib from 'pako';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadRounded';
 import { Button } from '@mui/material';
 import { GameEncoder, Game } from '../../custom_modules/GameFormat';
@@ -34,7 +34,7 @@ function FileExport({ game }: { game: Game.Data }) {
                 // Write the blob to the file.
                 const writable = await handle.createWritable();
                 await writable.write(
-                    zlib.deflateSync(new GameEncoder(blob).encGame())
+                    zlib.deflate(new GameEncoder(blob).encGame())
                 );
                 await writable.close();
                 return;
@@ -49,7 +49,7 @@ function FileExport({ game }: { game: Game.Data }) {
         // Fallback if the File System Access API is not supported…
         // Create the blob URL.
         const blobURL = URL.createObjectURL(new Blob([
-            zlib.deflateSync(new GameEncoder(blob).encGame())
+            zlib.deflate(new GameEncoder(blob).encGame())
         ]));
         // Create the `<a download>` element and append it invisibly.
         const a = document.createElement('a');

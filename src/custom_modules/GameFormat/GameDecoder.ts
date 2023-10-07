@@ -1,4 +1,5 @@
 import { Chunk, Fill, Game, Grid, Multiply, Value, Vec, Wire } from ".";
+import { Buffer } from 'buffer';
 
 export class GameDecoder {
   buff: Buffer;

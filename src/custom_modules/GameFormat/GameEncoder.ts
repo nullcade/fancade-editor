@@ -1,4 +1,5 @@
 import { Chunk, Game, Value, Vec, Wire } from ".";
+import { Buffer } from 'buffer';
 
 export class GameEncoder {
   blockSize: number;
