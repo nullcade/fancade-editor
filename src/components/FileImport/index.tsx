@@ -15,11 +15,17 @@ function FileImport({ setFile }: {
     };
     const onFileChange = async () => {
         if (inputFile.current?.files)
-            setFile(new GameDecoder(zlib.inflateSync(
-                Buffer.from(
-                    await inputFile.current?.files[0].arrayBuffer()
-                )
-            )).decGame());
+            try {
+                setFile(new GameDecoder(zlib.inflateSync(
+                    Buffer.from(
+                        await inputFile.current?.files[0].arrayBuffer()
+                    )
+                )).decGame());
+            } catch (e) {
+                if ((e as Error).message === 'incorrect header check')
+                    alert('Wrong file format!\nPlease choose a fancade game file.');
+                else console.error(e);
+            }
     }
     return (
         <Button variant="contained" size='large' startIcon={<PublishIcon />} onClick={onButtonClick} sx={{
