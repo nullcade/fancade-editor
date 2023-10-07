@@ -35,12 +35,12 @@ export class GameEncoder {
       isMulti,
       chunk.collider !== undefined,
       chunk.locked,
-      ,
+      false,
       chunk.color !== undefined,
-      ,
-      ,
+      false,
+      false,
       chunk.name !== undefined,
-      chunk.type !== undefined,
+      chunk.type !== undefined
     ].map((v) => (v ? 1 : 0));
     this.writeBin(flags);
     if (chunk.type !== undefined) this.writeUint8(chunk.type);
