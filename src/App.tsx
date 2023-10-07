@@ -72,7 +72,7 @@ function App() {
             }}
             aria-label="basic tabs example">
             <Tab label="Info" sx={tabSx} />
-            <Tab label="Levels" sx={tabSx} />
+            <Tab label="Chunks" sx={tabSx} />
             <Tab label="Blocks" sx={tabSx} />
           </Tabs>
           <div style={{
