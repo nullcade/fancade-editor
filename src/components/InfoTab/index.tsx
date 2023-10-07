@@ -17,8 +17,6 @@ function InfoTab({
         <div style={{
             display: (lastActive || active) ? 'flex' : 'none',
             position: 'absolute',
-            // top: 0,
-            // bottom: 0,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'start',
