@@ -30,59 +30,60 @@ function App() {
   });
   return (
     <ThemeProvider theme={darkTheme}>
-        <div className="App">
-          {/* <MyThree /> */}
-          <Card sx={{
-            backgroundColor: '#343636',
-            maxWidth: '700px',
-            width: 'calc(100% - 6rem)',
-            height: 'calc(100% - 6rem)',
-            borderRadius: '24px',
-            color: '#e3e3e3',
-            padding: '2rem',
+      <div className="App">
+        {/* <MyThree /> */}
+        <Card sx={{
+          backgroundColor: '#343636',
+          maxWidth: '700px',
+          width: 'calc(100% - 6rem)',
+          height: 'calc(100% - 6rem)',
+          borderRadius: '24px',
+          color: '#e3e3e3',
+          padding: '2rem',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <div style={{
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly'
           }}>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-evenly'
-            }}>
-              <FileImport setFile={setFile} />
-              <h1>Fancade Editor</h1>
-              <FileExport game={file} />
-            </div>
-            <Tabs
-              value={tab}
-              onChange={(a, b) => {
-                setTab(b);
-              }}
-              sx={{
-                height: '79px',
-                margin: '.5rem 1rem',
-                borderRadius: '40px',
-                background: '#28292a',
-                alignItems: 'center'
-              }}
-              TabIndicatorProps={{
-                sx: {
-                  visibility: 'hidden'
-                }
-              }}
-              aria-label="basic tabs example">
-              <Tab label="Info" sx={tabSx} />
-              <Tab label="Levels" sx={tabSx} />
-              <Tab label="Blocks" sx={tabSx} />
-            </Tabs>
-            <div style={{
-              height: '100%',
-              overflowY: 'auto'
-            }}>
-              <InfoTab game={file} setGame={setFile} />
-            </div>
-          </Card>
-        </div>
+            <FileImport setFile={setFile} />
+            <h1>Fancade Editor</h1>
+            <FileExport game={file} />
+          </div>
+          <Tabs
+            value={tab}
+            onChange={(a, b) => {
+              setTab(b);
+            }}
+            sx={{
+              height: '79px',
+              margin: '.5rem 1rem',
+              borderRadius: '40px',
+              background: '#28292a',
+              alignItems: 'center'
+            }}
+            TabIndicatorProps={{
+              sx: {
+                visibility: 'hidden'
+              }
+            }}
+            aria-label="basic tabs example">
+            <Tab label="Info" sx={tabSx} />
+            <Tab label="Levels" sx={tabSx} />
+            <Tab label="Blocks" sx={tabSx} />
+          </Tabs>
+          <div style={{
+            height: '100%',
+            overflowY: 'auto',
+            position: 'relative'
+          }}>
+            <InfoTab game={file} setGame={setFile} active={tab === 0} />
+          </div>
+        </Card>
+      </div>
     </ThemeProvider>
   );
 }

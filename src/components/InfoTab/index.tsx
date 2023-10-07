@@ -1,22 +1,33 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Game } from '../../custom_modules/GameFormat';
 import ControlledTextField from '../ControlledTextField';
 
-function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>> }) {
+function InfoTab({
+    game,
+    setGame,
+    active
+}: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>>, active: boolean }) {
     const unstable = useRef<HTMLInputElement>(null);
     const [advanced, setAdvanced] = useState<boolean>(false);
-
+    const [lastActive, setLastActive] = useState<boolean>(active);
+    useEffect(() => {setTimeout(() => setLastActive(active), 1000)}, [active]);
+    console.log(active, lastActive)
     return (
         <div style={{
-            display: 'flex',
+            display: (lastActive || active) ? 'flex' : 'none',
+            position: 'absolute',
+            // top: 0,
+            // bottom: 0,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'start',
             gap: '1rem',
             flexWrap: 'wrap',
             width: 'fit-content',
-            height: '100%'
+            height: '100%',
+            opacity: (active && lastActive) ? 1 : 0,
+            transition: 'opacity 1s cubic-bezier(.4,0,.1,1)'
         }}>
             <ControlledTextField
                 label="Title"
