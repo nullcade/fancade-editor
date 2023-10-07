@@ -12,7 +12,7 @@ function InfoTab({
     const [advanced, setAdvanced] = useState<boolean>(false);
     const [lastActive, setLastActive] = useState<boolean>(active);
     useEffect(() => {setTimeout(() => setLastActive(active), 1000)}, [active]);
-    console.log(active, lastActive)
+    
     return (
         <div style={{
             display: (lastActive || active) ? 'flex' : 'none',
