@@ -1,16 +1,12 @@
 import React, { useRef, useState } from 'react'
-import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import { Game } from '../../custom_modules/GameFormat';
+import ControlledTextField from '../ControlledTextField';
 
 function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>> }) {
     const unstable = useRef<HTMLInputElement>(null);
     const [advanced, setAdvanced] = useState<boolean>(false);
-    const [lastInput, setLastInput] = useState<number>(0);
 
-    const forceReload = () => {
-        setLastInput(Date.now());
-    }
-    
     return (
         <div style={{
             display: 'flex',
@@ -22,40 +18,52 @@ function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<R
             width: 'fit-content',
             height: '100%'
         }}>
-            <TextField
+            <ControlledTextField
                 label="Title"
                 value={game.title}
                 placeholder="New Game"
                 variant="standard"
-                onChange={e => {
-                    game.title = e.target.value;
-                    forceReload();
+                setValue={value => {
+                    game.title = (value as string);
                     setGame(game);
                 }}
+                valueCheck={event => {
+                    if ((new TextEncoder().encode(event.target.value as string)).length > (unstable.current?.checked ? 255 : 16))
+                        return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable.current?.checked ? 255 : 16)));
+                    return event.target.value;
+                }}
             />
-            <TextField
+            <ControlledTextField
                 label="Author"
                 value={game.author}
                 placeholder="Unknown Author"
                 variant="standard"
-                onChange={e => {
-                    game.author = e.target.value;
-                    forceReload();
+                setValue={value => {
+                    game.author = value as string;
                     setGame(game);
+                }}
+                valueCheck={event => {
+                    if ((new TextEncoder().encode(event.target.value as string)).length > (unstable.current?.checked ? 255 : 16))
+                        return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable.current?.checked ? 255 : 16)));
+                    return event.target.value;
                 }}
             />
             <FormControlLabel control={<Checkbox inputRef={unstable} />} label="Unstable" />
-            <TextField
+            <ControlledTextField
                 label="Description"
                 value={game.description}
                 placeholder="A Fancade Game"
                 multiline
                 variant="standard"
                 rows={4}
-                onChange={e => {
-                    game.description = e.target.value;
-                    forceReload();
+                setValue={value => {
+                    game.description = value as string;
                     setGame(game);
+                }}
+                valueCheck={event => {
+                    if ((new TextEncoder().encode(event.target.value as string)).length > (unstable.current?.checked ? 255 : 132))
+                        return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable.current?.checked ? 255 : 132)));
+                    return event.target.value;
                 }}
                 sx={{
                     flexGrow: 5,
@@ -67,15 +75,21 @@ function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<R
             }} style={{
                 marginLeft: '.75rem'
             }} />} label="Advanced" />
-            <TextField
+            <ControlledTextField
                 label="App Version"
                 value={game.appVersion}
                 type="number"
                 variant="standard"
-                onChange={e => {
-                    game.appVersion = parseInt(e.target.value);
-                    forceReload();
+                setValue={value => {
+                    game.appVersion = parseInt(value as string);
                     setGame(game);
+                }}
+                valueCheck={event => {
+                    if (Number.isNaN(parseInt(event.target.value)) || parseInt(event.target.value) < 0)
+                        return '0';
+                    else if (parseInt(event.target.value) > 65535)
+                        return '65535';
+                    return event.target.value;
                 }}
                 sx={{
                     opacity: advanced ? 1 : 0,
@@ -84,15 +98,21 @@ function InfoTab({ game, setGame }: { game: Game.Data, setGame: React.Dispatch<R
                 disabled={!advanced}
                 required={advanced}
             />
-            <TextField
+            <ControlledTextField
                 label="ID Offset"
                 value={game.idOffset}
                 type="number"
                 variant="standard"
-                onChange={e => {
-                    game.idOffset = parseInt(e.target.value);
-                    forceReload();
+                setValue={value => {
+                    game.idOffset = parseInt(value as string);
                     setGame(game);
+                }}
+                valueCheck={event => {
+                    if (Number.isNaN(parseInt(event.target.value)) || parseInt(event.target.value) < 0)
+                        return '0';
+                    else if (parseInt(event.target.value) > 65535)
+                        return '65535';
+                    return event.target.value;
                 }}
                 sx={{
                     opacity: advanced ? 1 : 0,
