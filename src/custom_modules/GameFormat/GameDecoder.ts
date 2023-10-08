@@ -120,7 +120,7 @@ export class GameDecoder {
     const len = this.readUint8();
     return this.read(len).toString("utf-8");
   }
-  readBin<L extends 1>(): Fill<8, 0 | 1>;
+  readBin(): Fill<8, 0 | 1>;
   readBin<L extends number>(size: L): Fill<Multiply<L, 8>, 0 | 1>;
   readBin(size = 1) {
     const buff = this.read(size);
