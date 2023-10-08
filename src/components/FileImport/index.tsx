@@ -17,13 +17,8 @@ function FileImport({ setFile }: {
     const onFileChange = async () => {
         if (inputFile.current?.files)
             try {
-<<<<<<< HEAD
                 setFile(new GameDecoder(Buffer.from(
                     zlib.inflate(
-=======
-                setFile(new GameDecoder(zlib.inflateSync(
-                    Buffer.from(
->>>>>>> 236134115905805e5d214baef3976929f8160622
                         await inputFile.current?.files[0].arrayBuffer()
                     )
                 )).decGame());
