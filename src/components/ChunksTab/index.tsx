@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Game, Chunk, Value, Wire, Color, Vec } from '../../custom_modules/GameFormat';
-import { List, ListItem, TextField } from '@mui/material';
+import { List, ListItem, TextField, Checkbox, Select } from '@mui/material';
+import { Lock, LockOpen } from "@mui/icons-material"
 
 interface ChunksOptimised {
     type: 0 | 1 | 2 | 3,
@@ -163,6 +164,7 @@ function ChunksTab({
                             bgcolor: '#28292a',
                         }}>
                             <TextField label='Name' defaultValue={value.name} />
+                            <Checkbox label='Locked' defaultValue={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
                         </ListItem>
                     )
                 }
