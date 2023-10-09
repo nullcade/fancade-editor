@@ -56,27 +56,62 @@ function ChunksTab({
             return !value.name;
         });
         chunksOptimised.map(value => {
-            if (!value.id) return value;
-            remainingChunks = remainingChunks.filter(val => {
-                if (val.id === value.id) {
-                    if (!value.subChunks)
-                        value.subChunks = [];
-                    value.subChunks.push({
-                        offset: val.offset ?? [0, 0, 0],
-                        blocks: val.blocks ?? [],
-                        values: val.values ?? [],
-                        wires: val.wires ?? [],
-                        faces: val.faces
-                    });
-                    return false;
-                }
-                return true;
-            });
+            if (value.id)
+                remainingChunks = remainingChunks.filter(val => {
+                    if (val.id === value.id) {
+                        if (!value.subChunks)
+                            value.subChunks = [];
+                        value.subChunks.push({
+                            offset: val.offset ?? [0, 0, 0],
+                            blocks: val.blocks ?? [],
+                            values: val.values ?? [],
+                            wires: val.wires ?? [],
+                            faces: val.faces
+                        });
+                        return false;
+                    }
+                    return true;
+                });
             return value;
         })
         console.log(chunksOptimised);
         setChunks(chunksOptimised);
     }, [game]);
+
+    const unoptimiseChunks = (): Chunk.Data[] => {
+        let newChunks: Chunk.Data[] = [];
+        chunks.forEach(value => {
+            newChunks.push({
+                type: value.type,
+                name: value.name,
+                id: value.id,
+                locked: value.locked,
+                collider: value.collider,
+                color: value.color,
+                faces: value.faces,
+                blocks: value.blocks,
+                values: value.values,
+                wires: value.wires
+            })
+            if (value.subChunks)
+                value.subChunks.forEach(val => {
+                    newChunks.push({
+                        type: value.type,
+                        id: value.id,
+                        locked: value.locked,
+                        collider: value.collider,
+                        color: value.color,
+                        faces: val.faces,
+                        blocks: val.blocks,
+                        values: val.values,
+                        wires: val.wires,
+                        offset: val.offset
+                    })
+                })
+        })
+        return newChunks;
+    }
+
     return (
         <div>
 
