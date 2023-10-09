@@ -56,7 +56,7 @@ function ChunksTab({
             return !value.name;
         });
         chunksOptimised.map(value => {
-            remainingChunks.forEach(val => {
+            remainingChunks = remainingChunks.filter(val => {
                 if (val.id === value.id) {
                     if (!value.subChunks)
                         value.subChunks = [];
@@ -67,11 +67,13 @@ function ChunksTab({
                         wires: val.wires ?? [],
                         faces: val.faces
                     });
+                    return false;
                 }
+                return true;
             });
             return value;
         })
-        console.log(chunksOptimised)
+        console.log(chunksOptimised);
         setChunks(chunksOptimised);
     }, [game]);
     return (
