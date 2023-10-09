@@ -7,6 +7,7 @@ import FileImport from './components/FileImport';
 import FileExport from './components/FileExport';
 import InfoTab from './components/InfoTab';
 import { Game, GameDataDefault } from './custom_modules/GameFormat';
+import ChunksTab from './components/ChunksTab';
 
 const tabSx: SxProps<Theme> = {
   color: '#e3e3e3',
@@ -81,6 +82,7 @@ function App() {
             position: 'relative'
           }}>
             <InfoTab game={file} setGame={setFile} active={tab === 0} />
+            <ChunksTab game={file} setGame={setFile} active={tab === 0} />
           </div>
         </Card>
       </div>
