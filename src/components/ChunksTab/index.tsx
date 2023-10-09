@@ -60,7 +60,7 @@ function ChunksTab({
                     blocks: value.blocks ?? ([[[]]]),
                     values: value.values ?? [],
                     wires: value.wires ?? [],
-                    id: value.id,
+                    id: value.id ?? (chunksOptimised.at(-1)?.id ?? game.idOffset) + 1,
 
                     color: value.color,
 
@@ -164,7 +164,12 @@ function ChunksTab({
                             bgcolor: '#28292a',
                         }}>
                             <TextField label='Name' defaultValue={value.name} />
-                            <Checkbox label='Locked' defaultValue={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
+                            <TextField label='ID' defaultValue={value.id}
+                              disabled style={{ marginLeft: '0.75rem', width: '5.5ch' }}
+                            />
+                            <Checkbox label='Locked' defaultValue={value.locked}
+                              icon={<LockOpen />} checkedIcon={<Lock />} style={{ marginLeft: '0.75rem' }}
+                            />
                         </ListItem>
                     )
                 }
