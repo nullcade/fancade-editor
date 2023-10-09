@@ -82,7 +82,7 @@ function App() {
             position: 'relative'
           }}>
             <InfoTab game={file} setGame={setFile} active={tab === 0} />
-            <ChunksTab game={file} setGame={setFile} active={tab === 0} />
+            <ChunksTab game={file} setGame={setFile} active={tab === 1} />
           </div>
         </Card>
       </div>

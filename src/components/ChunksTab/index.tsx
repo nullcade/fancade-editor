@@ -30,6 +30,9 @@ function ChunksTab({
     setGame,
     active
 }: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>>, active: boolean }) {
+    const [lastActive, setLastActive] = useState<boolean>(active);
+    useEffect(() => {setTimeout(() => setLastActive(active), 1000)}, [active]);
+    
     const unstable = useRef<HTMLInputElement>(null);
     const [chunks, setChunks] = useState<ChunksOptimised[]>([]);
 
@@ -113,8 +116,20 @@ function ChunksTab({
     }
 
     return (
-        <div>
-
+        <div style={{
+            display: (lastActive || active) ? 'flex' : 'none',
+            position: 'absolute',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'start',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            width: 'fit-content',
+            height: '100%',
+            opacity: (active && lastActive) ? 1 : 0,
+            transition: 'opacity 1s cubic-bezier(.4,0,.1,1)'
+        }}>
+            
         </div>
     )
 }
