@@ -56,6 +56,7 @@ function ChunksTab({
             return !value.name;
         });
         chunksOptimised.map(value => {
+            if (!value.id) return value;
             remainingChunks = remainingChunks.filter(val => {
                 if (val.id === value.id) {
                     if (!value.subChunks)
