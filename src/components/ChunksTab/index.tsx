@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Game, Chunk, Value, Wire, Color, Vec } from '../../custom_modules/GameFormat';
+import { List, ListItem, TextField } from '@mui/material';
 
 interface ChunksOptimised {
     type: 0 | 1 | 2 | 3,
@@ -30,11 +31,22 @@ function ChunksTab({
     setGame,
     active
 }: { game: Game.Data, setGame: React.Dispatch<React.SetStateAction<Game.Data>>, active: boolean }) {
+    let [cachedChunks, setCachedChunks] = useState<Chunk.Data[]>([]);
+
     const [lastActive, setLastActive] = useState<boolean>(active);
-    useEffect(() => {setTimeout(() => setLastActive(active), 1000)}, [active]);
-    
+    useEffect(() => { setTimeout(() => setLastActive(active), 1000) }, [active]);
+
     const unstable = useRef<HTMLInputElement>(null);
     const [chunks, setChunks] = useState<ChunksOptimised[]>([]);
+
+    const [selectedItem, setSelectedItem] = useState<number>(-1);
+
+    useEffect(() => {
+        if (cachedChunks === game.chunks) return;
+        setSelectedItem(-1);
+        setChunks([]);
+        setCachedChunks(game.chunks);
+    }, [game])
 
     useEffect(() => {
         let chunksOptimised: ChunksOptimised[] = [];
@@ -79,7 +91,7 @@ function ChunksTab({
         })
         console.log(chunksOptimised);
         setChunks(chunksOptimised);
-    }, [game]);
+    }, [cachedChunks]);
 
     const unoptimiseChunks = (): Chunk.Data[] => {
         let newChunks: Chunk.Data[] = [];
@@ -120,16 +132,41 @@ function ChunksTab({
             display: (lastActive || active) ? 'flex' : 'none',
             position: 'absolute',
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'start',
+            alignItems: 'start',
+            justifyContent: 'center',
             gap: '1rem',
             flexWrap: 'wrap',
-            width: 'fit-content',
+            width: '100%',
             height: '100%',
             opacity: (active && lastActive) ? 1 : 0,
-            transition: 'opacity 1s cubic-bezier(.4,0,.1,1)'
+            transition: 'opacity 1s cubic-bezier(.4,0,.1,1)',
+            borderRadius: '12px',
+            // paddingLeft: '1rem',
+            // paddingRight: '1rem'
         }}>
-            
+            <List
+                sx={{
+                    width: '100%',
+                    // height: '2rem',
+                    borderRadius: 'inherit',
+                    marginLeft: '1rem',
+                    marginRight: '1rem',
+                    gap: '4px',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}
+            >
+                {
+                    chunks.map((value, index) =>
+                        <ListItem key={index} sx={{
+                            borderRadius: 'inherit',
+                            bgcolor: '#28292a',
+                        }}>
+                            <TextField label='Name' defaultValue={value.name} />
+                        </ListItem>
+                    )
+                }
+            </List>
         </div>
     )
 }
