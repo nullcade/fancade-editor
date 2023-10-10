@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Game, Chunk, Value, Wire, Color, Vec } from '../../custom_modules/GameFormat';
-import { List, ListItem, TextField } from '@mui/material';
+import { IconButton, List, ListItem, TextField } from '@mui/material';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChunkListItem from './ChunkListItem';
 
-interface ChunksOptimised {
+export interface ChunksOptimised {
     type: 0 | 1 | 2 | 3,
     name: string,
     locked: boolean,
@@ -158,12 +161,13 @@ function ChunksTab({
             >
                 {
                     chunks.map((value, index) =>
-                        <ListItem key={index} sx={{
-                            borderRadius: 'inherit',
-                            bgcolor: '#28292a',
-                        }}>
-                            <TextField label='Name' defaultValue={value.name} />
-                        </ListItem>
+                        <ChunkListItem
+                            key={index}
+                            value={value}
+                            selected={selectedItem === index}
+                            select={() =>
+                                setSelectedItem(selectedItem === index ? -1 : index)
+                            } />
                     )
                 }
             </List>
