@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Game, Chunk, Value, Wire, Color, Vec } from '../../custom_modules/GameFormat';
-import { IconButton, List, ListItem, TextField } from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import { List } from '@mui/material';
 import ChunkListItem from './ChunkListItem';
 
 export interface ChunksOptimised {
@@ -62,7 +60,7 @@ function ChunksTab({
                     blocks: value.blocks ?? ([[[]]]),
                     values: value.values ?? [],
                     wires: value.wires ?? [],
-                    id: value.id,
+                    id: value.id ?? (chunksOptimised.at(-1)?.id ?? game.idOffset) + 1,
 
                     color: value.color,
 
