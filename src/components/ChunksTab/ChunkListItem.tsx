@@ -31,7 +31,5 @@ function ChunkListItem({value, selected, select}: {
 }
 
 export default memo(ChunkListItem, (prevProps, newProps) => {
-    if(prevProps.value !== newProps.value) return false;
-    if(prevProps.selected !== newProps.selected) return false;
-    return true;
+    return prevProps.selected === newProps.selected;
 });
