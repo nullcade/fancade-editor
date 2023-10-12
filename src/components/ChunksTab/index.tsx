@@ -60,7 +60,7 @@ function ChunksTab({
                     blocks: value.blocks ?? ([[[]]]),
                     values: value.values ?? [],
                     wires: value.wires ?? [],
-                    id: value.id ?? (chunksOptimised.at(-1)?.id ?? game.idOffset) + 1,
+                    id: value.id ?? (chunksOptimised.at(-1)?.id ?? game.idOffset - 1) + 1,
 
                     color: value.color,
 
