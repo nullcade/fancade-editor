@@ -15,7 +15,8 @@ function ChunkListItem({ value, selected, select }: {
             bgcolor: '#28292a',
             display: 'flex',
             flexDirection: 'row',
-            wrap: 'wrap'
+            wrap: 'wrap',
+            gap: '.75rem'
         }} secondaryAction={
             value.subChunks ?
                 <IconButton edge="end" aria-label="comments"
@@ -25,21 +26,14 @@ function ChunkListItem({ value, selected, select }: {
                 </IconButton> : undefined
         }>
             <TextField label='Name' defaultValue={value.name} />
-            <Checkbox defaultChecked={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
             <TextField
                 label='ID'
                 defaultValue={value.id}
-                type='number'
                 sx={{
-                    width: '4rem',
-                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                        display: "none",
-                    },
-                    "& input[type=number]": {
-                        MozAppearance: "textfield",
-                    }
+                    width: '4rem'
                 }}
             />
+            <Checkbox defaultChecked={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
         </ListItem>
     )
 }
