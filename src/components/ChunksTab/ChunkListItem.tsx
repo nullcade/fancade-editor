@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { ChunksOptimised } from '.';
-import { Checkbox, IconButton, ListItem, TextField } from '@mui/material';
+import { Checkbox, IconButton, ListItem, TextField, Stack, Collapse, List } from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LockOpen from '@mui/icons-material/LockOpen';
@@ -10,31 +10,47 @@ function ChunkListItem({ value, selected, select }: {
     value: ChunksOptimised, selected: boolean, select: () => void
 }) {
     return (
-        <ListItem sx={{
+        <Stack sx={{
             borderRadius: 'inherit',
             bgcolor: '#28292a',
-            display: 'flex',
+        }}>
+        <ListItem sx={{
             flexDirection: 'row',
             wrap: 'wrap',
             gap: '.75rem'
         }} secondaryAction={
-            value.subChunks ?
+            value.subChunks &&
                 <IconButton edge="end" aria-label="comments"
                     onClick={select}
                 >
                     {selected ? <ExpandLess /> : <ExpandMore />}
-                </IconButton> : undefined
+                </IconButton>
         }>
             <TextField label='Name' defaultValue={value.name} />
-            <TextField
-                label='ID'
-                defaultValue={value.id}
-                sx={{
-                    width: '4rem'
-                }}
-            />
+            <TextField label='ID' defaultValue={value.id}/>
             <Checkbox defaultChecked={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
         </ListItem>
+
+        { value.subChunks &&
+        <Collapse in={selected}>
+            <List>
+                { value.subChunks.map(chunk => 
+                    <ListItem sx={{
+                        flexDirection: 'row',
+                        wrap:'wrap',
+                        gap: '.75rem'
+                    }}>
+                        <Stack direction='row' gap='.75rem'>
+                            <TextField label='X' defaultValue={chunk.offset[0]}/>
+                            <TextField label='Y' defaultValue={chunk.offset[1]}/>
+                            <TextField label='Z' defaultValue={chunk.offset[2]}/>
+                        </Stack>
+                    </ListItem>
+                ) }
+            </List>
+        </Collapse>
+        }
+        </Stack>
     )
 }
 
