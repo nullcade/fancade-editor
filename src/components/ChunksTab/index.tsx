@@ -100,7 +100,7 @@ function ChunksTab({
             newChunks.push({
                 type: value.type,
                 name: value.name,
-                id: value.id,
+                id: value.subChunks ? value.id : undefined,
                 locked: value.locked,
                 collider: value.collider,
                 color: value.color,
