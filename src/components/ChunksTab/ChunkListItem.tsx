@@ -6,28 +6,42 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import LockOpen from '@mui/icons-material/LockOpen';
 import Lock from '@mui/icons-material/Lock';
 
-function ChunkListItem({value, selected, select}: {
+function ChunkListItem({ value, selected, select }: {
     value: ChunksOptimised, selected: boolean, select: () => void
 }) {
-  return (
-    <ListItem sx={{
-        borderRadius: 'inherit',
-        bgcolor: '#28292a',
-        display: 'flex',
-        flexDirection: 'row',
-        wrap: 'wrap'
-    }} secondaryAction={
-        value.subChunks ?
-        <IconButton edge="end" aria-label="comments"
-            onClick={select}
-        >
-            {selected ? <ExpandLess /> : <ExpandMore />}
-        </IconButton> : undefined
-    }>
-        <TextField label='Name' defaultValue={value.name} />
-        <Checkbox defaultChecked={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
-    </ListItem>
-  )
+    return (
+        <ListItem sx={{
+            borderRadius: 'inherit',
+            bgcolor: '#28292a',
+            display: 'flex',
+            flexDirection: 'row',
+            wrap: 'wrap'
+        }} secondaryAction={
+            value.subChunks ?
+                <IconButton edge="end" aria-label="comments"
+                    onClick={select}
+                >
+                    {selected ? <ExpandLess /> : <ExpandMore />}
+                </IconButton> : undefined
+        }>
+            <TextField label='Name' defaultValue={value.name} />
+            <Checkbox defaultChecked={value.locked} icon={<LockOpen />} checkedIcon={<Lock />} />
+            <TextField
+                label='ID'
+                defaultValue={value.id}
+                type='number'
+                sx={{
+                    width: '4rem',
+                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                        display: "none",
+                    },
+                    "& input[type=number]": {
+                        MozAppearance: "textfield",
+                    }
+                }}
+            />
+        </ListItem>
+    )
 }
 
 export default memo(ChunkListItem, (prevProps, newProps) => {
