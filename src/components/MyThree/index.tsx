@@ -1,7 +1,7 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 import { useEffect, useRef } from "react";
-import React from 'react';
+import React from "react";
 
 function MyThree() {
   const refContainer = useRef<HTMLDivElement>(null);
@@ -11,7 +11,14 @@ function MyThree() {
     // var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const aspect = window.innerWidth / window.innerHeight;
     const d = 20;
-    var camera = new THREE.OrthographicCamera(- d * aspect, d * aspect, d, - d, 1, 1000);
+    var camera = new THREE.OrthographicCamera(
+      -d * aspect,
+      d * aspect,
+      d,
+      -d,
+      1,
+      1000,
+    );
     // camera.position.set(20, 20, 20);
     // camera.rotation.order = 'YXZ';
     // camera.rotation.y = - Math.PI / 4;
@@ -24,9 +31,10 @@ function MyThree() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     // document.body.appendChild( renderer.domElement );
     // use ref as a mount point of the Three.js scene instead of the document.body
-    refContainer.current && refContainer.current.appendChild(renderer.domElement);
+    refContainer.current &&
+      refContainer.current.appendChild(renderer.domElement);
     var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+    var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
     var cube = new THREE.Mesh(geometry, material);
     cube.rotation.x = 0.6;
     cube.rotation.y = 0.785;
@@ -41,9 +49,7 @@ function MyThree() {
     // };
     // animate();
   }, []);
-  return (
-    <div ref={refContainer}></div>
-  );
+  return <div ref={refContainer}></div>;
 }
 
-export default MyThree
+export default MyThree;

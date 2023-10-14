@@ -1,5 +1,5 @@
 import { Chunk, Fill, Game, Grid, Multiply, Value, Vec, Wire } from ".";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 
 export class GameDecoder {
   buff: Buffer;
@@ -126,16 +126,16 @@ export class GameDecoder {
     const buff = this.read(size);
     return Array.from(
       { length: size * 8 },
-      (_v, i) => (buff[Math.floor(i / 8)] >> i % 8) & 1
+      (_v, i) => (buff[Math.floor(i / 8)] >> i % 8) & 1,
     );
   }
   readGrid<D extends readonly number[], T>(
     dims: readonly [...D],
-    f: (this: this) => T
+    f: (this: this) => T,
   ): Grid<D, T> {
     if (dims.length > 0)
       return Array.from({ length: dims[0] }, () =>
-        this.readGrid(dims.slice(1), f)
+        this.readGrid(dims.slice(1), f),
       ) as any;
     else return f.apply(this) as any;
   }

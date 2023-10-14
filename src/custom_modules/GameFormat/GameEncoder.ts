@@ -1,5 +1,5 @@
 import { Chunk, Game, Value, Vec, Wire } from ".";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 
 export class GameEncoder {
   blockSize: number;
@@ -41,7 +41,7 @@ export class GameEncoder {
       false,
       false,
       chunk.name !== undefined,
-      chunk.type !== undefined
+      chunk.type !== undefined,
     ].map((v) => (v ? 1 : 0));
     this.writeBin(flags);
     if (chunk.type !== undefined) this.writeUint8(chunk.type);
@@ -128,7 +128,7 @@ export class GameEncoder {
         value
           .slice(i << 3, (i + 1) << 3)
           .reduce<number>((pre, cur, b) => pre + (cur << b), 0),
-        i
+        i,
       );
     return this.off;
   }
