@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Stack,
   List,
@@ -22,6 +22,13 @@ function InfoTab({
 }) {
   const [advanced, setAdvanced] = useState<boolean>(false);
   const [unstable, setUnstable] = useState<boolean>(false);
+
+  function updateTitle() {
+
+    document.title = game.title ? `Editing ${game.title}` : "Fancade Editor"
+  }
+
+  useEffect(updateTitle, [game])
 
   return (
     <List
@@ -88,6 +95,7 @@ function InfoTab({
             setValue={value => {
               game.title = (value as string);
               setGame(game);
+              updateTitle()
             }}
             valueCheck={event => {
               if ((new TextEncoder().encode(event.target.value as string)).length > (unstable ? 255 : 16))
