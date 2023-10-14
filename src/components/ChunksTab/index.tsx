@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Game,
   Chunk,
@@ -40,11 +40,10 @@ function ChunksTab({
   setGame,
 }: {
   game: Game.Data;
-  setGame: React.Dispatch<React.SetStateAction<Game.Data>>;
+  setGame: React.Dispatch<React.SetStateAction<Game.Data>>,
 }) {
   let [cachedChunks, setCachedChunks] = useState<Chunk.Data[]>([]);
 
-  const unstable = useRef<HTMLInputElement>(null);
   const [chunks, setChunks] = useState<ChunksOptimised[]>([]);
 
   const [selectedItem, setSelectedItem] = useState<number>(-1);
@@ -54,7 +53,7 @@ function ChunksTab({
     setSelectedItem(-1);
     setChunks([]);
     setCachedChunks(game.chunks);
-  }, [game]);
+  }, [game, cachedChunks]);
 
   useEffect(() => {
     let chunksOptimised: ChunksOptimised[] = [];
@@ -98,8 +97,9 @@ function ChunksTab({
     });
     console.log(chunksOptimised);
     setChunks(chunksOptimised);
-  }, [cachedChunks]);
+  }, [game, cachedChunks]);
 
+  /*
   const unoptimiseChunks = (): Chunk.Data[] => {
     let newChunks: Chunk.Data[] = [];
     chunks.forEach((value) => {
@@ -133,6 +133,7 @@ function ChunksTab({
     });
     return newChunks;
   };
+  */
 
   return (
     <div

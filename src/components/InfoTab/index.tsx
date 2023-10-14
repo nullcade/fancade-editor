@@ -22,8 +22,8 @@ function InfoTab({
 
   return (
     <List
-      gap={theme.spacing(4)}
       sx={{
+        gap: theme.spacing(4),
         alignItems: "center",
         justifyContent: "start",
         fleListItem: "wrap",

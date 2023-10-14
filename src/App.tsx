@@ -33,7 +33,7 @@ export const theme = createTheme({
 });
 
 function App() {
-  const [tab, setTab] = useState<0 | 1 | 2>(0);
+  const [tab, setTab] = useState<"0" | "1" | "2">("0");
   const [file, setFile] = useState<Game.Data>(GameDataDefault);
   return (
     <ThemeProvider theme={theme}>
@@ -53,7 +53,6 @@ function App() {
       >
         <TabContext value={tab}>
           <TabList
-            value={tab}
             onChange={(a, b) => {
               setTab(b);
             }}
@@ -66,14 +65,14 @@ function App() {
             }}
             centered
           >
-            <Tab label="Info" />
-            <Tab label="Chunks" />
-            <Tab label="Blocks" />
+            <Tab label="Info" value="0" />
+            <Tab label="Chunks" value="1" />
+            <Tab label="Blocks" value="2" />
           </TabList>
-          <TabPanel value={0} sx={{ width: "100%" }}>
+          <TabPanel value="0" sx={{ width: "100%" }}>
             <InfoTab game={file} setGame={setFile} />
           </TabPanel>
-          <TabPanel value={1} sx={{ width: "100%" }}>
+          <TabPanel value="1" sx={{ width: "100%" }}>
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>
