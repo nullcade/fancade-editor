@@ -1,10 +1,11 @@
 @font-face {
-  font-family: 'Custom Sans';
-  src: url('../public/custom_sans.woff2');
+  font-family: "Custom Sans";
+  src: url("../public/custom_sans.woff2");
 }
 
 body {
   height: 100%;
+  background-color: #1f1f1f;
 }
 
 #root {
@@ -16,8 +17,7 @@ body {
 
 .App {
   text-align: center;
-  font-family: 'Custom Sans', sans-serif;
-  background-color: #1f1f1f;
+  font-family: "Custom Sans", sans-serif;
   height: 100%;
   width: 100%;
   display: flex;

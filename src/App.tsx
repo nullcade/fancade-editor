@@ -1,91 +1,86 @@
 // import logo from './logo.svg';
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 // import MyThree from './components/MyThree';
-import { Card, Tabs, Tab, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material';
-import FileImport from './components/FileImport';
-import FileExport from './components/FileExport';
-import InfoTab from './components/InfoTab';
-import { Game, GameDataDefault } from './custom_modules/GameFormat';
-import ChunksTab from './components/ChunksTab';
+import { Stack, Tab, ThemeProvider, createTheme } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import FileImport from "./components/FileImport";
+import FileExport from "./components/FileExport";
+import InfoTab from "./components/InfoTab";
+import { Game, GameDataDefault } from "./custom_modules/GameFormat";
+import ChunksTab from "./components/ChunksTab";
 
-const tabSx: SxProps<Theme> = {
-  color: '#e3e3e3',
-  fontWeight: 500,
-  fontFamily: "'Custom Sans', sans-serif",
-  textTransform: 'none',
-  fontSize: '16px',
-  lineHeight: '24px',
-  flexGrow: '1',
-  height: '79px',
-  borderRadius: '40px'
-}
+export const theme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+  components: {
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          fontWeight: 500,
+          fontFamily: "'Custom Sans', sans-serif",
+          textTransform: "none",
+          fontSize: "16px",
+          lineHeight: "24px",
+          flexGrow: "1",
+          height: "79px",
+          borderRadius: "40px",
+        },
+      },
+    },
+  },
+});
 
 function App() {
   const [tab, setTab] = useState<0 | 1 | 2>(0);
   const [file, setFile] = useState<Game.Data>(GameDataDefault);
-  const darkTheme = createTheme({
-    palette: {
-      mode: 'dark',
-    },
-  });
   return (
-    <ThemeProvider theme={darkTheme}>
-      <div className="App">
-        {/* <MyThree /> */}
-        <Card sx={{
-          backgroundColor: '#343636',
-          maxWidth: '700px',
-          width: 'calc(100% - 6rem)',
-          height: 'calc(100% - 6rem)',
-          borderRadius: '24px',
-          color: '#e3e3e3',
-          padding: '2rem',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-evenly'
-          }}>
-            <FileImport setFile={setFile} />
-            <h1>Fancade Editor</h1>
-            <FileExport game={file} />
-          </div>
-          <Tabs
+    <ThemeProvider theme={theme}>
+      <Stack
+        className="App"
+        gap={theme.spacing(2)}
+        sx={{
+          alignItems: "center",
+          justifyContent: "flex-start",
+          maxWidth: "700px",
+          margin: "auto",
+          position: "relative",
+          boxSizing: "border-box",
+          padding: theme.spacing(2),
+          color: "#e3e3e3",
+        }}
+      >
+        <TabContext value={tab}>
+          <TabList
             value={tab}
             onChange={(a, b) => {
               setTab(b);
             }}
             sx={{
-              height: '79px',
-              margin: '.5rem 1rem',
-              borderRadius: '40px',
-              background: '#28292a',
-              alignItems: 'center'
+              bgcolor: "#28292a",
+              width: "100%",
+              height: theme.spacing(8),
+              borderRadius: theme.spacing(4),
+              alignItems: "center",
             }}
-            TabIndicatorProps={{
-              sx: {
-                visibility: 'hidden'
-              }
-            }}
-            aria-label="basic tabs example">
-            <Tab label="Info" sx={tabSx} />
-            <Tab label="Chunks" sx={tabSx} />
-            <Tab label="Blocks" sx={tabSx} />
-          </Tabs>
-          <div style={{
-            height: '100%',
-            overflowY: 'auto',
-            position: 'relative'
-          }}>
-            <InfoTab game={file} setGame={setFile} active={tab === 0} />
-            <ChunksTab game={file} setGame={setFile} active={tab === 1} />
-          </div>
-        </Card>
-      </div>
+            centered
+          >
+            <Tab label="Info" />
+            <Tab label="Chunks" />
+            <Tab label="Blocks" />
+          </TabList>
+          <TabPanel value={0} sx={{ width: "100%" }}>
+            <InfoTab game={file} setGame={setFile} />
+          </TabPanel>
+          <TabPanel value={1} sx={{ width: "100%" }}>
+            <ChunksTab game={file} setGame={setFile} />
+          </TabPanel>
+        </TabContext>
+
+        <FileImport setFile={setFile} />
+        <FileExport game={file} />
+      </Stack>
     </ThemeProvider>
   );
 }
