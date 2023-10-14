@@ -149,7 +149,8 @@ function ChunksTab({
       <List
         sx={{
           width: "100%",
-          // height: '2rem',
+          maxHeight: 'calc(100vh - 180px)',
+          overflow: 'auto',
           borderRadius: "inherit",
           gap: theme.spacing(2),
           display: "flex",
