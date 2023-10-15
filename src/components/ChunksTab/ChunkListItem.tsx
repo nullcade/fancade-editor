@@ -19,8 +19,8 @@ import {
   LockOpen,
   SportsFootball,
   DataObject,
-  Layers,
-  ViewInAr,
+  Save,
+  ViewInArRounded,
 } from "@mui/icons-material";
 import { theme } from "../../App.tsx";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
@@ -87,7 +87,7 @@ function ChunkListItem({
             }}
           >
             <MenuItem value={Chunk.Type.Rigid}>
-              <ViewInAr />
+              <ViewInArRounded />
             </MenuItem>
             <MenuItem value={Chunk.Type.Physics}>
               <SportsFootball />
@@ -96,7 +96,7 @@ function ChunkListItem({
               <DataObject />
             </MenuItem>
             <MenuItem value={Chunk.Type.Level}>
-              <Layers />
+              <Save />
             </MenuItem>
           </Select>
         </FormControl>
