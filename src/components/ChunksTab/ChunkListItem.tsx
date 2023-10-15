@@ -115,7 +115,7 @@ function ChunkListItem({
 
       {value.children?.length ? (
         <Collapse in={selected}>
-          <List>
+          <List sx={{ paddingRight: theme.spacing(8) }}>
             {value.children.map((chunk) => (
               <ListItem
                 sx={{
