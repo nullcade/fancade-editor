@@ -13,16 +13,17 @@ function ChunksTab({
 }) {
   const [selectedItem, setSelectedItem] = useState<number>(-1);
 
-  const [parents, setParents] = useState<Chunk.Data[]>([])
+  const [parents, setParents] = useState<Chunk.Data[]>([]);
 
   useEffect(() => {
-    const parents = game.chunks.filter(c => c.name)
-    setParents(parents)
+    const parents = game.chunks.filter((c) => c.name);
+    setParents(parents);
     parents.forEach((chunk, i) => {
-      if (!chunk.id)
-        chunk.id = i ? parents[i - 1].id + 1 : game.idOffset
+      if (!chunk.id) chunk.id = i ? parents[i - 1].id + 1 : game.idOffset;
       else
-        chunk.children = game.chunks.filter(c => !c.name && c.id === chunk.id)
+        chunk.children = game.chunks.filter(
+          (c) => !c.name && c.id === chunk.id,
+        );
     });
   }, [game.idOffset, game.chunks]);
 
@@ -39,13 +40,14 @@ function ChunksTab({
       }}
     >
       {parents.map((value, index) => (
-          <ChunkListItem
-            key={index}
-            value={value}
-            selected={selectedItem === index}
-            select={() => setSelectedItem(selectedItem === index ? -1 : index)}
-          />
-        ))}
+        <ChunkListItem
+          key={index}
+          value={value}
+          update={() => setGame(game)}
+          selected={selectedItem === index}
+          select={() => setSelectedItem(selectedItem === index ? -1 : index)}
+        />
+      ))}
     </List>
   );
 }

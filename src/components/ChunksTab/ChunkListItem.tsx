@@ -14,13 +14,16 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import LockOpen from "@mui/icons-material/LockOpen";
 import Lock from "@mui/icons-material/Lock";
 import { theme } from "../../App.tsx";
+import ControlledTextField from "../ControlledTextArea/index.tsx";
 
 function ChunkListItem({
   value,
+  update,
   selected,
   select,
 }: {
   value: Chunk.Data;
+  update: () => void;
   selected: boolean;
   select: () => void;
 }) {
@@ -47,12 +50,31 @@ function ChunkListItem({
           ) : undefined
         }
       >
-        <TextField label="Name" defaultValue={value.name} />
-        <TextField label="ID" defaultValue={value.id} />
+        <ControlledTextField
+          label="Name"
+          defaultValue={value.name}
+          setValue={(name) => {
+            value.name = name;
+            update();
+          }}
+        />
+
+        <ControlledTextField
+          label="ID"
+          defaultValue={value.id}
+          setValue={(id) => {
+            value.id = id;
+            update();
+          }}
+        />
         <Checkbox
           defaultChecked={value.locked}
           icon={<LockOpen />}
           checkedIcon={<Lock />}
+          onChange={(event) => {
+            value.locked = event.target.value;
+            update();
+          }}
         />
       </ListItem>
 
@@ -68,9 +90,30 @@ function ChunkListItem({
                 }}
               >
                 <Stack direction="row" gap={theme.spacing(2)}>
-                  <TextField label="X" defaultValue={chunk.offset[0]} />
-                  <TextField label="Y" defaultValue={chunk.offset[1]} />
-                  <TextField label="Z" defaultValue={chunk.offset[2]} />
+                  <ControlledTextField
+                    label="X"
+                    defaultValue={chunk.offset[0]}
+                    setValue={(x) => {
+                      chunk.offset[0] = x;
+                      update();
+                    }}
+                  />
+                  <ControlledTextField
+                    label="Y"
+                    defaultValue={chunk.offset[1]}
+                    setValue={(y) => {
+                      chunk.offset[1] = y;
+                      update();
+                    }}
+                  />
+                  <ControlledTextField
+                    label="Z"
+                    defaultValue={chunk.offset[2]}
+                    setValue={(z) => {
+                      chunk.offset[2] = z;
+                      update();
+                    }}
+                  />
                 </Stack>
               </ListItem>
             ))}

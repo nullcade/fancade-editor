@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 function ControlledTextField({
   setValue,
-  valueCheck,
+  valueCheck = (event) => event.target.value,
   ...props
 }: {
   variant?: TextFieldVariants;
