@@ -8,7 +8,7 @@ function ControlledTextField({
 }: {
   variant?: TextFieldVariants;
   setValue: (value: TextFieldProps["value"]) => void;
-  valueCheck: (
+  valueCheck?: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => TextFieldProps["value"] | null;
 } & Omit<TextFieldProps, "variant">) {
