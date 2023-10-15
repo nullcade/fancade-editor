@@ -43,7 +43,7 @@ function App() {
         sx={{
           alignItems: "center",
           justifyContent: "flex-start",
-          maxWidth: "700px",
+          maxWidth: "800px",
           margin: "auto",
           position: "relative",
           boxSizing: "border-box",

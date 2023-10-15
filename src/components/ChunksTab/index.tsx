@@ -19,6 +19,7 @@ function ChunksTab({
     const parents = game.chunks.filter((c) => c.name);
     setParents(parents);
     parents.forEach((chunk, i) => {
+      chunk.type ??= Chunk.Type.Rigid;
       if (!chunk.id) chunk.id = i ? parents[i - 1].id + 1 : game.idOffset;
       else
         chunk.children = game.chunks.filter(

@@ -27,6 +27,7 @@ export class GameEncoder {
   }
 
   writeChunk(chunk: Chunk.Data): void {
+    if (chunk.type === Chunk.Type.Rigid) chunk.type = undefined;
     const isMulti = chunk.id && chunk.offset;
     const flags = [
       chunk.wires !== undefined,

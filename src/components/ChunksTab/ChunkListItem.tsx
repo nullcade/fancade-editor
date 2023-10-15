@@ -4,15 +4,24 @@ import {
   Checkbox,
   IconButton,
   ListItem,
-  TextField,
   Stack,
   Collapse,
   List,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import LockOpen from "@mui/icons-material/LockOpen";
-import Lock from "@mui/icons-material/Lock";
+import {
+  ExpandLess,
+  ExpandMore,
+  Lock,
+  LockOpen,
+  SportsFootball,
+  DataObject,
+  Layers,
+  ViewInAr,
+} from "@mui/icons-material";
 import { theme } from "../../App.tsx";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
 
@@ -37,7 +46,7 @@ function ChunkListItem({
       <ListItem
         sx={{
           flexDirection: "row",
-          wrap: "wrap",
+          flexWrap: "wrap",
           gap: theme.spacing(2),
           padding: theme.spacing(2),
           paddingRight: theme.spacing(6),
@@ -50,6 +59,32 @@ function ChunkListItem({
           ) : undefined
         }
       >
+        <FormControl>
+          <InputLabel>Type</InputLabel>
+          <Select
+            label="Type"
+            defaultValue={value.type}
+            onChange={(event) => {
+              value.type = event.target.value;
+              update();
+            }}
+            sx={{ height: theme.spacing(7) }}
+          >
+            <MenuItem value={Chunk.Type.Rigid}>
+              <ViewInAr />
+            </MenuItem>
+            <MenuItem value={Chunk.Type.Physics}>
+              <SportsFootball />
+            </MenuItem>
+            <MenuItem value={Chunk.Type.Script}>
+              <DataObject />
+            </MenuItem>
+            <MenuItem value={Chunk.Type.Level}>
+              <Layers />
+            </MenuItem>
+          </Select>
+        </FormControl>
+
         <ControlledTextField
           label="Name"
           defaultValue={value.name}
@@ -58,7 +93,6 @@ function ChunkListItem({
             update();
           }}
         />
-
         <ControlledTextField
           label="ID"
           defaultValue={value.id}
@@ -67,6 +101,7 @@ function ChunkListItem({
             update();
           }}
         />
+
         <Checkbox
           defaultChecked={value.locked}
           icon={<LockOpen />}
