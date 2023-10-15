@@ -6,6 +6,8 @@ import {
   Checkbox,
   IconButton,
   Collapse,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Report, ReportOutlined } from "@mui/icons-material";
@@ -21,7 +23,7 @@ function InfoTab({
   setGame: React.Dispatch<React.SetStateAction<Game.Data>>;
 }) {
   const [advanced, setAdvanced] = useState<boolean>(false);
-  const [unstable, setUnstable] = useState<boolean>(false);
+  const [limitSize, setLimitSize] = useState<boolean>(true);
 
   function updateTitle() {
     document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
@@ -32,6 +34,8 @@ function InfoTab({
   return (
     <List
       sx={{
+        display: "flex",
+        flexDirection: "column",
         gap: theme.spacing(2),
         alignItems: "center",
         justifyContent: "start",
@@ -47,36 +51,16 @@ function InfoTab({
           padding: theme.spacing(2),
           bgcolor: "#28292a",
           alignItems: "stretch",
-          ".MuiListItemSecondaryAction-root": {
-            height: "100%",
-          },
           paddingRight: theme.spacing(6),
         }}
         secondaryAction={
-          <Stack
-            sx={{
-              height: "100%",
-              justifyContent: "center",
-              poition: "relative",
-            }}
+          <IconButton
+            edge="end"
+            aria-label="comments"
+            onClick={() => setAdvanced(!advanced)}
           >
-            <Checkbox
-              onChange={(event) => setUnstable(event.target.checked)}
-              sx={{
-                position: "absolute",
-                top: ".5rem",
-              }}
-              icon={<ReportOutlined />}
-              checkedIcon={<Report />}
-            />
-            <IconButton
-              edge="end"
-              aria-label="comments"
-              onClick={() => setAdvanced(!advanced)}
-            >
-              {advanced ? <ExpandLess /> : <ExpandMore />}
-            </IconButton>
-          </Stack>
+            {advanced ? <ExpandLess /> : <ExpandMore />}
+          </IconButton>
         }
       >
         <Stack direction="row" flexWrap="wrap" gap={theme.spacing(2)}>
@@ -94,12 +78,12 @@ function InfoTab({
             valueCheck={(event) => {
               if (
                 new TextEncoder().encode(event.target.value as string).length >
-                (unstable ? 255 : 16)
+                (limitSize ? 16 : 255)
               )
                 return String.fromCharCode(
                   ...new TextEncoder()
                     .encode(event.target.value as string)
-                    .slice(0, unstable ? 255 : 16),
+                    .slice(0, limitSize ? 16 : 255),
                 );
               return event.target.value;
             }}
@@ -117,12 +101,12 @@ function InfoTab({
             valueCheck={(event) => {
               if (
                 new TextEncoder().encode(event.target.value as string).length >
-                (unstable ? 255 : 16)
+                (limitSize ? 16 : 255)
               )
                 return String.fromCharCode(
                   ...new TextEncoder()
                     .encode(event.target.value as string)
-                    .slice(0, unstable ? 255 : 16),
+                    .slice(0, limitSize ? 16 : 255),
                 );
               return event.target.value;
             }}
@@ -140,12 +124,12 @@ function InfoTab({
             valueCheck={(event) => {
               if (
                 new TextEncoder().encode(event.target.value as string).length >
-                (unstable ? 255 : 132)
+                (limitSize ? 132 : 255)
               )
                 return String.fromCharCode(
                   ...new TextEncoder()
                     .encode(event.target.value as string)
-                    .slice(0, unstable ? 255 : 132),
+                    .slice(0, limitSize ? 132 : 255),
                 );
               return event.target.value;
             }}
@@ -220,6 +204,37 @@ function InfoTab({
             />
           </Stack>
         </Collapse>
+      </ListItem>
+      <ListItem
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          borderRadius: theme.spacing(2),
+          padding: theme.spacing(2),
+          bgcolor: "#28292a",
+          alignItems: "stretch",
+          ".MuiListItemSecondaryAction-root": {
+            height: "100%",
+          },
+          paddingRight: theme.spacing(6),
+        }}
+      >
+        <List sx={{ padding: 0 }}>
+          <ListItem sx={{ padding: 0 }}>
+            <FormControlLabel
+              label="Limit input size"
+              control={
+                <Switch
+                  checked={limitSize}
+                  label="Limit input size"
+                  onChange={(event) => {
+                    setLimitSize(event.target.checked);
+                  }}
+                />
+              }
+            />
+          </ListItem>
+        </List>
       </ListItem>
     </List>
   );
