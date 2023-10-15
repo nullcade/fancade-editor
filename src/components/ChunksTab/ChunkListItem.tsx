@@ -37,27 +37,24 @@ function ChunkListItem({
   select: () => void;
 }) {
   return (
-    <Stack
+    <ListItem
       sx={{
+        flexWrap: "wrap",
         borderRadius: theme.spacing(2),
+        padding: theme.spacing(2),
+        paddingRight: theme.spacing(6),
         bgcolor: "#28292a",
       }}
+      secondaryAction={
+        <IconButton edge="end" aria-label="comments" onClick={select}>
+          {selected ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
+      }
     >
-      <ListItem
-        sx={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: theme.spacing(2),
-          padding: theme.spacing(2),
-          paddingRight: theme.spacing(6),
-        }}
-        secondaryAction={
-          value.children?.length ? (
-            <IconButton edge="end" aria-label="comments" onClick={select}>
-              {selected ? <ExpandLess /> : <ExpandMore />}
-            </IconButton>
-          ) : undefined
-        }
+      <Stack
+        direction="row"
+        gap={theme.spacing(2)}
+        sx={{ width: "100%", boxSizing: "border-box" }}
       >
         <FormControl>
           <InputLabel>Type</InputLabel>
@@ -70,20 +67,20 @@ function ChunkListItem({
               value.type = event.target.value;
               update();
             }}
-            sx={{ 
+            sx={{
               height: theme.spacing(7),
               width: theme.spacing(7),
               ".MuiSelect-select": {
-                position: "relative"
+                position: "relative",
               },
-              "svg": {
+              svg: {
                 height: `calc(${theme.spacing(7)} * 0.65)`,
                 width: `calc(${theme.spacing(7)} * 0.65)`,
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform: "translate(-50%, -50%)"
-              }
+                transform: "translate(-50%, -50%)",
+              },
             }}
           >
             <MenuItem value={Chunk.Type.Rigid}>
@@ -100,7 +97,6 @@ function ChunkListItem({
             </MenuItem>
           </Select>
         </FormControl>
-
         <ControlledTextField
           label="Name"
           defaultValue={value.name}
@@ -108,16 +104,8 @@ function ChunkListItem({
             value.name = name;
             update();
           }}
+          sx={{ flexGrow: 1 }}
         />
-        <ControlledTextField
-          label="ID"
-          defaultValue={value.id}
-          setValue={(id) => {
-            value.id = id;
-            update();
-          }}
-        />
-
         <Checkbox
           defaultChecked={value.locked}
           icon={<LockOpen />}
@@ -127,51 +115,49 @@ function ChunkListItem({
             update();
           }}
         />
-      </ListItem>
+      </Stack>
 
-      {value.children?.length ? (
-        <Collapse in={selected}>
-          <List sx={{ paddingRight: theme.spacing(8) }}>
-            {value.children.map((chunk) => (
-              <ListItem
-                sx={{
-                  flexDirection: "row",
-                  wrap: "wrap",
-                  gap: theme.spacing(2),
+      <Collapse in={selected} sx={{ width: "100%", boxSizing: "border-box" }}>
+        <Stack gap={theme.spacing(2)} sx={{ paddingTop: theme.spacing(2) }}>
+          <ControlledTextField
+            label="ID"
+            defaultValue={value.id}
+            setValue={(id) => {
+              value.id = id;
+              update();
+            }}
+          />
+          {value.children?.map((chunk) => (
+            <Stack direction="row" gap={theme.spacing(2)}>
+              <ControlledTextField
+                label="X"
+                defaultValue={chunk.offset[0]}
+                setValue={(x) => {
+                  chunk.offset[0] = x;
+                  update();
                 }}
-              >
-                <Stack direction="row" gap={theme.spacing(2)}>
-                  <ControlledTextField
-                    label="X"
-                    defaultValue={chunk.offset[0]}
-                    setValue={(x) => {
-                      chunk.offset[0] = x;
-                      update();
-                    }}
-                  />
-                  <ControlledTextField
-                    label="Y"
-                    defaultValue={chunk.offset[1]}
-                    setValue={(y) => {
-                      chunk.offset[1] = y;
-                      update();
-                    }}
-                  />
-                  <ControlledTextField
-                    label="Z"
-                    defaultValue={chunk.offset[2]}
-                    setValue={(z) => {
-                      chunk.offset[2] = z;
-                      update();
-                    }}
-                  />
-                </Stack>
-              </ListItem>
-            ))}
-          </List>
-        </Collapse>
-      ) : undefined}
-    </Stack>
+              />
+              <ControlledTextField
+                label="Y"
+                defaultValue={chunk.offset[1]}
+                setValue={(y) => {
+                  chunk.offset[1] = y;
+                  update();
+                }}
+              />
+              <ControlledTextField
+                label="Z"
+                defaultValue={chunk.offset[2]}
+                setValue={(z) => {
+                  chunk.offset[2] = z;
+                  update();
+                }}
+              />
+            </Stack>
+          ))}
+        </Stack>
+      </Collapse>
+    </ListItem>
   );
 }
 
