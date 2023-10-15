@@ -32,7 +32,7 @@ function InfoTab({
   return (
     <List
       sx={{
-        gap: theme.spacing(4),
+        gap: theme.spacing(2),
         alignItems: "center",
         justifyContent: "start",
         fleListItem: "wrap",
@@ -43,7 +43,6 @@ function InfoTab({
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: theme.spacing(2),
           borderRadius: theme.spacing(2),
           padding: theme.spacing(2),
           bgcolor: "#28292a",
@@ -51,6 +50,7 @@ function InfoTab({
           ".MuiListItemSecondaryAction-root": {
             height: "100%",
           },
+          paddingRight: theme.spacing(6),
         }}
         secondaryAction={
           <Stack
@@ -79,12 +79,7 @@ function InfoTab({
           </Stack>
         }
       >
-        <Stack
-          direction="row"
-          flexWrap="wrap"
-          gap={theme.spacing(2)}
-          sx={{ paddingRight: theme.spacing(4) }}
-        >
+        <Stack direction="row" flexWrap="wrap" gap={theme.spacing(2)}>
           <ControlledTextField
             label="Title"
             value={game.title}
@@ -163,7 +158,7 @@ function InfoTab({
             direction="row"
             flexWrap="wrap"
             gap={theme.spacing(2)}
-            sx={{ paddingRight: theme.spacing(4) }}
+            sx={{ paddingTop: theme.spacing(2) }}
           >
             <ControlledTextField
               label="App Version"
