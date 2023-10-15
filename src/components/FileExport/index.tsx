@@ -7,6 +7,12 @@ import { theme } from "../../App.tsx";
 import { nanoid } from "nanoid";
 
 function FileExport({ game }: { game: Game.Data }) {
+  for (const parent of game.chunks.filter(
+    (c) => c.name && c.children?.length && c.id,
+  )) {
+    parent.id = undefined;
+  }
+
   const saveFile = async (blob: Game.Data, suggestedName: string) => {
     // Feature detection. The API needs to be supported
     // and the app not run in an iframe.
