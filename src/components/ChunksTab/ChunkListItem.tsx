@@ -63,12 +63,28 @@ function ChunkListItem({
           <InputLabel>Type</InputLabel>
           <Select
             label="Type"
+            variant="outlined"
+            IconComponent={() => null}
             defaultValue={value.type}
             onChange={(event) => {
               value.type = event.target.value;
               update();
             }}
-            sx={{ height: theme.spacing(7) }}
+            sx={{ 
+              height: theme.spacing(7),
+              width: theme.spacing(7),
+              ".MuiSelect-select": {
+                position: "relative"
+              },
+              "svg": {
+                height: `calc(${theme.spacing(7)} * 0.65)`,
+                width: `calc(${theme.spacing(7)} * 0.65)`,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+              }
+            }}
           >
             <MenuItem value={Chunk.Type.Rigid}>
               <ViewInAr />
