@@ -69,10 +69,10 @@ function App() {
             <Tab label="Chunks" value="1" />
             <Tab label="Blocks" value="2" />
           </TabList>
-          <TabPanel value="0" sx={{ width: "100%", paddingY: '0' }}>
+          <TabPanel value="0" sx={{ width: "100%", paddingY: "0" }}>
             <InfoTab game={file} setGame={setFile} />
           </TabPanel>
-          <TabPanel value="1" sx={{ width: "100%", paddingY: '0' }}>
+          <TabPanel value="1" sx={{ width: "100%", paddingY: "0" }}>
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>

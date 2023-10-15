@@ -24,11 +24,10 @@ function InfoTab({
   const [unstable, setUnstable] = useState<boolean>(false);
 
   function updateTitle() {
-
-    document.title = game.title ? `Editing ${game.title}` : "Fancade Editor"
+    document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
   }
 
-  useEffect(updateTitle, [game])
+  useEffect(updateTitle, [game]);
 
   return (
     <List
@@ -50,22 +49,22 @@ function InfoTab({
           bgcolor: "#28292a",
           alignItems: "stretch",
           ".MuiListItemSecondaryAction-root": {
-            height: '100%'
-          }
+            height: "100%",
+          },
         }}
         secondaryAction={
           <Stack
             sx={{
-              height: '100%',
-              justifyContent: 'center',
-              poition: 'relative'
+              height: "100%",
+              justifyContent: "center",
+              poition: "relative",
             }}
           >
             <Checkbox
               onChange={(event) => setUnstable(event.target.checked)}
               sx={{
-                position: 'absolute',
-                top: '.5rem'
+                position: "absolute",
+                top: ".5rem",
               }}
               icon={<ReportOutlined />}
               checkedIcon={<Report />}
@@ -92,14 +91,21 @@ function InfoTab({
             placeholder="New Game"
             variant="outlined"
             sx={{ flexGrow: 1 }}
-            setValue={value => {
-              game.title = (value as string);
+            setValue={(value) => {
+              game.title = value as string;
               setGame(game);
-              updateTitle()
+              updateTitle();
             }}
-            valueCheck={event => {
-              if ((new TextEncoder().encode(event.target.value as string)).length > (unstable ? 255 : 16))
-                return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable ? 255 : 16)));
+            valueCheck={(event) => {
+              if (
+                new TextEncoder().encode(event.target.value as string).length >
+                (unstable ? 255 : 16)
+              )
+                return String.fromCharCode(
+                  ...new TextEncoder()
+                    .encode(event.target.value as string)
+                    .slice(0, unstable ? 255 : 16),
+                );
               return event.target.value;
             }}
           />
@@ -109,13 +115,20 @@ function InfoTab({
             placeholder="Unknown Author"
             variant="outlined"
             sx={{ flexGrow: 1 }}
-            setValue={value => {
-              game.author = (value as string);
+            setValue={(value) => {
+              game.author = value as string;
               setGame(game);
             }}
-            valueCheck={event => {
-              if ((new TextEncoder().encode(event.target.value as string)).length > (unstable ? 255 : 16))
-                return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable ? 255 : 16)));
+            valueCheck={(event) => {
+              if (
+                new TextEncoder().encode(event.target.value as string).length >
+                (unstable ? 255 : 16)
+              )
+                return String.fromCharCode(
+                  ...new TextEncoder()
+                    .encode(event.target.value as string)
+                    .slice(0, unstable ? 255 : 16),
+                );
               return event.target.value;
             }}
           />
@@ -125,13 +138,20 @@ function InfoTab({
             placeholder="A Fancade game"
             variant="outlined"
             sx={{ flexGrow: 2 }}
-            setValue={value => {
-              game.description = (value as string);
+            setValue={(value) => {
+              game.description = value as string;
               setGame(game);
             }}
-            valueCheck={event => {
-              if ((new TextEncoder().encode(event.target.value as string)).length > (unstable ? 255 : 132))
-                return String.fromCharCode(...(new TextEncoder().encode(event.target.value as string).slice(0, unstable ? 255 : 132)));
+            valueCheck={(event) => {
+              if (
+                new TextEncoder().encode(event.target.value as string).length >
+                (unstable ? 255 : 132)
+              )
+                return String.fromCharCode(
+                  ...new TextEncoder()
+                    .encode(event.target.value as string)
+                    .slice(0, unstable ? 255 : 132),
+                );
               return event.target.value;
             }}
             multiline
@@ -152,22 +172,25 @@ function InfoTab({
               variant="outlined"
               sx={{
                 flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                  display: "none",
-                },
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                  {
+                    display: "none",
+                  },
                 "& input[type=number]": {
                   MozAppearance: "textfield",
-                }
+                },
               }}
-              setValue={value => {
+              setValue={(value) => {
                 game.appVersion = parseInt(value as string);
                 setGame(game);
               }}
-              valueCheck={event => {
-                if (Number.isNaN(parseInt(event.target.value)) || parseInt(event.target.value) < 0)
-                  return '0';
-                else if (parseInt(event.target.value) > 65535)
-                  return '65535';
+              valueCheck={(event) => {
+                if (
+                  Number.isNaN(parseInt(event.target.value)) ||
+                  parseInt(event.target.value) < 0
+                )
+                  return "0";
+                else if (parseInt(event.target.value) > 65535) return "65535";
                 return event.target.value;
               }}
             />
@@ -178,22 +201,25 @@ function InfoTab({
               variant="outlined"
               sx={{
                 flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                  display: "none",
-                },
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                  {
+                    display: "none",
+                  },
                 "& input[type=number]": {
                   MozAppearance: "textfield",
-                }
+                },
               }}
-              setValue={value => {
+              setValue={(value) => {
                 game.idOffset = parseInt(value as string);
                 setGame(game);
               }}
-              valueCheck={event => {
-                if (Number.isNaN(parseInt(event.target.value)) || parseInt(event.target.value) < 0)
-                  return '0';
-                else if (parseInt(event.target.value) > 65535)
-                  return '65535';
+              valueCheck={(event) => {
+                if (
+                  Number.isNaN(parseInt(event.target.value)) ||
+                  parseInt(event.target.value) < 0
+                )
+                  return "0";
+                else if (parseInt(event.target.value) > 65535) return "65535";
                 return event.target.value;
               }}
             />
