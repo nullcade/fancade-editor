@@ -23,6 +23,7 @@ export namespace Chunk {
     blocks?: Blocks;
     values?: Value.Data[];
     wires?: Wire.Data[];
+    children?: Chunk.Data[];
   }
   export enum Flags {
     HasWires = 2 ** 0,

@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { ChunksOptimised } from ".";
+import { Chunk } from "../../custom_modules/GameFormat/types";
 import {
   Checkbox,
   IconButton,
@@ -20,7 +20,7 @@ function ChunkListItem({
   selected,
   select,
 }: {
-  value: ChunksOptimised;
+  value: Chunk.Data;
   selected: boolean;
   select: () => void;
 }) {
@@ -37,14 +37,14 @@ function ChunkListItem({
           wrap: "wrap",
           gap: theme.spacing(2),
           padding: theme.spacing(2),
-          paddingRight: theme.spacing(6)
+          paddingRight: theme.spacing(6),
         }}
         secondaryAction={
-          value.subChunks && (
+          value.children?.length ? (
             <IconButton edge="end" aria-label="comments" onClick={select}>
               {selected ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
-          )
+          ) : undefined
         }
       >
         <TextField label="Name" defaultValue={value.name} />
@@ -56,10 +56,10 @@ function ChunkListItem({
         />
       </ListItem>
 
-      {value.subChunks && (
+      {value.children?.length ? (
         <Collapse in={selected}>
           <List>
-            {value.subChunks.map((chunk) => (
+            {value.children.map((chunk) => (
               <ListItem
                 sx={{
                   flexDirection: "row",
@@ -76,7 +76,7 @@ function ChunkListItem({
             ))}
           </List>
         </Collapse>
-      )}
+      ) : undefined}
     </Stack>
   );
 }
