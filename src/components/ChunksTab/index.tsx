@@ -13,19 +13,27 @@ function ChunksTab({
 }) {
   const [selectedItem, setSelectedItem] = useState<number>(-1);
 
-  const [parents, setParents] = useState<Chunk.Data[]>([]);
+  const [parents, setParents] = useState<Record<number, Chunk.Data[]>>([]);
 
   useEffect(() => {
-    const parents = game.chunks.filter((c) => c.name);
+    let currentId = game.idOffset;
+    const parents: Record<number, Chunk.Data> = {};
+
+    for (const chunk of game.chunks) {
+      if (chunk.name) {
+        chunk.type ??= Chunk.Type.Rigid;
+        chunk.children ??= [];
+      }
+      if (!chunk.id) {
+        chunk.id = currentId++;
+      } else {
+        currentId = chunk.id;
+        if (chunk.name) parents[chunk.id] = chunk;
+        else parents[chunk.id]?.children.push(chunk);
+      }
+    }
+
     setParents(parents);
-    parents.forEach((chunk, i) => {
-      chunk.type ??= Chunk.Type.Rigid;
-      if (!chunk.id) chunk.id = i ? parents[i - 1].id + 1 : game.idOffset;
-      else
-        chunk.children = game.chunks.filter(
-          (c) => !c.name && c.id === chunk.id,
-        );
-    });
   }, [game.idOffset, game.chunks]);
 
   return (
@@ -40,13 +48,13 @@ function ChunksTab({
         flexDirection: "column",
       }}
     >
-      {parents.map((value, index) => (
+      {Object.keys(parents).map((i) => (
         <ChunkListItem
-          key={index}
-          value={value}
+          key={i}
+          value={parents[i]}
           update={() => setGame(game)}
-          selected={selectedItem === index}
-          select={() => setSelectedItem(selectedItem === index ? -1 : index)}
+          selected={selectedItem === i}
+          select={() => setSelectedItem(selectedItem === i ? -1 : i)}
         />
       ))}
     </List>
