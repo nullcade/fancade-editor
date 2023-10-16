@@ -13,7 +13,7 @@ function ChunksTab({
 }) {
   const [selectedItem, setSelectedItem] = useState<number>(-1);
 
-  const [parents, setParents] = useState<Record<number, Chunk.Data[]>>([]);
+  const [parents, setParents] = useState<Record<number, Chunk.Data[]>>({});
 
   useEffect(() => {
     let currentId = game.idOffset;
