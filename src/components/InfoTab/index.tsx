@@ -8,15 +8,22 @@ import {
   Switch,
   FormControlLabel,
   Button,
-  ButtonGroup
+  ButtonGroup,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { ExpandLess, ExpandMore, Add, Save, Launch } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  Add,
+  Save,
+  Launch,
+  DeleteOutline,
+} from "@mui/icons-material";
 import { Game, GameDataDefault } from "../../custom_modules/GameFormat";
 import FileImport from "../../components/FileImport";
 import { theme } from "../../App.tsx";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
-import { storeGame, loadGame, listGames } from "./db";
+import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
 function InfoTab({
   game,
@@ -296,7 +303,8 @@ function InfoTab({
             padding: 0,
             gap: theme.spacing(2),
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            flexWrap: "wrap",
           }}
         >
           <ListItem sx={{ padding: 0 }}>
@@ -319,12 +327,14 @@ function InfoTab({
                 }}
                 sx={{ flexGrow: 1 }}
               >
-                Save
+                Save {game.title}
               </LoadingButton>
             </Stack>
           </ListItem>
-          <ButtonGroup orientation="vertical">
-            {storedGames.map((title) => (
+          {storedGames.map((title) => (
+            <ButtonGroup
+              sx={{ boxSizing: "border-box", flexBasis: "45%", flexGrow: 1 }}
+            >
               <LoadingButton
                 variant="outlined"
                 endIcon={<Launch />}
@@ -340,8 +350,18 @@ function InfoTab({
               >
                 Open {title}
               </LoadingButton>
-            ))}
-          </ButtonGroup>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => {
+                  deleteGame(title);
+                  setStoredGames(storedGames.filter((g) => g !== title));
+                }}
+              >
+                <DeleteOutline />
+              </Button>
+            </ButtonGroup>
+          ))}
         </List>
       </ListItem>
     </List>
