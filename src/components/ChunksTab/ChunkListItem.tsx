@@ -21,7 +21,7 @@ import {
   Save,
   ViewInArRounded,
 } from "@mui/icons-material";
-import { theme } from "../../App.tsx";
+import theme from "../../theme";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
 
 function ChunkListItem({

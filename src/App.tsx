@@ -1,35 +1,12 @@
-// import logo from './logo.svg';
 import React, { useState } from "react";
 import "./App.css";
-// import MyThree from './components/MyThree';
-import { Stack, Tab, ThemeProvider, createTheme } from "@mui/material";
+import { Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import FileExport from "./components/FileExport";
 import InfoTab from "./components/InfoTab";
 import { Game, GameDataDefault } from "./custom_modules/GameFormat";
 import ChunksTab from "./components/ChunksTab";
-
-export const theme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-  components: {
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          fontWeight: 500,
-          fontFamily: "'Custom Sans', sans-serif",
-          textTransform: "none",
-          fontSize: "16px",
-          lineHeight: "24px",
-          flexGrow: "1",
-          height: "79px",
-          borderRadius: "40px",
-        },
-      },
-    },
-  },
-});
+import theme from "./theme";
 
 function App() {
   const [tab, setTab] = useState<"0" | "1" | "2">("0");
