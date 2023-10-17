@@ -133,7 +133,7 @@ function ChunkListItem({
                 label="X"
                 value={chunk.offset[0]}
                 setValue={(x) => {
-                  chunk.offset[0] = x;
+                  chunk.offset[0] = x as number;
                   update();
                 }}
               />
@@ -141,7 +141,7 @@ function ChunkListItem({
                 label="Y"
                 defaultValue={chunk.offset[1]}
                 setValue={(y) => {
-                  chunk.offset[1] = y;
+                  chunk.offset[1] = y as number;
                   update();
                 }}
               />
@@ -149,7 +149,7 @@ function ChunkListItem({
                 label="Z"
                 defaultValue={chunk.offset[2]}
                 setValue={(z) => {
-                  chunk.offset[2] = z;
+                  chunk.offset[2] = z as number;
                   update();
                 }}
               />
