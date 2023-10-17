@@ -226,7 +226,6 @@ function InfoTab({
               control={
                 <Switch
                   checked={limitSize}
-                  label="Limit input size"
                   onChange={(event) => {
                     setLimitSize(event.target.checked);
                   }}
