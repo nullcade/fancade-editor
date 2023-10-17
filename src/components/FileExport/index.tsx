@@ -2,8 +2,8 @@ import React from "react";
 import zlib from "pako";
 import { FileDownload } from "@mui/icons-material";
 import { Fab } from "@mui/material";
-import { GameEncoder, Game } from "../../custom_modules/GameFormat";
-import theme from "../../theme";
+import { GameEncoder, Game } from "custom_modules/GameFormat";
+import theme from "theme";
 import { nanoid } from "nanoid";
 
 function FileExport({ game }: { game: Game.Data }) {

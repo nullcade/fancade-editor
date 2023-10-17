@@ -3,7 +3,7 @@ import zlib from "pako";
 import { Buffer } from "buffer";
 import { Button } from "@mui/material";
 import { Publish } from "@mui/icons-material";
-import { GameDecoder, Game } from "../../custom_modules/GameFormat";
+import { GameDecoder, Game } from "custom_modules/GameFormat";
 
 function FileImport({
   setFile,
