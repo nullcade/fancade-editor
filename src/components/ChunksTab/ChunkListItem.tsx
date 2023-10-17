@@ -6,7 +6,6 @@ import {
   ListItem,
   Stack,
   Collapse,
-  List,
   FormControl,
   InputLabel,
   Select,
@@ -64,7 +63,7 @@ function ChunkListItem({
             IconComponent={() => null}
             defaultValue={value.type}
             onChange={(event) => {
-              value.type = (event.target.value as Chunk.Type);
+              value.type = event.target.value as Chunk.Type;
               update();
             }}
             sx={{
