@@ -21,7 +21,7 @@ import {
 } from "@mui/icons-material";
 import { Game, GameDataDefault } from "../../custom_modules/GameFormat";
 import FileImport from "../../components/FileImport";
-import { theme } from "../../App.tsx";
+import theme from "../../theme";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
