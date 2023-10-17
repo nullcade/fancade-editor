@@ -64,7 +64,7 @@ function ChunkListItem({
             IconComponent={() => null}
             defaultValue={value.type}
             onChange={(event) => {
-              value.type = event.target.value;
+              value.type = (event.target.value as Chunk.Type);
               update();
             }}
             sx={{
@@ -101,7 +101,7 @@ function ChunkListItem({
           label="Name"
           defaultValue={value.name}
           setValue={(name) => {
-            value.name = name;
+            value.name = name as string;
             update();
           }}
           sx={{ flexGrow: 1 }}
@@ -111,7 +111,7 @@ function ChunkListItem({
           icon={<LockOpen />}
           checkedIcon={<Lock />}
           onChange={(event) => {
-            value.locked = event.target.value;
+            value.locked = event.target.checked;
             update();
           }}
         />
@@ -123,7 +123,7 @@ function ChunkListItem({
             label="ID"
             defaultValue={value.id}
             setValue={(id) => {
-              value.id = id;
+              value.id = id as number;
               update();
             }}
           />
@@ -131,7 +131,7 @@ function ChunkListItem({
             <Stack direction="row" gap={theme.spacing(2)}>
               <ControlledTextField
                 label="X"
-                defaultValue={chunk.offset[0]}
+                value={chunk.offset[0]}
                 setValue={(x) => {
                   chunk.offset[0] = x;
                   update();
