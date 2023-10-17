@@ -4,6 +4,7 @@
   "homepage": "https://fancade-editor.onrender.com/",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.13",
@@ -24,10 +25,10 @@
     "web-vitals": "^3.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@types/node": "^20.8.5",
     "@types/pako": "^2.0.1",
-    "@types/three": "^0.157.0"
+    "@types/three": "^0.157.0",
+    "craco-alias": "^3.0.1"
   }
 }

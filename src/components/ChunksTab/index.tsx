@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Game, Chunk } from "../../custom_modules/GameFormat";
+import { Game, Chunk } from "custom_modules/GameFormat";
 import { List } from "@mui/material";
 import ChunkListItem from "./ChunkListItem";
-import theme from "../../theme";
+import theme from "theme";
 
 function ChunksTab({
   game,

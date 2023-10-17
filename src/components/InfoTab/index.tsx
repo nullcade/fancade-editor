@@ -19,10 +19,10 @@ import {
   Launch,
   DeleteOutline,
 } from "@mui/icons-material";
-import { Game, GameDataDefault } from "../../custom_modules/GameFormat";
-import FileImport from "../../components/FileImport";
-import theme from "../../theme";
-import ControlledTextField from "../ControlledTextArea/index.tsx";
+import { Game, GameDataDefault } from "custom_modules/GameFormat";
+import FileImport from "components/FileImport";
+import theme from "theme";
+import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
 function InfoTab({

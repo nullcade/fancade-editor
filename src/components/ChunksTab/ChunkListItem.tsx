@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Chunk } from "../../custom_modules/GameFormat/types";
+import { Chunk } from "custom_modules/GameFormat/types";
 import {
   Checkbox,
   IconButton,
@@ -21,8 +21,8 @@ import {
   Save,
   ViewInArRounded,
 } from "@mui/icons-material";
-import theme from "../../theme";
-import ControlledTextField from "../ControlledTextArea/index.tsx";
+import theme from "theme";
+import ControlledTextField from "components/ControlledTextArea/index.tsx";
 
 function ChunkListItem({
   value,
