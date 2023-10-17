@@ -1,11 +1,4 @@
-import {
-  Game,
-  GameEncoder,
-  GameDecoder,
-} from "../../custom_modules/GameFormat";
-import { deflate, inflate } from "pako";
-import { Buffer } from "buffer";
-import {openDB} from "idb"
+import { openDB } from "idb";
 
 export async function listGames() {
   const db = await openDB("games");
@@ -14,18 +7,15 @@ export async function listGames() {
 
 export async function loadGame(key: string) {
   const db = await openDB("games");
-  const data = await db.get("games", key);
-  const game = new GameDecoder(Buffer.from(inflate(data))).decGame();
-  return game;
+  return await db.get("games", key);
 }
 
 export async function storeGame(game: Game.Data) {
   const db = await openDB("games");
-  const data = deflate(new GameEncoder(game).encGame());
-  await db.put("games", data, game.title);
+  await db.put("games", game, game.title);
 }
 
 export async function deleteGame(key: string) {
   const db = await openDB("games");
-  await db.delete("games", key)
+  await db.delete("games", key);
 }
