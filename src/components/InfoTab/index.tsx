@@ -311,6 +311,10 @@ function InfoTab({
                 onClick={() => {
                   setStoringGame(true);
                   storeGame(game).then(() => setStoringGame(false));
+                  if (!storedGames.includes(game.title)) {
+                    storedGames.push(game.title);
+                    setStoredGames(storedGames.sort());
+                  }
                 }}
                 sx={{ flexGrow: 1 }}
               >
