@@ -58,6 +58,8 @@ function InfoTab({
         justifyContent: "start",
         fleListItem: "wrap",
         width: "fit-content",
+        maxHeight: "calc(100vh - 180px)",
+        overflow: "auto",
       }}
     >
       <ListItem
@@ -327,7 +329,7 @@ function InfoTab({
                 }}
                 sx={{ flexGrow: 1 }}
               >
-                Save {game.title}
+                Save
               </LoadingButton>
             </Stack>
           </ListItem>
@@ -346,7 +348,7 @@ function InfoTab({
                     setLoadingGame(null);
                   });
                 }}
-                sx={{ flexGrow: 1 }}
+                sx={{ flexGrow: 1, whiteSpace: "nowrap" }}
               >
                 Open {title}
               </LoadingButton>
