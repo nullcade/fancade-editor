@@ -4,7 +4,6 @@ import "./App.css";
 // import MyThree from './components/MyThree';
 import { Stack, Tab, ThemeProvider, createTheme } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import FileImport from "./components/FileImport";
 import FileExport from "./components/FileExport";
 import InfoTab from "./components/InfoTab";
 import { Game, GameDataDefault } from "./custom_modules/GameFormat";
@@ -35,6 +34,7 @@ export const theme = createTheme({
 function App() {
   const [tab, setTab] = useState<"0" | "1" | "2">("0");
   const [file, setFile] = useState<Game.Data>(GameDataDefault);
+
   return (
     <ThemeProvider theme={theme}>
       <Stack
@@ -77,7 +77,6 @@ function App() {
           </TabPanel>
         </TabContext>
 
-        <FileImport setFile={setFile} />
         <FileExport game={file} />
       </Stack>
     </ThemeProvider>
