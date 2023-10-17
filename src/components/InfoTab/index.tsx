@@ -9,11 +9,13 @@ import {
   FormControlLabel,
   Button,
 } from "@mui/material";
-import { ExpandLess, ExpandMore, Add } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
+import { ExpandLess, ExpandMore, Add, Save, Launch } from "@mui/icons-material";
 import { Game, GameDataDefault } from "../../custom_modules/GameFormat";
 import FileImport from "../../components/FileImport";
 import { theme } from "../../App.tsx";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
+import { storeGame, loadGame, listGames } from "./db";
 
 function InfoTab({
   game,
@@ -24,6 +26,13 @@ function InfoTab({
 }) {
   const [advanced, setAdvanced] = useState<boolean>(false);
   const [limitSize, setLimitSize] = useState<boolean>(true);
+  const [storingGame, setStoringGame] = useState<boolean>(false);
+  const [loadingGame, setLoadingGame] = useState<string | null>(null);
+  const [storedGames, setStoredGames] = useState<string[]>([]);
+
+  useEffect(() => {
+    listGames().then(setStoredGames);
+  }, []);
 
   function updateTitle() {
     document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
@@ -243,7 +252,14 @@ function InfoTab({
           paddingRight: theme.spacing(6),
         }}
       >
-        <List sx={{ padding: 0 }}>
+        <List
+          sx={{
+            padding: 0,
+            gap: theme.spacing(2),
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <ListItem sx={{ padding: 0 }}>
             <Stack
               direction="row"
@@ -253,9 +269,7 @@ function InfoTab({
               <Button
                 variant="outlined"
                 startIcon={<Add />}
-                onClick={() => {
-                  setGame(GameDataDefault);
-                }}
+                onClick={() => setGame(GameDataDefault)}
                 sx={{ flexGrow: 1 }}
               >
                 New Game
@@ -263,6 +277,72 @@ function InfoTab({
               <FileImport setFile={setGame} />
             </Stack>
           </ListItem>
+        </List>
+      </ListItem>
+      <ListItem
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          borderRadius: theme.spacing(2),
+          padding: theme.spacing(2),
+          bgcolor: "#28292a",
+          alignItems: "stretch",
+          paddingRight: theme.spacing(6),
+        }}
+      >
+        <List
+          sx={{
+            padding: 0,
+            gap: theme.spacing(2),
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <ListItem sx={{ padding: 0 }}>
+            <Stack
+              direction="row"
+              gap={theme.spacing(2)}
+              sx={{ width: "100%" }}
+            >
+              <LoadingButton
+                variant="outlined"
+                startIcon={<Save />}
+                loading={storingGame}
+                onClick={() => {
+                  setStoringGame(true);
+                  storeGame(game).then(() => setStoringGame(false));
+                }}
+                sx={{ flexGrow: 1 }}
+              >
+                Save
+              </LoadingButton>
+            </Stack>
+          </ListItem>
+          {storedGames.map((title) => (
+            <ListItem sx={{ padding: 0 }}>
+              <Stack
+                direction="row"
+                gap={theme.spacing(2)}
+                sx={{ width: "100%" }}
+              >
+                <LoadingButton
+                  variant="outlined"
+                  endIcon={<Launch />}
+                  loading={loadingGame === title}
+                  onClick={() => {
+                    setLoadingGame(title);
+                    loadGame(title).then((game) => {
+                      setGame(game);
+                      setLoadingGame(null);
+                    });
+                  }}
+                  sx={{ flexGrow: 1 }}
+                >
+                  Open {title}
+                </LoadingButton>
+              </Stack>
+            </ListItem>
+          ))}
         </List>
       </ListItem>
     </List>
