@@ -3,15 +3,15 @@ import {
   Stack,
   List,
   ListItem,
-  Checkbox,
   IconButton,
   Collapse,
   Switch,
   FormControlLabel,
+  Button,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Report, ReportOutlined } from "@mui/icons-material";
-import { Game } from "../../custom_modules/GameFormat";
+import { ExpandLess, ExpandMore, Add } from "@mui/icons-material";
+import { Game, GameDataDefault } from "../../custom_modules/GameFormat";
+import FileImport from "../../components/FileImport";
 import { theme } from "../../App.tsx";
 import ControlledTextField from "../ControlledTextArea/index.tsx";
 
@@ -213,9 +213,6 @@ function InfoTab({
           padding: theme.spacing(2),
           bgcolor: "#28292a",
           alignItems: "stretch",
-          ".MuiListItemSecondaryAction-root": {
-            height: "100%",
-          },
           paddingRight: theme.spacing(6),
         }}
       >
@@ -232,6 +229,39 @@ function InfoTab({
                 />
               }
             />
+          </ListItem>
+        </List>
+      </ListItem>
+      <ListItem
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          borderRadius: theme.spacing(2),
+          padding: theme.spacing(2),
+          bgcolor: "#28292a",
+          alignItems: "stretch",
+          paddingRight: theme.spacing(6),
+        }}
+      >
+        <List sx={{ padding: 0 }}>
+          <ListItem sx={{ padding: 0 }}>
+            <Stack
+              direction="row"
+              gap={theme.spacing(2)}
+              sx={{ width: "100%" }}
+            >
+              <Button
+                variant="outlined"
+                startIcon={<Add />}
+                onClick={() => {
+                  setGame(GameDataDefault);
+                }}
+                sx={{ flexGrow: 1 }}
+              >
+                New Game
+              </Button>
+              <FileImport setFile={setGame} />
+            </Stack>
           </ListItem>
         </List>
       </ListItem>

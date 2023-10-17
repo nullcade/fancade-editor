@@ -1,11 +1,9 @@
 import React, { useRef } from "react";
 import zlib from "pako";
 import { Buffer } from "buffer";
-// import { FileConsumer } from '../../contexts/fileContext';
-import { Fab } from "@mui/material";
+import { Button } from "@mui/material";
 import { Publish } from "@mui/icons-material";
 import { GameDecoder, Game } from "../../custom_modules/GameFormat";
-import { theme } from "../../App.tsx";
 
 function FileImport({
   setFile,
@@ -33,14 +31,11 @@ function FileImport({
       }
   };
   return (
-    <Fab
-      color="primary"
-      sx={{
-        position: "absolute",
-        left: theme.spacing(4),
-        bottom: theme.spacing(4),
-      }}
+    <Button
+      variant="outlined"
+      startIcon={<Publish />}
       onClick={onButtonClick}
+      sx={{ flexGrow: 1 }}
     >
       <input
         type="file"
@@ -49,8 +44,8 @@ function FileImport({
         onChange={onFileChange}
         style={{ display: "none" }}
       />
-      <Publish />
-    </Fab>
+      Import
+    </Button>
   );
 }
 
