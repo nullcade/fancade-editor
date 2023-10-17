@@ -8,6 +8,7 @@ import {
   Switch,
   FormControlLabel,
   Button,
+  ButtonGroup
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ExpandLess, ExpandMore, Add, Save, Launch } from "@mui/icons-material";
@@ -322,31 +323,25 @@ function InfoTab({
               </LoadingButton>
             </Stack>
           </ListItem>
-          {storedGames.map((title) => (
-            <ListItem sx={{ padding: 0 }}>
-              <Stack
-                direction="row"
-                gap={theme.spacing(2)}
-                sx={{ width: "100%" }}
+          <ButtonGroup orientation="vertical">
+            {storedGames.map((title) => (
+              <LoadingButton
+                variant="outlined"
+                endIcon={<Launch />}
+                loading={loadingGame === title}
+                onClick={() => {
+                  setLoadingGame(title);
+                  loadGame(title).then((game) => {
+                    setGame(game);
+                    setLoadingGame(null);
+                  });
+                }}
+                sx={{ flexGrow: 1 }}
               >
-                <LoadingButton
-                  variant="outlined"
-                  endIcon={<Launch />}
-                  loading={loadingGame === title}
-                  onClick={() => {
-                    setLoadingGame(title);
-                    loadGame(title).then((game) => {
-                      setGame(game);
-                      setLoadingGame(null);
-                    });
-                  }}
-                  sx={{ flexGrow: 1 }}
-                >
-                  Open {title}
-                </LoadingButton>
-              </Stack>
-            </ListItem>
-          ))}
+                Open {title}
+              </LoadingButton>
+            ))}
+          </ButtonGroup>
         </List>
       </ListItem>
     </List>
