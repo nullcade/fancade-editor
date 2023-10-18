@@ -8,13 +8,6 @@ body {
   background-color: #1f1f1f;
 }
 
-#root {
-  display: flex;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-}
-
 .App {
   text-align: center;
   font-family: "Custom Sans", sans-serif;
@@ -23,8 +16,4 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-h1 {
-  margin: 0;
 }

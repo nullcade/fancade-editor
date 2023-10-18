@@ -50,16 +50,11 @@ function ChunkListItem({
         </IconButton>
       }
     >
-      <Stack
-        direction="row"
-        gap={theme.spacing(2)}
-        sx={{ width: "100%", boxSizing: "border-box" }}
-      >
-        <FormControl>
+      <Stack direction="row">
+        <FormControl sx={{ flexGrow: 0 }}>
           <InputLabel>Type</InputLabel>
           <Select
             label="Type"
-            variant="outlined"
             IconComponent={() => null}
             defaultValue={value.type}
             onChange={(event) => {
@@ -69,9 +64,6 @@ function ChunkListItem({
             sx={{
               height: theme.spacing(7),
               width: theme.spacing(7),
-              ".MuiSelect-select": {
-                position: "relative",
-              },
               svg: {
                 height: `calc(${theme.spacing(7)} * 0.65)`,
                 width: `calc(${theme.spacing(7)} * 0.65)`,
@@ -113,6 +105,7 @@ function ChunkListItem({
             value.locked = event.target.checked;
             update();
           }}
+          sx={{ flexGrow: 0 }}
         />
       </Stack>
 
@@ -127,7 +120,7 @@ function ChunkListItem({
             }}
           />
           {value.children?.map((chunk) => (
-            <Stack direction="row" gap={theme.spacing(2)}>
+            <Stack direction="row" flexWrap="nowrap">
               <ControlledTextField
                 label="X"
                 value={chunk.offset[0]}

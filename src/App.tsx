@@ -16,14 +16,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <Stack
         className="App"
-        gap={theme.spacing(2)}
         sx={{
-          alignItems: "center",
-          justifyContent: "flex-start",
           maxWidth: "800px",
           margin: "auto",
-          position: "relative",
-          boxSizing: "border-box",
           padding: theme.spacing(2),
           color: "#e3e3e3",
         }}
@@ -33,23 +28,15 @@ function App() {
             onChange={(a, b) => {
               setTab(b);
             }}
-            sx={{
-              bgcolor: "#28292a",
-              width: "100%",
-              height: theme.spacing(8),
-              borderRadius: theme.spacing(4),
-              alignItems: "center",
-            }}
-            centered
           >
             <Tab label="Info" value="0" />
             <Tab label="Chunks" value="1" />
             <Tab label="Blocks" value="2" />
           </TabList>
-          <TabPanel value="0" sx={{ width: "100%", paddingY: "0" }}>
+          <TabPanel value="0">
             <InfoTab game={file} setGame={setFile} />
           </TabPanel>
-          <TabPanel value="1" sx={{ width: "100%", paddingY: "0" }}>
+          <TabPanel value="1">
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>
