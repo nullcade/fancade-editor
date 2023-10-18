@@ -39,15 +39,6 @@ function App() {
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>
-<<<<<<< HEAD
-
-        <FileImport setFile={v => {
-          console.log(v);
-          setFile(v)
-        }} />
-        <FileExport game={file} />
-=======
->>>>>>> b081ac9e4c1c493b19e1c8925294f52c0103457a
       </Stack>
     </ThemeProvider>
   );
