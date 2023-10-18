@@ -95,7 +95,7 @@ function ChunkListItem({
             value.name = name as string;
             update();
           }}
-          sx={{ flexGrow: 1 }}
+          sx={{ flexBasis: 0}}
         />
         <Checkbox
           defaultChecked={value.locked}
