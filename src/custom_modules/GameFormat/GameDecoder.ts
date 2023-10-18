@@ -21,7 +21,7 @@ export class GameDecoder {
     const description = this.readString();
     const idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
-    for (let i = 0; i < chunksLen; i++) this.readChunk(idOffset);
+    for (let i = 0; i < chunksLen; i++) this.readChunk(idOffset - 1);
     console.log(chunksLen, this.chunks);
     const chunks = Array.from(this.chunks.values())
 
@@ -66,7 +66,7 @@ export class GameDecoder {
       : undefined;
     const id = isMulti ? this.readUint16LE() : (this.lastId ?? idOffset) + 1;
     this.lastId = id;
-    const offset = isMulti ? this.readOff() : undefined;
+    const offset = isMulti ? this.readOff() : [0, 0, 0] as Vec;
     const color = hasColor ? this.readUint8() : undefined;
     const faces = hasFaces ? this.readFaces() : undefined;
     const blocks = hasBlocks ? this.readBlocks() : [];
@@ -76,7 +76,6 @@ export class GameDecoder {
     const wires = hasWires
       ? Array.from({ length: this.readUint16LE() }, this.readWire.bind(this))
       : [];
-
     if (name) {
       this.chunks.set(id, {
         type,
@@ -87,6 +86,9 @@ export class GameDecoder {
         blocks,
         values,
         wires,
+        faces,
+        color,
+        offset,
         children: this.chunks.get(id)?.children,
         flags
       })
@@ -98,16 +100,20 @@ export class GameDecoder {
           id,
           locked: false,
           collider: 0,
+          color: 0,
+          offset: [0, 0, 0],
           blocks: [],
           values: [],
           wires: [],
+          faces: [],
           flags
         },
         children: (this.chunks.get(id)?.children ?? []).concat([{
-          offset: offset ?? [0, 0, 0] as Vec,
+          offset: offset,
           blocks,
           values,
           wires,
+          faces,
           flags
         }])
       })

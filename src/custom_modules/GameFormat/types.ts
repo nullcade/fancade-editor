@@ -18,6 +18,7 @@ export namespace Chunk {
     locked: boolean;
     collider?: Collider;
     color?: Color.Id;
+    offset: Vec;
     faces?: Faces;
     blocks: Blocks;
     values: Value.Data[];
