@@ -4,26 +4,31 @@ import { Buffer } from "buffer";
 export class GameDecoder {
   buff: Buffer;
   off: number;
+  chunks: Map<number, Chunk.Data>;
+  lastId?: number;
 
   constructor(buff: Buffer) {
     this.buff = buff;
     this.off = 0;
+    this.chunks = new Map<number, Chunk.Data>();
   }
 
   decGame(): Game.Data {
+    console.log(this.buff)
     const appVersion = this.readUint16LE();
     const title = this.readString();
     const author = this.readString();
     const description = this.readString();
     const idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
-    const chunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
+    for (let i = 0; i < chunksLen; i++) this.readChunk(idOffset);
+    console.log(chunksLen, this.chunks);
+    const chunks = Array.from(this.chunks.values())
 
     return { appVersion, title, author, description, idOffset, chunks };
   }
 
-  readChunk(): Chunk.Data {
-    const flags = this.readBin(2);
+  readChunk(idOffset: number): void {
     const [
       hasWires,
       hasValues,
@@ -32,43 +37,81 @@ export class GameDecoder {
       isMulti,
       hasCollider,
       isLocked,
-      ,
+      unknownFlagA,
       hasColor,
-      ,
-      ,
+      unknownFlagB,
+      unknownFlagC,
       hasName,
       hasType,
-    ] = flags;
-    const type = hasType ? (this.readUint8() as Chunk.Type) : undefined;
+    ] = this.readBin(2);
+    const flags = {
+      hasWires,
+      hasValues,
+      hasBlocks,
+      hasFaces,
+      isMulti,
+      hasCollider,
+      isLocked,
+      unknownFlagA,
+      hasColor,
+      unknownFlagB,
+      unknownFlagC,
+      hasName,
+      hasType
+    };
+    const type = hasType ? (this.readUint8() as Chunk.Type) : 0;
     const name = hasName ? this.readString() : undefined;
     const collider = hasCollider
       ? (this.readUint8() as Chunk.Collider)
       : undefined;
-    const id = isMulti ? this.readUint16LE() : undefined;
+    const id = isMulti ? this.readUint16LE() : (this.lastId ?? idOffset) + 1;
+    this.lastId = id;
     const offset = isMulti ? this.readOff() : undefined;
     const color = hasColor ? this.readUint8() : undefined;
     const faces = hasFaces ? this.readFaces() : undefined;
-    const blocks = hasBlocks ? this.readBlocks() : undefined;
+    const blocks = hasBlocks ? this.readBlocks() : [];
     const values = hasValues
       ? Array.from({ length: this.readUint16LE() }, this.readValue.bind(this))
-      : undefined;
+      : [];
     const wires = hasWires
       ? Array.from({ length: this.readUint16LE() }, this.readWire.bind(this))
-      : undefined;
+      : [];
 
-    return {
-      type,
-      name,
-      id,
-      offset,
-      locked: !!isLocked,
-      collider,
-      color,
-      faces,
-      blocks,
-      values,
-      wires,
-    };
+    if (name) {
+      this.chunks.set(id, {
+        type,
+        name,
+        id,
+        locked: !!isLocked,
+        collider,
+        blocks,
+        values,
+        wires,
+        children: this.chunks.get(id)?.children,
+        flags
+      })
+    } else {
+      this.chunks.set(id, {
+        ...this.chunks.get(id) ?? {
+          type: 0,
+          name: '',
+          id,
+          locked: false,
+          collider: 0,
+          blocks: [],
+          values: [],
+          wires: [],
+          flags
+        },
+        children: (this.chunks.get(id)?.children ?? []).concat([{
+          offset: offset ?? [0, 0, 0] as Vec,
+          blocks,
+          values,
+          wires,
+          flags
+        }])
+      })
+    }
   }
   readFaces(): Chunk.Faces {
     return this.readGrid([6, 8, 8, 8], this.readUint8);

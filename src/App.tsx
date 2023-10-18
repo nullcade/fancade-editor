@@ -77,7 +77,10 @@ function App() {
           </TabPanel>
         </TabContext>
 
-        <FileImport setFile={setFile} />
+        <FileImport setFile={v => {
+          console.log(v);
+          setFile(v)
+        }} />
         <FileExport game={file} />
       </Stack>
     </ThemeProvider>

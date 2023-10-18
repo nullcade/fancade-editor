@@ -12,19 +12,56 @@ export namespace Game {
 }
 export namespace Chunk {
   export interface Data {
-    type?: Type;
-    name?: string;
+    type: Type;
+    name: string;
     id?: number;
-    offset?: Vec;
-    locked?: boolean;
+    locked: boolean;
     collider?: Collider;
     color?: Color.Id;
     faces?: Faces;
-    blocks?: Blocks;
-    values?: Value.Data[];
-    wires?: Wire.Data[];
-    children?: Chunk.Data[];
+    blocks: Blocks;
+    values: Value.Data[];
+    wires: Wire.Data[];
+    children?: Child[];
+    flags: {
+      hasWires: 0 | 1;
+      hasValues: 0 | 1;
+      hasBlocks: 0 | 1;
+      hasFaces: 0 | 1;
+      isMulti: 0 | 1;
+      hasCollider: 0 | 1;
+      isLocked: 0 | 1;
+      unknownFlagA: 0 | 1;
+      hasColor: 0 | 1;
+      unknownFlagB: 0 | 1;
+      unknownFlagC: 0 | 1;
+      hasName: 0 | 1;
+      hasType: 0 | 1;
+    };
   }
+  export interface Child {
+    offset: Vec;
+    blocks: Blocks;
+    values: Value.Data[];
+    wires: Wire.Data[];
+    faces?: Faces;
+    flags: {
+      hasWires: 0 | 1;
+      hasValues: 0 | 1;
+      hasBlocks: 0 | 1;
+      hasFaces: 0 | 1;
+      isMulti: 0 | 1;
+      hasCollider: 0 | 1;
+      isLocked: 0 | 1;
+      unknownFlagA: 0 | 1;
+      hasColor: 0 | 1;
+      unknownFlagB: 0 | 1;
+      unknownFlagC: 0 | 1;
+      hasName: 0 | 1;
+      hasType: 0 | 1;
+    };
+  }
+
   export enum Flags {
     HasWires = 2 ** 0,
     HasValues = 2 ** 1,
