@@ -66,7 +66,7 @@ theme = createTheme(theme, {
         root: {
           width: "100%",
           boxSizing: "border-box",
-          height: "calc(100vh - 180px)",
+          height: "calc(100vh - 115px)",
           overflow: "auto",
           padding: 0,
           borderRadius: theme.spacing(2),
