@@ -25,6 +25,10 @@ import theme from "theme";
 import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
+function sortGames(a, b) {
+  return { [a]: -1, [b]: 1 }["New Game"] ?? a.localeCompare(b);
+}
+
 function InfoTab({
   game,
   setGame,
@@ -40,15 +44,14 @@ function InfoTab({
 
   useEffect(() => {
     async function awaitListGames() {
-
-      const keys = await listGames()
+      const keys = await listGames();
       if (!keys.includes("New Game")) {
-        keys.unshift("New Game")
-        storeGame(newGame)
+        keys.unshift("New Game");
+        storeGame(newGame);
       }
-      setStoredGames(keys)
+      setStoredGames(keys);
     }
-    awaitListGames() 
+    awaitListGames();
   }, []);
 
   function updateTitle() {
@@ -235,7 +238,7 @@ function InfoTab({
             direction="row"
             paddingTop={storedGames.length ? theme.spacing(2) : 0}
           >
-            {storedGames.sort((a, b) => ({[a]: -1, [b]: 1})["New Game"] ?? a.localeCompare(b)).map((title, i) => (
+            {storedGames.sort(sortGames).map((title, i) => (
               <ButtonGroup
                 key={i}
                 sx={{

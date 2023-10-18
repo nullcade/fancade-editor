@@ -15,5 +15,5 @@ export const newGame: Game.Data = {
   ...emptyGame,
   title: "New Game",
   author: "Unknown Author",
-  description: "A Fancade game"
-}
+  description: "A Fancade game",
+};
