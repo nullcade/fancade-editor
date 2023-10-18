@@ -3,13 +3,13 @@ import "App.css";
 import { Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
-import { Game, GameDataDefault } from "custom_modules/GameFormat";
+import { Game, emptyGame } from "custom_modules/GameFormat";
 import ChunksTab from "components/ChunksTab";
 import theme from "theme";
 
 function App() {
   const [tab, setTab] = useState<"0" | "1" | "2">("0");
-  const [file, setFile] = useState<Game.Data>(GameDataDefault);
+  const [file, setFile] = useState<Game.Data>(emptyGame);
 
   return (
     <ThemeProvider theme={theme}>

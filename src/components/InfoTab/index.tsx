@@ -14,12 +14,11 @@ import { LoadingButton } from "@mui/lab";
 import {
   ExpandLess,
   ExpandMore,
-  Add,
   Save,
   Launch,
   DeleteOutline,
 } from "@mui/icons-material";
-import { Game, GameDataDefault } from "custom_modules/GameFormat";
+import { Game, newGame } from "custom_modules/GameFormat";
 import FileImport from "components/FileImport";
 import FileExport from "components/FileExport";
 import theme from "theme";
@@ -40,7 +39,16 @@ function InfoTab({
   const [storedGames, setStoredGames] = useState<string[]>([]);
 
   useEffect(() => {
-    listGames().then(setStoredGames);
+    async function awaitListGames() {
+
+      const keys = await listGames()
+      if (!keys.includes("New Game")) {
+        keys.unshift("New Game")
+        storeGame(newGame)
+      }
+      setStoredGames(keys)
+    }
+    awaitListGames() 
   }, []);
 
   function updateTitle() {
@@ -142,7 +150,6 @@ function InfoTab({
             <Stack
               direction="row"
               flexWrap="wrap"
-              gap={theme.spacing(2)}
               sx={{ paddingTop: theme.spacing(2) }}
             >
               <ControlledTextField
@@ -198,15 +205,7 @@ function InfoTab({
       </Area>
       <Area>
         <Stack>
-          <Stack direction="row" gap={theme.spacing(2)} sx={{ width: "100%" }}>
-            <Button
-              variant="outlined"
-              startIcon={<Add />}
-              onClick={() => setGame(GameDataDefault)}
-              sx={{flexBasis:"100%"}}
-            >
-              New Game
-            </Button>
+          <Stack direction="row">
             <FileImport setFile={setGame} />
             <FileExport game={game} />
           </Stack>
@@ -214,7 +213,7 @@ function InfoTab({
       </Area>
       <Area>
         <Stack gap={0}>
-          <Stack direction="row" gap={theme.spacing(2)} sx={{ width: "100%" }}>
+          <Stack direction="row">
             <LoadingButton
               variant="outlined"
               startIcon={<Save />}
@@ -224,7 +223,7 @@ function InfoTab({
                 storeGame(game).then(() => setStoringGame(false));
                 if (!storedGames.includes(game.title)) {
                   storedGames.push(game.title);
-                  setStoredGames(storedGames.sort());
+                  setStoredGames(storedGames);
                 }
               }}
               sx={{ flexGrow: 1 }}
@@ -236,10 +235,14 @@ function InfoTab({
             direction="row"
             paddingTop={storedGames.length ? theme.spacing(2) : 0}
           >
-            {storedGames.map((title, i) => (
+            {storedGames.sort((a, b) => ({[a]: -1, [b]: 1})["New Game"] ?? a.localeCompare(b)).map((title, i) => (
               <ButtonGroup
                 key={i}
-                sx={{ boxSizing: "border-box", flexBasis: "45%", flexGrow: 1 }}
+                sx={{
+                  boxSizing: "border-box",
+                  flexBasis: title === "New Game" ? "100%" : "45%",
+                  flexGrow: 1,
+                }}
               >
                 <LoadingButton
                   variant="outlined"
@@ -256,15 +259,17 @@ function InfoTab({
                 >
                   Open {title}
                 </LoadingButton>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    deleteGame(title);
-                    setStoredGames(storedGames.filter((g) => g !== title));
-                  }}
-                >
-                  <DeleteOutline />
-                </Button>
+                {title !== "New Game" ? (
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      deleteGame(title);
+                      setStoredGames(storedGames.filter((g) => g !== title));
+                    }}
+                  >
+                    <DeleteOutline />
+                  </Button>
+                ) : undefined}
               </ButtonGroup>
             ))}
           </Stack>

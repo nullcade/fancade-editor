@@ -110,7 +110,7 @@ function ChunkListItem({
       </Stack>
 
       <Collapse in={selected} sx={{ width: "100%", boxSizing: "border-box" }}>
-        <Stack gap={theme.spacing(2)} sx={{ paddingTop: theme.spacing(2) }}>
+        <Stack sx={{ paddingTop: theme.spacing(2) }}>
           <ControlledTextField
             label="ID"
             defaultValue={value.id}
@@ -119,8 +119,8 @@ function ChunkListItem({
               update();
             }}
           />
-          {value.children?.map((chunk) => (
-            <Stack direction="row" flexWrap="nowrap">
+          {value.children?.map((chunk, i) => (
+            <Stack key={i} direction="row" flexWrap="nowrap">
               <ControlledTextField
                 label="X"
                 value={chunk.offset[0]}
