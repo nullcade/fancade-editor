@@ -1,21 +1,23 @@
 import { openDB } from "idb";
 
+export const gamesDB = openDB("games", undefined, {
+  upgrade(db) {
+    db.createObjectStore("games")
+  }
+})
+
 export async function listGames() {
-  const db = await openDB("games");
-  return await db.getAllKeys("games");
+  return await (await gamesDB).getAllKeys("games");
 }
 
 export async function loadGame(key: string) {
-  const db = await openDB("games");
-  return await db.get("games", key);
+  return await (await gamesDB).get("games", key);
 }
 
 export async function storeGame(game: Game.Data) {
-  const db = await openDB("games");
-  await db.put("games", game, game.title);
+  await (await gamesDB).put("games", game, game.title);
 }
 
 export async function deleteGame(key: string) {
-  const db = await openDB("games");
-  await db.delete("games", key);
+  await (await gamesDB).delete("games", key);
 }
