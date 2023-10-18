@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "App.css";
 import { Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import FileExport from "components/FileExport";
 import InfoTab from "components/InfoTab";
 import { Game, GameDataDefault } from "custom_modules/GameFormat";
 import ChunksTab from "components/ChunksTab";
@@ -40,8 +39,6 @@ function App() {
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>
-
-        <FileExport game={file} />
       </Stack>
     </ThemeProvider>
   );

@@ -31,12 +31,7 @@ function FileImport({
       }
   };
   return (
-    <Button
-      variant="outlined"
-      startIcon={<Publish />}
-      onClick={onButtonClick}
-      sx={{ flexGrow: 1 }}
-    >
+    <Button variant="outlined" startIcon={<Publish />} onClick={onButtonClick}>
       <input
         type="file"
         id="file"
