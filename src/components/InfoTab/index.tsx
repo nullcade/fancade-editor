@@ -21,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import { Game, GameDataDefault } from "custom_modules/GameFormat";
 import FileImport from "components/FileImport";
+import FileExport from "components/FileExport";
 import theme from "theme";
 import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
@@ -202,10 +203,12 @@ function InfoTab({
               variant="outlined"
               startIcon={<Add />}
               onClick={() => setGame(GameDataDefault)}
+              sx={{flexBasis:"100%"}}
             >
               New Game
             </Button>
             <FileImport setFile={setGame} />
+            <FileExport game={game} />
           </Stack>
         </Stack>
       </Area>
