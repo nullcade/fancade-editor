@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from "react";
 import {
   Stack,
-  List,
   ListItem,
-  Checkbox,
   IconButton,
   Collapse,
   Switch,
   FormControlLabel,
+  Button,
+  ButtonGroup,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Report, ReportOutlined } from "@mui/icons-material";
-import { Game } from "../../custom_modules/GameFormat";
-import { theme } from "../../App.tsx";
-import ControlledTextField from "../ControlledTextArea/index.tsx";
+import Area from "components/Area";
+import { LoadingButton } from "@mui/lab";
+import {
+  ExpandLess,
+  ExpandMore,
+  Save,
+  Launch,
+  DeleteOutline,
+} from "@mui/icons-material";
+import { Game, newGame } from "custom_modules/GameFormat";
+import FileImport from "components/FileImport";
+import FileExport from "components/FileExport";
+import theme from "theme";
+import ControlledTextField from "components/ControlledTextArea/index.tsx";
+import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
 function InfoTab({
   game,
@@ -24,6 +34,22 @@ function InfoTab({
 }) {
   const [advanced, setAdvanced] = useState<boolean>(false);
   const [limitSize, setLimitSize] = useState<boolean>(true);
+  const [storingGame, setStoringGame] = useState<boolean>(false);
+  const [loadingGame, setLoadingGame] = useState<string | null>(null);
+  const [storedGames, setStoredGames] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function awaitListGames() {
+
+      const keys = await listGames()
+      if (!keys.includes("New Game")) {
+        keys.unshift("New Game")
+        storeGame(newGame)
+      }
+      setStoredGames(keys)
+    }
+    awaitListGames() 
+  }, []);
 
   function updateTitle() {
     document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
@@ -32,210 +58,224 @@ function InfoTab({
   useEffect(updateTitle, [game]);
 
   return (
-    <List
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: theme.spacing(2),
-        alignItems: "center",
-        justifyContent: "start",
-        fleListItem: "wrap",
-        width: "fit-content",
-      }}
-    >
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          paddingRight: theme.spacing(6),
-        }}
-        secondaryAction={
-          <IconButton
-            edge="end"
-            aria-label="comments"
-            onClick={() => setAdvanced(!advanced)}
-          >
-            {advanced ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-        }
-      >
-        <Stack direction="row" flexWrap="wrap" gap={theme.spacing(2)}>
-          <ControlledTextField
-            label="Title"
-            value={game.title}
-            placeholder="New Game"
-            variant="outlined"
-            sx={{ flexGrow: 1 }}
-            setValue={(value) => {
-              game.title = value as string;
-              setGame(game);
-              updateTitle();
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 16 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255),
-                );
-              return event.target.value;
-            }}
-          />
-          <ControlledTextField
-            label="Author"
-            value={game.author}
-            placeholder="Unknown Author"
-            variant="outlined"
-            sx={{ flexGrow: 1 }}
-            setValue={(value) => {
-              game.author = value as string;
-              setGame(game);
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 16 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255),
-                );
-              return event.target.value;
-            }}
-          />
-          <ControlledTextField
-            label="Description"
-            value={game.description}
-            placeholder="A Fancade game"
-            variant="outlined"
-            sx={{ flexGrow: 2 }}
-            setValue={(value) => {
-              game.description = value as string;
-              setGame(game);
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 132 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 132 : 255),
-                );
-              return event.target.value;
-            }}
-            multiline
-            rows={4}
-          />
-        </Stack>
-        <Collapse in={advanced}>
-          <Stack
-            direction="row"
-            flexWrap="wrap"
-            gap={theme.spacing(2)}
-            sx={{ paddingTop: theme.spacing(2) }}
-          >
+    <Stack>
+      <Area sx={{ paddingRight: 0 }}>
+        <ListItem
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            padding: 0,
+            alignItems: "stretch",
+            paddingRight: theme.spacing(6),
+          }}
+          secondaryAction={
+            <IconButton
+              edge="end"
+              aria-label="comments"
+              onClick={() => setAdvanced(!advanced)}
+            >
+              {advanced ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          }
+        >
+          <Stack direction="row" flexWrap="wrap">
             <ControlledTextField
-              label="App Version"
-              value={game.appVersion}
-              type="number"
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                  {
-                    display: "none",
-                  },
-                "& input[type=number]": {
-                  MozAppearance: "textfield",
-                },
-              }}
+              label="Title"
+              value={game.title}
+              placeholder="New Game"
               setValue={(value) => {
-                game.appVersion = parseInt(value as string);
+                game.title = value as string;
                 setGame(game);
+                updateTitle();
               }}
               valueCheck={(event) => {
                 if (
-                  Number.isNaN(parseInt(event.target.value)) ||
-                  parseInt(event.target.value) < 0
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 16 : 255)
                 )
-                  return "0";
-                else if (parseInt(event.target.value) > 65535) return "65535";
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 16 : 255),
+                  );
                 return event.target.value;
               }}
             />
             <ControlledTextField
-              label="ID Offset"
-              value={game.idOffset}
-              type="number"
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                  {
-                    display: "none",
-                  },
-                "& input[type=number]": {
-                  MozAppearance: "textfield",
-                },
-              }}
+              label="Author"
+              value={game.author}
+              placeholder="Unknown Author"
               setValue={(value) => {
-                game.idOffset = parseInt(value as string);
+                game.author = value as string;
                 setGame(game);
               }}
               valueCheck={(event) => {
                 if (
-                  Number.isNaN(parseInt(event.target.value)) ||
-                  parseInt(event.target.value) < 0
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 16 : 255)
                 )
-                  return "0";
-                else if (parseInt(event.target.value) > 65535) return "65535";
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 16 : 255),
+                  );
                 return event.target.value;
               }}
+            />
+            <ControlledTextField
+              label="Description"
+              value={game.description}
+              placeholder="A Fancade game"
+              setValue={(value) => {
+                game.description = value as string;
+                setGame(game);
+              }}
+              valueCheck={(event) => {
+                if (
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 132 : 255)
+                )
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 132 : 255),
+                  );
+                return event.target.value;
+              }}
+              multiline
+              rows={4}
             />
           </Stack>
-        </Collapse>
-      </ListItem>
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          ".MuiListItemSecondaryAction-root": {
-            height: "100%",
-          },
-          paddingRight: theme.spacing(6),
-        }}
-      >
-        <List sx={{ padding: 0 }}>
-          <ListItem sx={{ padding: 0 }}>
-            <FormControlLabel
-              label="Limit input size"
-              control={
-                <Switch
-                  checked={limitSize}
-                  onChange={(event) => {
-                    setLimitSize(event.target.checked);
+          <Collapse in={advanced}>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              sx={{ paddingTop: theme.spacing(2) }}
+            >
+              <ControlledTextField
+                label="App Version"
+                value={game.appVersion}
+                type="number"
+                setValue={(value) => {
+                  game.appVersion = parseInt(value as string);
+                  setGame(game);
+                }}
+                valueCheck={(event) => {
+                  const value = Math.min(
+                    Math.max(parseInt(event.target.value), 0),
+                    65535,
+                  );
+                  return `${value}`;
+                }}
+              />
+              <ControlledTextField
+                label="ID Offset"
+                value={game.idOffset}
+                type="number"
+                setValue={(value) => {
+                  game.idOffset = parseInt(value as string);
+                  setGame(game);
+                }}
+                valueCheck={(event) => {
+                  const value = Math.min(
+                    Math.max(parseInt(event.target.value), 0),
+                    65535,
+                  );
+                  return `${value}`;
+                }}
+              />
+            </Stack>
+          </Collapse>
+        </ListItem>
+      </Area>
+      <Area>
+        <Stack>
+          <FormControlLabel
+            label="Limit input size"
+            control={
+              <Switch
+                checked={limitSize}
+                onChange={(event) => {
+                  setLimitSize(event.target.checked);
+                }}
+              />
+            }
+          />
+        </Stack>
+      </Area>
+      <Area>
+        <Stack>
+          <Stack direction="row">
+            <FileImport setFile={setGame} />
+            <FileExport game={game} />
+          </Stack>
+        </Stack>
+      </Area>
+      <Area>
+        <Stack gap={0}>
+          <Stack direction="row">
+            <LoadingButton
+              variant="outlined"
+              startIcon={<Save />}
+              loading={storingGame}
+              onClick={() => {
+                setStoringGame(true);
+                storeGame(game).then(() => setStoringGame(false));
+                if (!storedGames.includes(game.title)) {
+                  storedGames.push(game.title);
+                  setStoredGames(storedGames);
+                }
+              }}
+              sx={{ flexGrow: 1 }}
+            >
+              Save
+            </LoadingButton>
+          </Stack>
+          <Stack
+            direction="row"
+            paddingTop={storedGames.length ? theme.spacing(2) : 0}
+          >
+            {storedGames.sort((a, b) => ({[a]: -1, [b]: 1})["New Game"] ?? a.localeCompare(b)).map((title, i) => (
+              <ButtonGroup
+                key={i}
+                sx={{
+                  boxSizing: "border-box",
+                  flexBasis: title === "New Game" ? "100%" : "45%",
+                  flexGrow: 1,
+                }}
+              >
+                <LoadingButton
+                  variant="outlined"
+                  endIcon={<Launch />}
+                  loading={loadingGame === title}
+                  onClick={() => {
+                    setLoadingGame(title);
+                    loadGame(title).then((game) => {
+                      setGame(game);
+                      setLoadingGame(null);
+                    });
                   }}
-                />
-              }
-            />
-          </ListItem>
-        </List>
-      </ListItem>
-    </List>
+                  sx={{ flexGrow: 1, whiteSpace: "nowrap" }}
+                >
+                  Open {title}
+                </LoadingButton>
+                {title !== "New Game" ? (
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      deleteGame(title);
+                      setStoredGames(storedGames.filter((g) => g !== title));
+                    }}
+                  >
+                    <DeleteOutline />
+                  </Button>
+                ) : undefined}
+              </ButtonGroup>
+            ))}
+          </Stack>
+        </Stack>
+      </Area>
+    </Stack>
   );
 }
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Game, Chunk } from "../../custom_modules/GameFormat";
-import { List } from "@mui/material";
+import { Stack } from "@mui/material";
+import { Game, Chunk } from "custom_modules/GameFormat";
 import ChunkListItem from "./ChunkListItem";
-import { theme } from "../../App.tsx";
 
 function ChunksTab({
   game,
@@ -37,17 +36,7 @@ function ChunksTab({
   }, [game.idOffset, game.chunks]);
 
   return (
-    <List
-      sx={{
-        width: "100%",
-        maxHeight: "calc(100vh - 180px)",
-        overflow: "auto",
-        borderRadius: "inherit",
-        gap: theme.spacing(2),
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <Stack>
       {Object.keys(parents).map((i) => (
         <ChunkListItem
           key={i}
@@ -57,7 +46,7 @@ function ChunksTab({
           select={() => setSelectedItem(selectedItem === i ? -1 : i)}
         />
       ))}
-    </List>
+    </Stack>
   );
 }
 

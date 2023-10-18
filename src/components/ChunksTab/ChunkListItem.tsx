@@ -1,12 +1,11 @@
 import React, { memo } from "react";
-import { Chunk } from "../../custom_modules/GameFormat/types";
+import { Chunk } from "custom_modules/GameFormat/types";
 import {
   Checkbox,
   IconButton,
   ListItem,
   Stack,
   Collapse,
-  List,
   FormControl,
   InputLabel,
   Select,
@@ -22,8 +21,8 @@ import {
   Save,
   ViewInArRounded,
 } from "@mui/icons-material";
-import { theme } from "../../App.tsx";
-import ControlledTextField from "../ControlledTextArea/index.tsx";
+import theme from "theme";
+import ControlledTextField from "components/ControlledTextArea/index.tsx";
 
 function ChunkListItem({
   value,
@@ -51,28 +50,20 @@ function ChunkListItem({
         </IconButton>
       }
     >
-      <Stack
-        direction="row"
-        gap={theme.spacing(2)}
-        sx={{ width: "100%", boxSizing: "border-box" }}
-      >
-        <FormControl>
+      <Stack direction="row">
+        <FormControl sx={{ flexGrow: 0 }}>
           <InputLabel>Type</InputLabel>
           <Select
             label="Type"
-            variant="outlined"
             IconComponent={() => null}
             defaultValue={value.type}
             onChange={(event) => {
-              value.type = (event.target.value as Chunk.Type);
+              value.type = event.target.value as Chunk.Type;
               update();
             }}
             sx={{
               height: theme.spacing(7),
               width: theme.spacing(7),
-              ".MuiSelect-select": {
-                position: "relative",
-              },
               svg: {
                 height: `calc(${theme.spacing(7)} * 0.65)`,
                 width: `calc(${theme.spacing(7)} * 0.65)`,
@@ -114,11 +105,12 @@ function ChunkListItem({
             value.locked = event.target.checked;
             update();
           }}
+          sx={{ flexGrow: 0 }}
         />
       </Stack>
 
       <Collapse in={selected} sx={{ width: "100%", boxSizing: "border-box" }}>
-        <Stack gap={theme.spacing(2)} sx={{ paddingTop: theme.spacing(2) }}>
+        <Stack sx={{ paddingTop: theme.spacing(2) }}>
           <ControlledTextField
             label="ID"
             defaultValue={value.id}
@@ -127,8 +119,8 @@ function ChunkListItem({
               update();
             }}
           />
-          {value.children?.map((chunk) => (
-            <Stack direction="row" gap={theme.spacing(2)}>
+          {value.children?.map((chunk, i) => (
+            <Stack key={i} direction="row" flexWrap="nowrap">
               <ControlledTextField
                 label="X"
                 value={chunk.offset[0]}

@@ -1,9 +1,8 @@
 import React from "react";
 import zlib from "pako";
 import { FileDownload } from "@mui/icons-material";
-import { Fab } from "@mui/material";
-import { GameEncoder, Game } from "../../custom_modules/GameFormat";
-import { theme } from "../../App.tsx";
+import { Button } from "@mui/material";
+import { GameEncoder, Game } from "custom_modules/GameFormat";
 import { nanoid } from "nanoid";
 
 function FileExport({ game }: { game: Game.Data }) {
@@ -71,13 +70,9 @@ function FileExport({ game }: { game: Game.Data }) {
     }, 1000);
   };
   return (
-    <Fab
-      color="primary"
-      sx={{
-        position: "absolute",
-        right: theme.spacing(4),
-        bottom: theme.spacing(4),
-      }}
+    <Button
+      variant="outlined"
+      startIcon={<FileDownload />}
       onClick={() => {
         if (game)
           saveFile(
@@ -86,8 +81,8 @@ function FileExport({ game }: { game: Game.Data }) {
           );
       }}
     >
-      <FileDownload />
-    </Fab>
+      Export
+    </Button>
   );
 }
 
