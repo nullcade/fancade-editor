@@ -2,9 +2,9 @@ import { openDB } from "idb";
 
 export const gamesDB = openDB("games", undefined, {
   upgrade(db) {
-    db.createObjectStore("games")
-  }
-})
+    db.createObjectStore("games");
+  },
+});
 
 export async function listGames() {
   return await (await gamesDB).getAllKeys("games");

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Stack,
-  List,
   ListItem,
   IconButton,
   Collapse,
@@ -10,6 +9,7 @@ import {
   Button,
   ButtonGroup,
 } from "@mui/material";
+import Area from "components/Area";
 import { LoadingButton } from "@mui/lab";
 import {
   ExpandLess,
@@ -49,324 +49,225 @@ function InfoTab({
   useEffect(updateTitle, [game]);
 
   return (
-    <List
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: theme.spacing(2),
-        alignItems: "center",
-        justifyContent: "start",
-        fleListItem: "wrap",
-        width: "fit-content",
-        maxHeight: "calc(100vh - 180px)",
-        overflow: "auto",
-      }}
-    >
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          paddingRight: theme.spacing(6),
-        }}
-        secondaryAction={
-          <IconButton
-            edge="end"
-            aria-label="comments"
-            onClick={() => setAdvanced(!advanced)}
-          >
-            {advanced ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-        }
-      >
-        <Stack direction="row" flexWrap="wrap" gap={theme.spacing(2)}>
-          <ControlledTextField
-            label="Title"
-            value={game.title}
-            placeholder="New Game"
-            variant="outlined"
-            sx={{ flexGrow: 1 }}
-            setValue={(value) => {
-              game.title = value as string;
-              setGame(game);
-              updateTitle();
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 16 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255),
-                );
-              return event.target.value;
-            }}
-          />
-          <ControlledTextField
-            label="Author"
-            value={game.author}
-            placeholder="Unknown Author"
-            variant="outlined"
-            sx={{ flexGrow: 1 }}
-            setValue={(value) => {
-              game.author = value as string;
-              setGame(game);
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 16 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255),
-                );
-              return event.target.value;
-            }}
-          />
-          <ControlledTextField
-            label="Description"
-            value={game.description}
-            placeholder="A Fancade game"
-            variant="outlined"
-            sx={{ flexGrow: 2 }}
-            setValue={(value) => {
-              game.description = value as string;
-              setGame(game);
-            }}
-            valueCheck={(event) => {
-              if (
-                new TextEncoder().encode(event.target.value as string).length >
-                (limitSize ? 132 : 255)
-              )
-                return String.fromCharCode(
-                  ...new TextEncoder()
-                    .encode(event.target.value as string)
-                    .slice(0, limitSize ? 132 : 255),
-                );
-              return event.target.value;
-            }}
-            multiline
-            rows={4}
-          />
-        </Stack>
-        <Collapse in={advanced}>
-          <Stack
-            direction="row"
-            flexWrap="wrap"
-            gap={theme.spacing(2)}
-            sx={{ paddingTop: theme.spacing(2) }}
-          >
-            <ControlledTextField
-              label="App Version"
-              value={game.appVersion}
-              type="number"
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                  {
-                    display: "none",
-                  },
-                "& input[type=number]": {
-                  MozAppearance: "textfield",
-                },
-              }}
-              setValue={(value) => {
-                game.appVersion = parseInt(value as string);
-                setGame(game);
-              }}
-              valueCheck={(event) => {
-                if (
-                  Number.isNaN(parseInt(event.target.value)) ||
-                  parseInt(event.target.value) < 0
-                )
-                  return "0";
-                else if (parseInt(event.target.value) > 65535) return "65535";
-                return event.target.value;
-              }}
-            />
-            <ControlledTextField
-              label="ID Offset"
-              value={game.idOffset}
-              type="number"
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                  {
-                    display: "none",
-                  },
-                "& input[type=number]": {
-                  MozAppearance: "textfield",
-                },
-              }}
-              setValue={(value) => {
-                game.idOffset = parseInt(value as string);
-                setGame(game);
-              }}
-              valueCheck={(event) => {
-                if (
-                  Number.isNaN(parseInt(event.target.value)) ||
-                  parseInt(event.target.value) < 0
-                )
-                  return "0";
-                else if (parseInt(event.target.value) > 65535) return "65535";
-                return event.target.value;
-              }}
-            />
-          </Stack>
-        </Collapse>
-      </ListItem>
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          paddingRight: theme.spacing(6),
-        }}
-      >
-        <List sx={{ padding: 0 }}>
-          <ListItem sx={{ padding: 0 }}>
-            <FormControlLabel
-              label="Limit input size"
-              control={
-                <Switch
-                  checked={limitSize}
-                  onChange={(event) => {
-                    setLimitSize(event.target.checked);
-                  }}
-                />
-              }
-            />
-          </ListItem>
-        </List>
-      </ListItem>
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          paddingRight: theme.spacing(6),
-        }}
-      >
-        <List
+    <Stack>
+      <Area sx={{ paddingRight: 0 }}>
+        <ListItem
           sx={{
-            padding: 0,
-            gap: theme.spacing(2),
             display: "flex",
             flexDirection: "column",
-          }}
-        >
-          <ListItem sx={{ padding: 0 }}>
-            <Stack
-              direction="row"
-              gap={theme.spacing(2)}
-              sx={{ width: "100%" }}
-            >
-              <Button
-                variant="outlined"
-                startIcon={<Add />}
-                onClick={() => setGame(GameDataDefault)}
-                sx={{ flexGrow: 1 }}
-              >
-                New Game
-              </Button>
-              <FileImport setFile={setGame} />
-            </Stack>
-          </ListItem>
-        </List>
-      </ListItem>
-      <ListItem
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: theme.spacing(2),
-          padding: theme.spacing(2),
-          bgcolor: "#28292a",
-          alignItems: "stretch",
-          paddingRight: theme.spacing(6),
-        }}
-      >
-        <List
-          sx={{
             padding: 0,
-            gap: theme.spacing(2),
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
+            alignItems: "stretch",
+            paddingRight: theme.spacing(6),
           }}
+          secondaryAction={
+            <IconButton
+              edge="end"
+              aria-label="comments"
+              onClick={() => setAdvanced(!advanced)}
+            >
+              {advanced ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          }
         >
-          <ListItem sx={{ padding: 0 }}>
+          <Stack direction="row" flexWrap="wrap">
+            <ControlledTextField
+              label="Title"
+              value={game.title}
+              placeholder="New Game"
+              setValue={(value) => {
+                game.title = value as string;
+                setGame(game);
+                updateTitle();
+              }}
+              valueCheck={(event) => {
+                if (
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 16 : 255)
+                )
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 16 : 255),
+                  );
+                return event.target.value;
+              }}
+            />
+            <ControlledTextField
+              label="Author"
+              value={game.author}
+              placeholder="Unknown Author"
+              setValue={(value) => {
+                game.author = value as string;
+                setGame(game);
+              }}
+              valueCheck={(event) => {
+                if (
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 16 : 255)
+                )
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 16 : 255),
+                  );
+                return event.target.value;
+              }}
+            />
+            <ControlledTextField
+              label="Description"
+              value={game.description}
+              placeholder="A Fancade game"
+              setValue={(value) => {
+                game.description = value as string;
+                setGame(game);
+              }}
+              valueCheck={(event) => {
+                if (
+                  new TextEncoder().encode(event.target.value as string)
+                    .length > (limitSize ? 132 : 255)
+                )
+                  return String.fromCharCode(
+                    ...new TextEncoder()
+                      .encode(event.target.value as string)
+                      .slice(0, limitSize ? 132 : 255),
+                  );
+                return event.target.value;
+              }}
+              multiline
+              rows={4}
+            />
+          </Stack>
+          <Collapse in={advanced}>
             <Stack
               direction="row"
+              flexWrap="wrap"
               gap={theme.spacing(2)}
-              sx={{ width: "100%" }}
+              sx={{ paddingTop: theme.spacing(2) }}
             >
-              <LoadingButton
-                variant="outlined"
-                startIcon={<Save />}
-                loading={storingGame}
-                onClick={() => {
-                  setStoringGame(true);
-                  storeGame(game).then(() => setStoringGame(false));
-                  if (!storedGames.includes(game.title)) {
-                    storedGames.push(game.title);
-                    setStoredGames(storedGames.sort());
-                  }
+              <ControlledTextField
+                label="App Version"
+                value={game.appVersion}
+                type="number"
+                setValue={(value) => {
+                  game.appVersion = parseInt(value as string);
+                  setGame(game);
                 }}
-                sx={{ flexGrow: 1 }}
-              >
-                Save
-              </LoadingButton>
+                valueCheck={(event) => {
+                  const value = Math.min(
+                    Math.max(parseInt(event.target.value), 0),
+                    65535,
+                  );
+                  return `${value}`;
+                }}
+              />
+              <ControlledTextField
+                label="ID Offset"
+                value={game.idOffset}
+                type="number"
+                setValue={(value) => {
+                  game.idOffset = parseInt(value as string);
+                  setGame(game);
+                }}
+                valueCheck={(event) => {
+                  const value = Math.min(
+                    Math.max(parseInt(event.target.value), 0),
+                    65535,
+                  );
+                  return `${value}`;
+                }}
+              />
             </Stack>
-          </ListItem>
-          {storedGames.map((title) => (
-            <ButtonGroup
-              sx={{ boxSizing: "border-box", flexBasis: "45%", flexGrow: 1 }}
+          </Collapse>
+        </ListItem>
+      </Area>
+      <Area>
+        <Stack>
+          <FormControlLabel
+            label="Limit input size"
+            control={
+              <Switch
+                checked={limitSize}
+                onChange={(event) => {
+                  setLimitSize(event.target.checked);
+                }}
+              />
+            }
+          />
+        </Stack>
+      </Area>
+      <Area>
+        <Stack>
+          <Stack direction="row" gap={theme.spacing(2)} sx={{ width: "100%" }}>
+            <Button
+              variant="outlined"
+              startIcon={<Add />}
+              onClick={() => setGame(GameDataDefault)}
             >
-              <LoadingButton
-                variant="outlined"
-                endIcon={<Launch />}
-                loading={loadingGame === title}
-                onClick={() => {
-                  setLoadingGame(title);
-                  loadGame(title).then((game) => {
-                    setGame(game);
-                    setLoadingGame(null);
-                  });
-                }}
-                sx={{ flexGrow: 1, whiteSpace: "nowrap" }}
+              New Game
+            </Button>
+            <FileImport setFile={setGame} />
+          </Stack>
+        </Stack>
+      </Area>
+      <Area>
+        <Stack gap={0}>
+          <Stack direction="row" gap={theme.spacing(2)} sx={{ width: "100%" }}>
+            <LoadingButton
+              variant="outlined"
+              startIcon={<Save />}
+              loading={storingGame}
+              onClick={() => {
+                setStoringGame(true);
+                storeGame(game).then(() => setStoringGame(false));
+                if (!storedGames.includes(game.title)) {
+                  storedGames.push(game.title);
+                  setStoredGames(storedGames.sort());
+                }
+              }}
+              sx={{ flexGrow: 1 }}
+            >
+              Save
+            </LoadingButton>
+          </Stack>
+          <Stack
+            direction="row"
+            paddingTop={storedGames.length ? theme.spacing(2) : 0}
+          >
+            {storedGames.map((title, i) => (
+              <ButtonGroup
+                key={i}
+                sx={{ boxSizing: "border-box", flexBasis: "45%", flexGrow: 1 }}
               >
-                Open {title}
-              </LoadingButton>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => {
-                  deleteGame(title);
-                  setStoredGames(storedGames.filter((g) => g !== title));
-                }}
-              >
-                <DeleteOutline />
-              </Button>
-            </ButtonGroup>
-          ))}
-        </List>
-      </ListItem>
-    </List>
+                <LoadingButton
+                  variant="outlined"
+                  endIcon={<Launch />}
+                  loading={loadingGame === title}
+                  onClick={() => {
+                    setLoadingGame(title);
+                    loadGame(title).then((game) => {
+                      setGame(game);
+                      setLoadingGame(null);
+                    });
+                  }}
+                  sx={{ flexGrow: 1, whiteSpace: "nowrap" }}
+                >
+                  Open {title}
+                </LoadingButton>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    deleteGame(title);
+                    setStoredGames(storedGames.filter((g) => g !== title));
+                  }}
+                >
+                  <DeleteOutline />
+                </Button>
+              </ButtonGroup>
+            ))}
+          </Stack>
+        </Stack>
+      </Area>
+    </Stack>
   );
 }
 

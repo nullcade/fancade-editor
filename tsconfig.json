@@ -13,7 +13,8 @@
     "target": "es2020",
     "allowImportingTsExtensions": true,
     "types": ["@types/wicg-file-system-access", "@types/node"],
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {}
   },
   "include": ["src"]
 }
