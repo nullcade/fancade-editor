@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Stack } from "@mui/material";
-import { Game, Chunk } from "custom_modules/GameFormat";
+import { Game } from "custom_modules/GameFormat";
 import ChunkListItem from "./ChunkListItem";
 
 function ChunksTab({
