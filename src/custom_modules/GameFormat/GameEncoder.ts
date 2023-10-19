@@ -28,10 +28,10 @@ export class GameEncoder {
 
   getChunksLength(): number {
     let length = 0;
-    this.data.chunks.forEach(chunk => {
+    this.data.chunks.forEach((chunk) => {
       length++;
       if (chunk.children) length += chunk.children.length;
-    })
+    });
     return length;
   }
 
@@ -72,7 +72,6 @@ export class GameEncoder {
     if (isMulti && chunk.children) chunk.children.forEach(item => this.writeChild(item, chunk, key))
   }
   writeChild(chunk: Chunk.Child, parent: Chunk.Data, key: number): void {
-    console.log(parent, chunk);
     const isMulti = true;
     const flags = [
       chunk.wires && chunk.wires.length > 0,

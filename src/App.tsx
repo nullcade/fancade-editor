@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "App.css";
 import { Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
@@ -20,6 +19,11 @@ function App() {
           margin: "auto",
           padding: theme.spacing(2),
           color: "#e3e3e3",
+          textAlign: "center",
+          fontFamily: ["Custom Sans", "sans-serif"],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <TabContext value={tab}>

@@ -14,7 +14,7 @@ export class GameDecoder {
   }
 
   decGame(): Game.Data {
-    console.log(this.buff)
+    console.log(this.buff);
     const appVersion = this.readUint16LE();
     const title = this.readString();
     const author = this.readString();
@@ -22,6 +22,7 @@ export class GameDecoder {
     const idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
     for (let i = 0; i < chunksLen; i++) this.readChunk(idOffset - 1);
+    console.log(this.chunks);
 
     return { appVersion, title, author, description, idOffset, chunks: this.chunks };
   }
@@ -55,7 +56,7 @@ export class GameDecoder {
       unknownFlagB,
       unknownFlagC,
       hasName,
-      hasType
+      hasType,
     };
     const type = hasType ? (this.readUint8() as Chunk.Type) : 0;
     const name = hasName ? this.readString() : undefined;
@@ -64,7 +65,7 @@ export class GameDecoder {
       : undefined;
     const id = isMulti ? this.readUint16LE() : (this.lastId ?? idOffset) + 1;
     this.lastId = id;
-    const offset = isMulti ? this.readOff() : [0, 0, 0] as Vec;
+    const offset = isMulti ? this.readOff() : ([0, 0, 0] as Vec);
     const color = hasColor ? this.readUint8() : undefined;
     const faces = hasFaces ? this.readFaces() : undefined;
     const blocks = hasBlocks ? this.readBlocks() : [];
@@ -87,11 +88,11 @@ export class GameDecoder {
         color,
         offset,
         children: this.chunks.get(id)?.children,
-        flags
-      })
+        flags,
+      });
     } else {
       this.chunks.set(id, {
-        ...this.chunks.get(id) ?? {
+        ...(this.chunks.get(id) ?? {
           type: 0,
           name: '',
           locked: false,
@@ -102,17 +103,19 @@ export class GameDecoder {
           values: [],
           wires: [],
           faces: [],
-          flags
-        },
-        children: (this.chunks.get(id)?.children ?? []).concat([{
-          offset: offset,
-          blocks,
-          values,
-          wires,
-          faces,
-          flags
-        }])
-      })
+          flags,
+        }),
+        children: (this.chunks.get(id)?.children ?? []).concat([
+          {
+            offset: offset,
+            blocks,
+            values,
+            wires,
+            faces,
+            flags,
+          },
+        ]),
+      });
     }
   }
   readFaces(): Chunk.Faces {

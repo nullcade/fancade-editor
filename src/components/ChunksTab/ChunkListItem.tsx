@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { Chunk } from "custom_modules/GameFormat/types";
 import {
   Checkbox,
@@ -35,6 +35,13 @@ function ChunkListItem({
   selected: boolean;
   select: () => void;
 }) {
+  const [afterSelected, setAfterSelected] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (selected) setAfterSelected(selected);
+    else setTimeout(() => setAfterSelected(selected), 300);
+  }, [selected]);
+
   return (
     <ListItem
       sx={{
@@ -95,7 +102,7 @@ function ChunkListItem({
             value.name = name as string;
             update();
           }}
-          sx={{ flexBasis: 0}}
+          sx={{ flexBasis: 0 }}
         />
         <Checkbox
           defaultChecked={value.locked}
@@ -108,47 +115,51 @@ function ChunkListItem({
           sx={{ flexGrow: 0 }}
         />
       </Stack>
-
-      <Collapse in={selected} sx={{ width: "100%", boxSizing: "border-box" }}>
-        <Stack sx={{ paddingTop: theme.spacing(2) }}>
-          <ControlledTextField
-            label="ID"
-            defaultValue={value.id}
-            setValue={(id) => {
-              value.id = id as number;
-              update();
-            }}
-          />
-          {value.children?.map((chunk, i) => (
-            <Stack key={i} direction="row" flexWrap="nowrap">
-              <ControlledTextField
-                label="X"
-                value={chunk.offset[0]}
-                setValue={(x) => {
-                  chunk.offset[0] = x as number;
-                  update();
-                }}
-              />
-              <ControlledTextField
-                label="Y"
-                defaultValue={chunk.offset[1]}
-                setValue={(y) => {
-                  chunk.offset[1] = y as number;
-                  update();
-                }}
-              />
-              <ControlledTextField
-                label="Z"
-                defaultValue={chunk.offset[2]}
-                setValue={(z) => {
-                  chunk.offset[2] = z as number;
-                  update();
-                }}
-              />
-            </Stack>
-          ))}
-        </Stack>
-      </Collapse>
+      {selected || afterSelected ? (
+        <Collapse
+          in={selected && afterSelected}
+          sx={{ width: "100%", boxSizing: "border-box" }}
+        >
+          <Stack sx={{ paddingTop: theme.spacing(2) }}>
+            <ControlledTextField
+              label="ID"
+              defaultValue={value.id}
+              setValue={(id) => {
+                value.id = id as number;
+                update();
+              }}
+            />
+            {value.children?.map((chunk, i) => (
+              <Stack key={i} direction="row" flexWrap="nowrap">
+                <ControlledTextField
+                  label="X"
+                  value={chunk.offset[0]}
+                  setValue={(x) => {
+                    chunk.offset[0] = x;
+                    update();
+                  }}
+                />
+                <ControlledTextField
+                  label="Y"
+                  defaultValue={chunk.offset[1]}
+                  setValue={(y) => {
+                    chunk.offset[1] = y;
+                    update();
+                  }}
+                />
+                <ControlledTextField
+                  label="Z"
+                  defaultValue={chunk.offset[2]}
+                  setValue={(z) => {
+                    chunk.offset[2] = z;
+                    update();
+                  }}
+                />
+              </Stack>
+            ))}
+          </Stack>
+        </Collapse>
+      ) : undefined}
     </ListItem>
   );
 }
