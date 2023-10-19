@@ -43,10 +43,10 @@ export class GameEncoder {
       chunk.blocks && chunk.blocks.length > 0,
       chunk.faces && chunk.faces.length > 0,
       isMulti,
-      chunk.collider,
+      chunk.collider !== undefined,
       chunk.locked,
       false,
-      chunk.color,
+      chunk.color !== undefined,
       false,
       false,
       chunk.name,
@@ -55,10 +55,10 @@ export class GameEncoder {
     this.writeBin(flags);
     if (chunk.type !== Chunk.Type.Rigid) this.writeUint8(chunk.type);
     if (chunk.name) this.writeString(chunk.name);
-    if (chunk.collider) this.writeUint8(chunk.collider);
+    if (chunk.collider !== undefined) this.writeUint8(chunk.collider);
     if (isMulti && key) this.writeUint16LE(key);
     if (isMulti) this.writeOff(chunk.offset);
-    if (chunk.color) this.writeUint8(chunk.color);
+    if (chunk.color !== undefined) this.writeUint8(chunk.color);
     if (chunk.faces && chunk.faces.length > 0) this.writeFaces(chunk.faces);
     if (chunk.blocks && chunk.blocks.length > 0) this.writeBlocks(chunk.blocks);
     if (chunk.values && chunk.values.length > 0) {
@@ -79,10 +79,10 @@ export class GameEncoder {
       chunk.blocks && chunk.blocks.length > 0,
       chunk.faces && chunk.faces.length > 0,
       isMulti,
-      parent.collider,
+      parent.collider !== undefined,
       parent.locked,
       false,
-      parent.color,
+      parent.color !== undefined,
       false,
       false,
       false,
@@ -90,10 +90,10 @@ export class GameEncoder {
     ].map((v) => (v ? 1 : 0));
     this.writeBin(flags);
     if (parent.type !== Chunk.Type.Rigid) this.writeUint8(parent.type);
-    if (parent.collider) this.writeUint8(parent.collider);
+    if (parent.collider !== undefined) this.writeUint8(parent.collider);
     if (isMulti && key) this.writeUint16LE(key);
     if (isMulti) this.writeOff(chunk.offset);
-    if (parent.color) this.writeUint8(parent.color);
+    if (parent.color !== undefined) this.writeUint8(parent.color);
     if (chunk.faces && chunk.faces.length > 0) this.writeFaces(chunk.faces);
     if (chunk.blocks && chunk.blocks.length > 0) this.writeBlocks(chunk.blocks);
     if (chunk.values && chunk.values.length > 0) {
