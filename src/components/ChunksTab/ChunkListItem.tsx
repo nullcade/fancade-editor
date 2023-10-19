@@ -26,11 +26,13 @@ import ControlledTextField from "components/ControlledTextArea/index.tsx";
 
 function ChunkListItem({
   value,
+  id,
   update,
   selected,
   select,
 }: {
   value: Chunk.Data;
+  id: number;
   update: () => void;
   selected: boolean;
   select: () => void;
@@ -123,9 +125,9 @@ function ChunkListItem({
           <Stack sx={{ paddingTop: theme.spacing(2) }}>
             <ControlledTextField
               label="ID"
-              defaultValue={value.id}
-              setValue={(id) => {
-                value.id = id as number;
+              defaultValue={id}
+              setValue={(changedId) => {
+                id = changedId as number;
                 update();
               }}
             />
@@ -135,7 +137,7 @@ function ChunkListItem({
                   label="X"
                   value={chunk.offset[0]}
                   setValue={(x) => {
-                    chunk.offset[0] = x;
+                    chunk.offset[0] = x as number;
                     update();
                   }}
                 />
@@ -143,7 +145,7 @@ function ChunkListItem({
                   label="Y"
                   defaultValue={chunk.offset[1]}
                   setValue={(y) => {
-                    chunk.offset[1] = y;
+                    chunk.offset[1] = y as number;
                     update();
                   }}
                 />
@@ -151,7 +153,7 @@ function ChunkListItem({
                   label="Z"
                   defaultValue={chunk.offset[2]}
                   setValue={(z) => {
-                    chunk.offset[2] = z;
+                    chunk.offset[2] = z as number;
                     update();
                   }}
                 />
