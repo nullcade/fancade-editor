@@ -17,21 +17,9 @@ export class GameDecoder {
     const description = this.readString();
     const idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
-    const rawChunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
-    const chunks: Chunk.Data[] = [];
-    rawChunks.forEach(chunk => {
-      if(chunk.parent && !chunk.name){
-        if(chunk.parent >= idOffset && rawChunks.length >= chunk.parent - idOffset){
-          rawChunks[chunk.parent - idOffset].children = [...rawChunks[chunk.parent - idOffset].children ?? [], chunk];
-        }else{
-          throw Error("invalid parent id for a chunk");
-        }
-      } else {
-        chunks.push(chunk);
-      }
-    })
+    const chunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
 
-    return { appVersion, title, author, description, idOffset, chunks, _rawChunks: rawChunks };
+    return { appVersion, title, author, description, idOffset, chunks };
   }
 
   readChunk(): Chunk.Data {
@@ -51,27 +39,27 @@ export class GameDecoder {
       hasName,
       hasType,
     ] = flags;
-    const type = hasType ? (this.readUint8() as Chunk.Type) : 0;
+    const type = hasType ? (this.readUint8() as Chunk.Type) : undefined;
     const name = hasName ? this.readString() : undefined;
     const collider = hasCollider
       ? (this.readUint8() as Chunk.Collider)
       : undefined;
-    const parent = isMulti ? this.readUint16LE() : undefined;
+    const id = isMulti ? this.readUint16LE() : undefined;
     const offset = isMulti ? this.readOff() : undefined;
     const color = hasColor ? this.readUint8() : undefined;
     const faces = hasFaces ? this.readFaces() : undefined;
-    const blocks = hasBlocks ? this.readBlocks() : [];
+    const blocks = hasBlocks ? this.readBlocks() : undefined;
     const values = hasValues
       ? Array.from({ length: this.readUint16LE() }, this.readValue.bind(this))
-      : [];
+      : undefined;
     const wires = hasWires
       ? Array.from({ length: this.readUint16LE() }, this.readWire.bind(this))
-      : [];
+      : undefined;
 
     return {
       type,
       name,
-      parent,
+      id,
       offset,
       locked: !!isLocked,
       collider,

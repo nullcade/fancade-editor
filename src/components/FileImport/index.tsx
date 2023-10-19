@@ -3,7 +3,7 @@ import zlib from "pako";
 import { Buffer } from "buffer";
 import { Button, ButtonGroup } from "@mui/material";
 import { Publish, DataObject } from "@mui/icons-material";
-import { GameDecoder, Game, Chunk } from "custom_modules/GameFormat";
+import { GameDecoder, Game } from "custom_modules/GameFormat";
 
 function FileImport({
   setFile,
@@ -27,7 +27,7 @@ function FileImport({
           id="bin-input"
           ref={binInput}
           onChange={async () =>
-            binInput.current?.files && setFile(
+            setFile(
               new GameDecoder(
                 Buffer.from(
                   zlib.inflate(await binInput.current?.files[0].arrayBuffer()),
@@ -45,26 +45,9 @@ function FileImport({
           type="file"
           id="json-input"
           ref={jsonInput}
-          onChange={async () => {
-            if (jsonInput.current?.files) {
-              const game: Game.Data = JSON.parse(await jsonInput.current?.files[0].text());
-              game._rawChunks = game.chunks;
-              const chunks: Chunk.Data[] = [];
-              game._rawChunks.forEach(chunk => {
-                if (chunk.parent && !chunk.name) {
-                  if (chunk.parent >= game.idOffset && game._rawChunks.length >= chunk.parent - game.idOffset) {
-                    game._rawChunks[chunk.parent - game.idOffset].children = [...game._rawChunks[chunk.parent - game.idOffset].children ?? [], chunk];
-                  } else {
-                    throw Error("invalid parent id for a chunk");
-                  }
-                } else {
-                  chunks.push(chunk);
-                }
-              });
-              game.chunks = chunks;
-              setFile(game);
-            }
-          }}
+          onChange={async () =>
+            setFile(JSON.parse(await jsonInput.current?.files[0].text()))
+          }
           style={{ display: "none" }}
           accept={".json"}
         />

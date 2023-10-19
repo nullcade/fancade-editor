@@ -5,6 +5,12 @@ import { Button, ButtonGroup } from "@mui/material";
 import { GameEncoder, Game } from "custom_modules/GameFormat";
 
 function FileExport({ game }: { game: Game.Data }) {
+  for (const parent of game.chunks.filter(
+    (c) => c.name && c.children?.length && c.id,
+  )) {
+    parent.id = undefined;
+  }
+
   return (
     <ButtonGroup>
       <Button
@@ -24,14 +30,7 @@ function FileExport({ game }: { game: Game.Data }) {
         size="small"
         onClick={() => {
           saveFile(
-            JSON.stringify({
-              appVersion: game.appVersion,
-              title: game.title,
-              author: game.author,
-              description: game.description,
-              idOffset: game.idOffset,
-              chunks: game._rawChunks
-            }),
+            JSON.stringify(game),
             (game.title.length !== 0 ? game.title : "New Game") + ".json",
           );
         }}
@@ -64,7 +63,7 @@ async function saveFile(blob: any, suggestedName: string) {
         types: [
           {
             description: "Fancade game binary",
-            accept: { "application/octet-stream": [extension as `.${string}`] },
+            accept: { "application/octet-stream": [extension] },
           },
         ],
       });

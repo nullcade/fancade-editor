@@ -21,18 +21,19 @@ export class GameEncoder {
     this.writeString(this.data.description);
     this.writeUint16LE(this.data.idOffset);
     this.writeUint16LE(this.data.chunks.length);
-    this.data._rawChunks.forEach(this.writeChunk.bind(this));
+    this.data.chunks.forEach(this.writeChunk.bind(this));
 
     return this.buff.subarray(0, this.off);
   }
 
   writeChunk(chunk: Chunk.Data): void {
-    const isMulti = chunk.parent && chunk.offset;
+    if (chunk.type === Chunk.Type.Rigid) chunk.type = undefined;
+    const isMulti = chunk.id && chunk.offset;
     const flags = [
-      chunk.wires && chunk.wires.length > 0,
-      chunk.values && chunk.values.length > 0,
-      chunk.blocks && chunk.blocks.length > 0,
-      chunk.faces && chunk.faces.length > 0,
+      chunk.wires !== undefined,
+      chunk.values !== undefined,
+      chunk.blocks !== undefined,
+      chunk.faces !== undefined,
       isMulti,
       chunk.collider !== undefined,
       chunk.locked,
@@ -41,13 +42,13 @@ export class GameEncoder {
       false,
       false,
       chunk.name !== undefined,
-      chunk.type !== Chunk.Type.Rigid,
+      chunk.type !== undefined,
     ].map((v) => (v ? 1 : 0));
     this.writeBin(flags);
-    if (chunk.type !== Chunk.Type.Rigid) this.writeUint8(chunk.type);
+    if (chunk.type !== undefined) this.writeUint8(chunk.type);
     if (chunk.name !== undefined) this.writeString(chunk.name);
     if (chunk.collider !== undefined) this.writeUint8(chunk.collider);
-    if (isMulti && chunk.parent) this.writeUint16LE(chunk.parent);
+    if (isMulti && chunk.id) this.writeUint16LE(chunk.id);
     if (isMulti && chunk.offset) this.writeOff(chunk.offset);
     if (chunk.color !== undefined) this.writeUint8(chunk.color);
     if (chunk.faces !== undefined) this.writeFaces(chunk.faces);
