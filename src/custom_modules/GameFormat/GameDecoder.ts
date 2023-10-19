@@ -23,7 +23,7 @@ export class GameDecoder {
     const chunksLen = this.readUint16LE();
     for (let i = 0; i < chunksLen; i++) this.readChunk(idOffset - 1);
     console.log(chunksLen, this.chunks);
-    const chunks = Array.from(this.chunks.values())
+    const chunks = Array.from(this.chunks).map(value => { return { ...value[1], id: value[0] } }) as Chunk.Data[];
 
     return { appVersion, title, author, description, idOffset, chunks };
   }
