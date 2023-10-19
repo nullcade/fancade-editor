@@ -25,8 +25,8 @@ import theme from "theme";
 import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
-function sortGames(a, b) {
-  return { [a]: -1, [b]: 1 }["New Game"] ?? a.localeCompare(b);
+function sortGames(a: string, b: string) {
+  return ({ [a]: -1, [b]: 1 } as Record<string, number | undefined>)["New Game"] ?? a.localeCompare(b);
 }
 
 function InfoTab({
