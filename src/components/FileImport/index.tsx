@@ -27,10 +27,10 @@ function FileImport({
           id="bin-input"
           ref={binInput}
           onChange={async () =>
-            setFile(
+            binInput.current?.files && binInput.current?.files.length === 1 && setFile(
               new GameDecoder(
                 Buffer.from(
-                  zlib.inflate(await binInput.current?.files[0].arrayBuffer()),
+                  zlib.inflate(await binInput.current.files[0].arrayBuffer()),
                 ),
               ).decGame(),
             )
@@ -46,7 +46,7 @@ function FileImport({
           id="json-input"
           ref={jsonInput}
           onChange={async () =>
-            setFile(JSON.parse(await jsonInput.current?.files[0].text()))
+            jsonInput.current?.files && jsonInput.current?.files.length === 1 && setFile(JSON.parse(await jsonInput.current.files[0].text()))
           }
           style={{ display: "none" }}
           accept={".json"}

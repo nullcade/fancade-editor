@@ -7,14 +7,13 @@ export namespace Game {
     author: string;
     description: string;
     idOffset: number;
-    chunks: Chunk.Data[];
+    chunks: Map<number, Chunk.Data>;
   }
 }
 export namespace Chunk {
   export interface Data {
     type: Type;
     name: string;
-    id?: number;
     locked: boolean;
     collider?: Collider;
     color?: Color.Id;

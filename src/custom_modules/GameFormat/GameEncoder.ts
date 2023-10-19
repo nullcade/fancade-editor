@@ -35,7 +35,7 @@ export class GameEncoder {
     return length;
   }
 
-  writeChunk(chunk: Chunk.Data): void {
+  writeChunk(chunk: Chunk.Data, key: number): void {
     const isMulti = !!(chunk.children && chunk.children.length > 0);
     const flags = [
       chunk.wires && chunk.wires.length > 0,
@@ -56,7 +56,7 @@ export class GameEncoder {
     if (chunk.type !== Chunk.Type.Rigid) this.writeUint8(chunk.type);
     if (chunk.name) this.writeString(chunk.name);
     if (chunk.collider) this.writeUint8(chunk.collider);
-    if (isMulti && chunk.id) this.writeUint16LE(chunk.id);
+    if (isMulti && key) this.writeUint16LE(key);
     if (isMulti) this.writeOff(chunk.offset);
     if (chunk.color) this.writeUint8(chunk.color);
     if (chunk.faces && chunk.faces.length > 0) this.writeFaces(chunk.faces);
@@ -69,9 +69,10 @@ export class GameEncoder {
       this.writeUint16LE(chunk.wires.length);
       chunk.wires.forEach(this.writeWire.bind(this));
     }
-    if (isMulti && chunk.children) chunk.children.forEach(item => this.writeChild(item, chunk))
+    if (isMulti && chunk.children) chunk.children.forEach(item => this.writeChild(item, chunk, key))
   }
-  writeChild(chunk: Chunk.Child, parent: Chunk.Data): void {
+  writeChild(chunk: Chunk.Child, parent: Chunk.Data, key: number): void {
+    console.log(parent, chunk);
     const isMulti = true;
     const flags = [
       chunk.wires && chunk.wires.length > 0,
@@ -91,7 +92,7 @@ export class GameEncoder {
     this.writeBin(flags);
     if (parent.type !== Chunk.Type.Rigid) this.writeUint8(parent.type);
     if (parent.collider) this.writeUint8(parent.collider);
-    if (isMulti && parent.id) this.writeUint16LE(parent.id);
+    if (isMulti && key) this.writeUint16LE(key);
     if (isMulti) this.writeOff(chunk.offset);
     if (parent.color) this.writeUint8(parent.color);
     if (chunk.faces && chunk.faces.length > 0) this.writeFaces(chunk.faces);
