@@ -4,6 +4,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
 import { Game, emptyGame } from "custom_modules/GameFormat";
 import ChunksTab from "components/ChunksTab";
+import DragAndDrop from "components/DragAndDrop";
 import theme from "theme";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
             <ChunksTab game={file} setGame={setFile} />
           </TabPanel>
         </TabContext>
+        <DragAndDrop setFile={setFile} />
       </Stack>
     </ThemeProvider>
   );
