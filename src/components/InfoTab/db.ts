@@ -1,3 +1,4 @@
+import { Game } from "custom_modules/GameFormat";
 import { openDB } from "idb";
 
 export const gamesDB = openDB("games", undefined, {
@@ -7,7 +8,7 @@ export const gamesDB = openDB("games", undefined, {
 });
 
 export async function listGames() {
-  return await (await gamesDB).getAllKeys("games") as Promise<string[]>;
+  return await (await gamesDB).getAllKeys("games") as string[];
 }
 
 export async function loadGame(key: string) {
