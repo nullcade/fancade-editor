@@ -8,21 +8,22 @@ export namespace Game {
     description: string;
     idOffset: number;
     chunks: Chunk.Data[];
+    _rawChunks: Chunk.Data[];
   }
 }
 export namespace Chunk {
   export interface Data {
-    type?: Type;
+    type: Type;
     name?: string;
-    id?: number;
+    parent?: number;
     offset?: Vec;
-    locked?: boolean;
+    locked: boolean;
     collider?: Collider;
     color?: Color.Id;
     faces?: Faces;
-    blocks?: Blocks;
-    values?: Value.Data[];
-    wires?: Wire.Data[];
+    blocks: Blocks;
+    values: Value.Data[];
+    wires: Wire.Data[];
     children?: Chunk.Data[];
   }
   export enum Flags {

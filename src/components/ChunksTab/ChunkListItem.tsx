@@ -29,11 +29,13 @@ function ChunkListItem({
   update,
   selected,
   select,
+  index,
 }: {
   value: Chunk.Data;
   update: () => void;
   selected: boolean;
   select: () => void;
+  index: number;
 }) {
   const [afterSelected, setAfterSelected] = useState<boolean>(false);
 
@@ -52,6 +54,7 @@ function ChunkListItem({
         bgcolor: "#28292a",
       }}
       secondaryAction={
+        value.children &&
         <IconButton edge="end" aria-label="comments" onClick={select}>
           {selected ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
@@ -121,42 +124,40 @@ function ChunkListItem({
           sx={{ width: "100%", boxSizing: "border-box" }}
         >
           <Stack sx={{ paddingTop: theme.spacing(2) }}>
-            <ControlledTextField
-              label="ID"
-              defaultValue={value.id}
-              setValue={(id) => {
-                value.id = id as number;
-                update();
-              }}
-            />
-            {value.children?.map((chunk, i) => (
+            {value.children?.map((chunk, i) => chunk.offset &&
               <Stack key={i} direction="row" flexWrap="nowrap">
                 <ControlledTextField
                   label="X"
                   value={chunk.offset[0]}
                   setValue={(x) => {
-                    chunk.offset[0] = x;
-                    update();
+                    if (chunk.offset) {
+                      chunk.offset[0] = x as number;
+                      update();
+                    }
                   }}
                 />
                 <ControlledTextField
                   label="Y"
                   defaultValue={chunk.offset[1]}
                   setValue={(y) => {
-                    chunk.offset[1] = y;
-                    update();
+                    if (chunk.offset) {
+                      chunk.offset[1] = y as number;
+                      update();
+                    }
                   }}
                 />
                 <ControlledTextField
                   label="Z"
                   defaultValue={chunk.offset[2]}
                   setValue={(z) => {
-                    chunk.offset[2] = z;
-                    update();
+                    if (chunk.offset) {
+                      chunk.offset[2] = z as number;
+                      update();
+                    }
                   }}
                 />
               </Stack>
-            ))}
+            )}
           </Stack>
         </Collapse>
       ) : undefined}
