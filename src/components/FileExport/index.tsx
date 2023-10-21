@@ -30,7 +30,10 @@ function FileExport({ game }: { game: Game.Data }) {
               author: game.author,
               description: game.description,
               idOffset: game.idOffset,
-              chunks: game._rawChunks
+              chunks: game._rawChunks.map(chunk => {
+                const {children, ...chunkWithNoChildren} = chunk;
+                return chunkWithNoChildren;
+              })
             }),
             (game.title.length !== 0 ? game.title : "New Game") + ".json",
           );
