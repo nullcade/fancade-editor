@@ -20,7 +20,7 @@ export class GameEncoder {
     this.writeString(this.data.author);
     this.writeString(this.data.description);
     this.writeUint16LE(this.data.idOffset);
-    this.writeUint16LE(this.data.chunks.length);
+    this.writeUint16LE(this.data._rawChunks.length);
     this.data._rawChunks.forEach(this.writeChunk.bind(this));
 
     return this.buff.subarray(0, this.off);
