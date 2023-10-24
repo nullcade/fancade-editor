@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Stack,
   ListItem,
@@ -32,15 +32,29 @@ function sortGames(a: string, b: string) {
 function InfoTab({
   game,
   setGame,
+  scroll,
 }: {
   game: Game.Data;
   setGame: React.Dispatch<React.SetStateAction<Game.Data>>;
+  scroll: (top: boolean, bottom: boolean) => void;
 }) {
   const [advanced, setAdvanced] = useState<boolean>(false);
   const [limitSize, setLimitSize] = useState<boolean>(true);
   const [storingGame, setStoringGame] = useState<boolean>(false);
   const [loadingGame, setLoadingGame] = useState<string | null>(null);
   const [storedGames, setStoredGames] = useState<string[]>([]);
+  const stackRef = useRef<HTMLDivElement>(null);
+
+  function updateTitle() {
+    document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
+  }
+
+  function doScroll() {
+    stackRef.current && scroll(
+      stackRef.current.scrollTop < 15,
+      stackRef.current.scrollTop + 15 > (stackRef.current.scrollHeight - stackRef.current.offsetHeight)
+    )
+  }
 
   useEffect(() => {
     async function awaitListGames() {
@@ -54,14 +68,27 @@ function InfoTab({
     awaitListGames();
   }, []);
 
-  function updateTitle() {
-    document.title = game.title ? `Editing ${game.title}` : "Fancade Editor";
-  }
-
   useEffect(updateTitle, [game]);
+  useEffect(doScroll);
 
   return (
-    <Stack>
+    <Stack
+      justifyContent="flex-start"
+      flexWrap="nowrap"
+      sx={{
+        overflowY: "scroll",
+        height: "fit-content",
+        maxHeight: '100%',
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none",
+        ":-webkit-scrollbar": {
+          display: "none"
+        }
+      }}
+      ref={stackRef}
+      onScroll={event => doScroll()}
+      onResize={event => doScroll()}
+    >
       <Area sx={{ paddingRight: 0 }}>
         <ListItem
           sx={{
