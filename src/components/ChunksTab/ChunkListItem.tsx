@@ -50,7 +50,7 @@ function ChunkListItem({
         flexWrap: "wrap",
         borderRadius: theme.spacing(2),
         padding: theme.spacing(2),
-        paddingRight: theme.spacing(6),
+        paddingRight: value.children ? theme.spacing(6) : theme.spacing(2),
         bgcolor: "#28292a",
       }}
       secondaryAction={
@@ -60,7 +60,7 @@ function ChunkListItem({
         </IconButton>
       }
     >
-      <Stack direction="row">
+      <Stack direction="row" alignItems="center">
         <FormControl sx={{ flexGrow: 0 }}>
           <InputLabel>Type</InputLabel>
           <Select
