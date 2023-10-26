@@ -20,14 +20,19 @@ export class GameEncoder {
     this.writeString(this.data.author);
     this.writeString(this.data.description);
     this.writeUint16LE(this.data.idOffset);
-    this.writeUint16LE(this.data._rawChunks.length);
-    this.data._rawChunks.forEach(this.writeChunk.bind(this));
+    this.writeUint16LE(
+      this.data.chunks
+        .map(chunk => chunk.children ? chunk.children.length + 1 : 1)
+        .reduce((prevVal, val) => prevVal + val, 0)
+    );
+    this.data.chunks.forEach(this.writeChunk.bind(this));
+    this.data.chunks.forEach(this.writeChildren.bind(this));
 
     return this.buff.subarray(0, this.off);
   }
 
   writeChunk(chunk: Chunk.Data): void {
-    const isMulti = chunk.parent && chunk.offset;
+    const isMulti = !!chunk.children;
     const flags = [
       chunk.wires && chunk.wires.length > 0,
       chunk.values && chunk.values.length > 0,
@@ -58,6 +63,41 @@ export class GameEncoder {
     if (chunk.wires && chunk.wires.length > 0) this.writeUint16LE(chunk.wires.length);
     if (chunk.wires && chunk.wires.length > 0)
       chunk.wires.forEach(this.writeWire.bind(this));
+  }
+  writeChildren(parent: Chunk.Data, index: number): void {
+    if (!parent.children) return;
+    parent.children.forEach(chunk => {
+      const isMulti = true;
+      const flags = [
+        chunk.wires && chunk.wires.length > 0,
+        chunk.values && chunk.values.length > 0,
+        chunk.blocks && chunk.blocks.length > 0,
+        chunk.faces && chunk.faces.length > 0,
+        isMulti,
+        chunk.collider !== undefined,
+        chunk.locked,
+        false,
+        chunk.color !== undefined,
+        false,
+        false,
+        false,
+        parent.type !== Chunk.Type.Rigid,
+      ].map((v) => (v ? 1 : 0));
+      this.writeBin(flags);
+      if (parent.type !== Chunk.Type.Rigid) this.writeUint8(parent.type);
+      if (parent.collider !== undefined) this.writeUint8(parent.collider);
+      if (isMulti) this.writeUint16LE(index + this.data.idOffset);
+      if (isMulti && chunk.offset) this.writeOff(chunk.offset);
+      if (chunk.color !== undefined) this.writeUint8(chunk.color);
+      if (chunk.faces !== undefined) this.writeFaces(chunk.faces);
+      if (chunk.blocks && chunk.blocks.length > 0) this.writeBlocks(chunk.blocks);
+      if (chunk.values && chunk.values.length > 0) this.writeUint16LE(chunk.values.length);
+      if (chunk.values && chunk.values.length > 0)
+        chunk.values.forEach(this.writeValue.bind(this));
+      if (chunk.wires && chunk.wires.length > 0) this.writeUint16LE(chunk.wires.length);
+      if (chunk.wires && chunk.wires.length > 0)
+        chunk.wires.forEach(this.writeWire.bind(this));
+    });
   }
   writeFaces(faces: Chunk.Faces) {
     faces.flat(4).forEach(this.writeUint8.bind(this));
