@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FormControl, InputLabel, MenuItem, Select, Stack, Divider, FormControlLabel, Switch } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  FormControlLabel,
+  Switch,
+  Checkbox,
+  Button
+} from "@mui/material";
 import { Game, Chunk } from "custom_modules/GameFormat";
 import {
   ExpandLess,
@@ -10,6 +20,8 @@ import {
   DataObject,
   Save,
   ViewInArRounded,
+  AddRounded,
+  DeleteOutline,
 } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Area from "components/Area";
@@ -31,7 +43,20 @@ function ChunksTab({
   const [limitSize, setLimitSize] = useState<boolean>(true);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setChunk(event.target.value);
+    if (event.target.value !== "NEW") {
+      setChunk(event.target.value);
+      return
+    }
+    setChunk(
+      (game.chunks.push({
+        name: "New Chunk",
+        type: Chunk.Type.Rigid,
+        locked: false,
+        blocks: [],
+        values: [],
+        wires: [],
+      }) - 1).toString()
+    );
   };
 
   function doScroll() {
@@ -98,6 +123,12 @@ function ChunksTab({
                     </MenuItem>
                 )
               }
+              <MenuItem value="NEW">
+                <AddRounded sx={{
+                  marginRight: ".5rem"
+                }} />
+                New Chunk
+              </MenuItem>
             </Select>
           </FormControl>
         </Stack>
@@ -106,18 +137,34 @@ function ChunksTab({
         display: chunk !== '' ? undefined : "none"
       }}>
         <Stack flexDirection="row">
+          <Button
+            variant="outlined"
+            startIcon={<DeleteOutline />}
+            color="error"
+            onClick={() => {
+              if (isNaN(parseInt(chunk))) return;
+              delete game.chunks[parseInt(chunk)];
+              setChunk('');
+              setGame(game);
+            }}
+            sx={{
+              width: "100%",
+            }}
+          >
+            Delete Chunk
+          </Button>
           <FormControl
             fullWidth
             sx={{
               flexGrow: 0,
-              width: 'fit-content',
+              width: "fit-content",
             }}
           >
             <InputLabel>Type</InputLabel>
             <Select
               label="Type"
               IconComponent={() => null}
-              value={chunk !== '' && game.chunks[parseInt(chunk)].type || 0}
+              value={(chunk !== '' && game.chunks[parseInt(chunk)].type) || 0}
               onChange={(event) => {
                 game.chunks[parseInt(chunk)].type = event.target.value as Chunk.Type;
                 setGame(game);
@@ -170,8 +217,28 @@ function ChunksTab({
               return event.target.value;
             }}
           />
+          <Stack sx={{
+            width: 'fit-content',
+            flexGrow: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Checkbox
+              defaultChecked={chunk !== '' && game.chunks[parseInt(chunk)].locked}
+              icon={<LockOpen />}
+              checkedIcon={<Lock />}
+              onChange={(event) => {
+                game.chunks[parseInt(chunk)].locked = event.target.checked;
+                setGame(game);
+              }}
+              sx={{
+                flexGrow: 0,
+                aspectRatio: "1/1",
+              }}
+            />
+          </Stack>
         </Stack>
-      </Area>
+      </Area >
       <Area sx={{
         display: chunk === '' ? "none" : undefined
       }}>
@@ -189,7 +256,7 @@ function ChunksTab({
           />
         </Stack>
       </Area>
-    </Stack>
+    </Stack >
   );
 }
 
