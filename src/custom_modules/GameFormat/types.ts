@@ -1,5 +1,3 @@
-import TwoWayMap from "custom_modules/TwoWayMap";
-
 export type Vec<T = number> = [x: T, y: T, z: T];
 
 export namespace Game {
@@ -10,7 +8,6 @@ export namespace Game {
     description: string;
     idOffset: number;
     chunks: Chunk.Data[];
-    uuidMap: TwoWayMap<String, number>;
   }
 }
 export namespace Chunk {

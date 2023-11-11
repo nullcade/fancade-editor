@@ -1,20 +1,19 @@
 import { Chunk, Fill, Game, Grid, Multiply, Value, Vec, Wire } from ".";
 import { Buffer } from "buffer";
-import TwoWayMap from "custom_modules/TwoWayMap";
 import { nanoid } from "nanoid";
 
 export class GameDecoder {
   buff: Buffer;
   off: number;
   chunksMap: Map<number, Chunk.Data>;
-  uuidMap: TwoWayMap<String, number>;
+  uuidMap: Map<number, String>;
   idOffset: number;
 
   constructor(buff: Buffer) {
     this.buff = buff;
     this.off = 0;
     this.chunksMap = new Map<number, Chunk.Data>();
-    this.uuidMap = new TwoWayMap<String, number>();
+    this.uuidMap = new Map<number, String>();
     this.idOffset = 0;
   }
 
@@ -29,7 +28,7 @@ export class GameDecoder {
     chunks.forEach(chunk => {
       chunk.blocks.forEach((x, xIndex) => x.forEach((y, yIndex) => y.forEach((block, zIndex) => {
         if(typeof block === "number" && block >= this.idOffset)
-          chunk.blocks[xIndex][yIndex][zIndex] = this.uuidMap.reverseGet(block) ?? 0;
+          chunk.blocks[xIndex][yIndex][zIndex] = this.uuidMap.get(block) ?? 0;
       })));
       if (chunk.name || !chunk.parent) return;
       this.chunksMap.get(chunk.parent)?.children?.push({
@@ -43,7 +42,6 @@ export class GameDecoder {
     });
 
     return {
-      uuidMap: this.uuidMap,
       appVersion,
       title,
       author,
@@ -88,7 +86,7 @@ export class GameDecoder {
       : [];
     const children: Chunk.Data["children"] = parent ? [] : undefined;
     const uuid = nanoid();
-    this.uuidMap.set(uuid, index + this.idOffset);
+    this.uuidMap.set(index + this.idOffset, uuid);
     const chunk: Chunk.Data = {
       uuid,
       type,
