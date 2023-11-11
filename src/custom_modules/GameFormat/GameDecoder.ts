@@ -1,13 +1,21 @@
 import { Chunk, Fill, Game, Grid, Multiply, Value, Vec, Wire } from ".";
 import { Buffer } from "buffer";
+import TwoWayMap from "custom_modules/TwoWayMap";
+import { nanoid } from "nanoid";
 
 export class GameDecoder {
   buff: Buffer;
   off: number;
+  chunksMap: Map<number, Chunk.Data>;
+  uuidMap: TwoWayMap<String, number>;
+  idOffset: number;
 
   constructor(buff: Buffer) {
     this.buff = buff;
     this.off = 0;
+    this.chunksMap = new Map<number, Chunk.Data>();
+    this.uuidMap = new TwoWayMap<String, number>();
+    this.idOffset = 0;
   }
 
   decGame(): Game.Data {
@@ -15,26 +23,44 @@ export class GameDecoder {
     const title = this.readString();
     const author = this.readString();
     const description = this.readString();
-    const idOffset = this.readUint16LE();
+    this.idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
-    const rawChunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
-    const chunks: Chunk.Data[] = [];
-    rawChunks.forEach(chunk => {
-      if(chunk.parent && !chunk.name){
-        if(chunk.parent >= idOffset && rawChunks.length >= chunk.parent - idOffset){
-          rawChunks[chunk.parent - idOffset].children = [...rawChunks[chunk.parent - idOffset].children ?? [], chunk];
-        }else{
-          throw Error("invalid parent id for a chunk");
-        }
-      } else {
-        chunks.push(chunk);
-      }
-    })
+    console.log("total chunks:", chunksLen);
+    const chunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
+    console.log(chunks.length);
+    chunks.forEach(chunk => {
+      chunk.blocks.forEach((x, xIndex) => x.forEach((y, yIndex) => y.forEach((block, zIndex) => {
+        if(typeof block === "number" && block >= this.idOffset)
+          chunk.blocks[xIndex][yIndex][zIndex] = this.uuidMap.reverseGet(block) ?? 0;
+      })));
+      if (chunk.name || !chunk.parent) return;
+      if(!this.chunksMap.get(chunk.parent)) {
+        console.log("WRONG PARENT");
+        console.log(chunk);
+        console.log([...this.chunksMap.values()]);
+    }
+      this.chunksMap.get(chunk.parent)?.children?.push({
+        uuid: chunk.uuid,
+        offset: chunk.offset,
+        faces: chunk.faces,
+        blocks: chunk.blocks,
+        values: chunk.values,
+        wires: chunk.wires,
+      });
+    });
 
-    return { appVersion, title, author, description, idOffset, chunks, _rawChunks: rawChunks };
+    return {
+      uuidMap: this.uuidMap,
+      appVersion,
+      title,
+      author,
+      description,
+      idOffset: this.idOffset,
+      chunks: [...this.chunksMap.values()]
+    };
   }
 
-  readChunk(): Chunk.Data {
+  readChunk(_: never, index: number): Chunk.Data {
     const flags = this.readBin(2);
     const [
       hasWires,
@@ -67,8 +93,11 @@ export class GameDecoder {
     const wires = hasWires
       ? Array.from({ length: this.readUint16LE() }, this.readWire.bind(this))
       : [];
-
-    return {
+    const children: Chunk.Data["children"] = parent ? [] : undefined;
+    const uuid = nanoid();
+    this.uuidMap.set(uuid, index + this.idOffset);
+    const chunk: Chunk.Data = {
+      uuid,
       type,
       name,
       parent,
@@ -80,7 +109,11 @@ export class GameDecoder {
       blocks,
       values,
       wires,
-    };
+      children,
+    }
+    if (parent === index + this.idOffset || !parent) this.chunksMap.set(index + this.idOffset, chunk);
+
+    return chunk;
   }
   readFaces(): Chunk.Faces {
     return this.readGrid([6, 8, 8, 8], this.readUint8);

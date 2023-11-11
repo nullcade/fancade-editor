@@ -1,4 +1,4 @@
-import { Chunk, Game, Value, Vec, Wire } from ".";
+import { Chunk, Game, Value, Vec, Wire, Block } from ".";
 import { Buffer } from "buffer";
 
 export class GameEncoder {
@@ -6,33 +6,75 @@ export class GameEncoder {
   buff: Buffer;
   off: number;
   data: Game.Data;
+  chunkIdMap: Map<String, number>;
 
   constructor(data: Game.Data, blockSize = 1024) {
     this.blockSize = blockSize;
     this.buff = Buffer.allocUnsafe(this.blockSize);
-    this.data = data;
     this.off = 0;
+    this.data = data;
+    this.chunkIdMap = new Map<String, number>();
   }
 
   encGame(): Buffer {
+    const flatChunks: Chunk.Data[] = [];
+    this.data.chunks.forEach((chunk, index) => {
+      // this.chunkIdMap.set(chunk.uuid, index + this.data.idOffset);
+      flatChunks.push({
+        uuid: chunk.uuid,
+        type: chunk.type,
+        name: chunk.name,
+        parent: index + this.data.idOffset,
+        offset: chunk.offset,
+        locked: chunk.locked,
+        collider: chunk.collider,
+        color: chunk.color,
+        faces: chunk.faces,
+        blocks: chunk.blocks,
+        values: chunk.values,
+        wires: chunk.wires,
+      });
+    });
+    this.data.chunks.forEach(
+      (parent, index) =>
+        parent.children &&
+        parent.children.forEach((chunk) => {
+          // this.chunkIdMap.set(chunk.uuid, flatChunks.length + this.data.idOffset);
+          flatChunks.push({
+            uuid: chunk.uuid,
+            type: parent.type,
+            parent: flatChunks[index].parent,
+            offset: chunk.offset,
+            locked: parent.locked,
+            collider: parent.collider,
+            color: parent.color,
+            faces: chunk.faces,
+            blocks: chunk.blocks,
+            values: chunk.values,
+            wires: chunk.wires,
+          });
+        })
+    );
+    flatChunks.forEach((chunk, index) =>
+      this.chunkIdMap.set(chunk.uuid, index + this.data.idOffset)
+    );
+    console.log(this.data.chunks);
+    console.log(flatChunks);
+    console.log(this.data.uuidMap);
+    console.log(this.chunkIdMap);
     this.writeUint16LE(this.data.appVersion);
     this.writeString(this.data.title);
     this.writeString(this.data.author);
     this.writeString(this.data.description);
     this.writeUint16LE(this.data.idOffset);
-    this.writeUint16LE(
-      this.data.chunks
-        .map(chunk => chunk.children ? chunk.children.length + 1 : 1)
-        .reduce((prevVal, val) => prevVal + val, 0)
-    );
-    this.data.chunks.forEach(this.writeChunk.bind(this));
-    this.data.chunks.forEach(this.writeChildren.bind(this));
+    this.writeUint16LE(flatChunks.length);
+    flatChunks.forEach(this.writeChunk.bind(this));
 
     return this.buff.subarray(0, this.off);
   }
 
-  writeChunk(chunk: Chunk.Data): void {
-    const isMulti = !!chunk.children;
+  writeChunk(chunk: Chunk.Data, index: number): void {
+    const isMulti = chunk.parent && chunk.offset;
     const flags = [
       chunk.wires && chunk.wires.length > 0,
       chunk.values && chunk.values.length > 0,
@@ -57,54 +99,32 @@ export class GameEncoder {
     if (chunk.color !== undefined) this.writeUint8(chunk.color);
     if (chunk.faces !== undefined) this.writeFaces(chunk.faces);
     if (chunk.blocks && chunk.blocks.length > 0) this.writeBlocks(chunk.blocks);
-    if (chunk.values && chunk.values.length > 0) this.writeUint16LE(chunk.values.length);
+    if (chunk.values && chunk.values.length > 0)
+      this.writeUint16LE(chunk.values.length);
     if (chunk.values && chunk.values.length > 0)
       chunk.values.forEach(this.writeValue.bind(this));
-    if (chunk.wires && chunk.wires.length > 0) this.writeUint16LE(chunk.wires.length);
+    if (chunk.wires && chunk.wires.length > 0)
+      this.writeUint16LE(chunk.wires.length);
     if (chunk.wires && chunk.wires.length > 0)
       chunk.wires.forEach(this.writeWire.bind(this));
-  }
-  writeChildren(parent: Chunk.Data, index: number): void {
-    if (!parent.children) return;
-    parent.children.forEach(chunk => {
-      const isMulti = true;
-      const flags = [
-        chunk.wires && chunk.wires.length > 0,
-        chunk.values && chunk.values.length > 0,
-        chunk.blocks && chunk.blocks.length > 0,
-        chunk.faces && chunk.faces.length > 0,
-        isMulti,
-        chunk.collider !== undefined,
-        chunk.locked,
-        false,
-        chunk.color !== undefined,
-        false,
-        false,
-        false,
-        parent.type !== Chunk.Type.Rigid,
-      ].map((v) => (v ? 1 : 0));
-      this.writeBin(flags);
-      if (parent.type !== Chunk.Type.Rigid) this.writeUint8(parent.type);
-      if (parent.collider !== undefined) this.writeUint8(parent.collider);
-      if (isMulti) this.writeUint16LE(index + this.data.idOffset);
-      if (isMulti && chunk.offset) this.writeOff(chunk.offset);
-      if (chunk.color !== undefined) this.writeUint8(chunk.color);
-      if (chunk.faces !== undefined) this.writeFaces(chunk.faces);
-      if (chunk.blocks && chunk.blocks.length > 0) this.writeBlocks(chunk.blocks);
-      if (chunk.values && chunk.values.length > 0) this.writeUint16LE(chunk.values.length);
-      if (chunk.values && chunk.values.length > 0)
-        chunk.values.forEach(this.writeValue.bind(this));
-      if (chunk.wires && chunk.wires.length > 0) this.writeUint16LE(chunk.wires.length);
-      if (chunk.wires && chunk.wires.length > 0)
-        chunk.wires.forEach(this.writeWire.bind(this));
-    });
   }
   writeFaces(faces: Chunk.Faces) {
     faces.flat(4).forEach(this.writeUint8.bind(this));
   }
   writeBlocks(blocks: Chunk.Blocks): void {
     this.writePos([blocks[0][0].length, blocks[0].length, blocks.length]);
-    blocks.flat(3).forEach(this.writeUint16LE.bind(this));
+    blocks.flat(3).forEach(this.writeBlockId.bind(this));
+  }
+  writeBlockId(value: Block.Id): number {
+    console.log(
+      value,
+      typeof value === "string" ? this.chunkIdMap.get(value) : "NOT UUID",
+      ">>>",
+      typeof value === "number" ? value : this.chunkIdMap.get(value) || 0
+    );
+    return this.alloc(2).writeUint16LE(
+      typeof value === "number" ? value : this.chunkIdMap.get(value) || 0
+    );
   }
   writeValue(value: Value.Data): void {
     this.writeUint8(value.index);
@@ -168,7 +188,7 @@ export class GameEncoder {
         value
           .slice(i << 3, (i + 1) << 3)
           .reduce<number>((pre, cur, b) => pre + (cur << b), 0),
-        i,
+        i
       );
     return this.off;
   }

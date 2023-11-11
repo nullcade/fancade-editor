@@ -4,6 +4,8 @@ import { Buffer } from "buffer";
 import { Button, ButtonGroup } from "@mui/material";
 import { Publish, DataObject } from "@mui/icons-material";
 import { GameDecoder, Game, Chunk } from "custom_modules/GameFormat";
+import TwoWayMap from "custom_modules/TwoWayMap";
+import { nanoid } from "nanoid";
 
 function FileImport({
   setFile,
@@ -48,20 +50,26 @@ function FileImport({
           onChange={async () => {
             if (jsonInput.current?.files) {
               const game: Game.Data = JSON.parse(await jsonInput.current?.files[0].text());
-              game._rawChunks = game.chunks;
-              const chunks: Chunk.Data[] = [];
-              game._rawChunks.forEach(chunk => {
-                if (chunk.parent && !chunk.name) {
-                  if (chunk.parent >= game.idOffset && game._rawChunks.length >= chunk.parent - game.idOffset) {
-                    game._rawChunks[chunk.parent - game.idOffset].children = [...game._rawChunks[chunk.parent - game.idOffset].children ?? [], chunk];
-                  } else {
-                    throw Error("invalid parent id for a chunk");
-                  }
-                } else {
-                  chunks.push(chunk);
-                }
+              const chunksMap = new Map<number, Chunk.Data>();
+              const uuidMap = new TwoWayMap<String, number>();
+              game.chunks.forEach((chunk, index) => {
+                chunk.uuid = nanoid();
+                if (chunk.parent) chunk.children = [];
+                if (chunk.name) chunksMap.set(index + game.idOffset, chunk);
+                uuidMap.set(chunk.uuid, index + game.idOffset);
               });
-              game.chunks = chunks;
+              game.chunks.forEach(chunk => {
+                if (chunk.name || !chunk.parent) return;
+                chunksMap.get(chunk.parent)?.children?.push({
+                  uuid: chunk.uuid,
+                  offset: chunk.offset,
+                  faces: chunk.faces,
+                  blocks: chunk.blocks,
+                  values: chunk.values,
+                  wires: chunk.wires,
+                });
+              });
+              game.chunks = [...chunksMap.values()];
               setFile(game);
             }
           }}
