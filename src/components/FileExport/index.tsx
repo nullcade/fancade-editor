@@ -2,9 +2,42 @@ import React from "react";
 import zlib from "pako";
 import { FileDownload, DataObject } from "@mui/icons-material";
 import { Button, ButtonGroup } from "@mui/material";
-import { GameEncoder, Game } from "custom_modules/GameFormat";
+import { GameEncoder, Game, Chunk } from "custom_modules/GameFormat";
 
 function FileExport({ game }: { game: Game.Data }) {
+  const flatChunks = (chunks: Chunk.Data[]) => {
+    const flatChunks: Chunk.Data[] = [];
+    chunks.forEach((chunk, index) => flatChunks.push({
+      uuid: chunk.uuid,
+      type: chunk.type,
+      name: chunk.name,
+      parent: index + game.idOffset,
+      offset: chunk.offset,
+      locked: chunk.locked,
+      collider: chunk.collider,
+      color: chunk.color,
+      faces: chunk.faces,
+      blocks: chunk.blocks,
+      values: chunk.values,
+      wires: chunk.wires,
+    }));
+    chunks.forEach((parent, index) =>
+      parent.children && parent.children.forEach(chunk => flatChunks.push({
+        uuid: chunk.uuid,
+        type: parent.type,
+        parent: index + game.idOffset,
+        offset: chunk.offset,
+        locked: parent.locked,
+        collider: parent.collider,
+        color: parent.color,
+        faces: chunk.faces,
+        blocks: chunk.blocks,
+        values: chunk.values,
+        wires: chunk.wires,
+      }))
+    );
+    return flatChunks;
+  }
   return (
     <ButtonGroup>
       <Button
@@ -30,11 +63,8 @@ function FileExport({ game }: { game: Game.Data }) {
               author: game.author,
               description: game.description,
               idOffset: game.idOffset,
-              chunks: game._rawChunks.map(chunk => {
-                const {children, ...chunkWithNoChildren} = chunk;
-                return chunkWithNoChildren;
-              })
-            }),
+              chunks: flatChunks(game.chunks),
+            }, null, 4),
             (game.title.length !== 0 ? game.title : "New Game") + ".json",
           );
         }}

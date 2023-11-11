@@ -8,11 +8,11 @@ export namespace Game {
     description: string;
     idOffset: number;
     chunks: Chunk.Data[];
-    _rawChunks: Chunk.Data[];
   }
 }
 export namespace Chunk {
   export interface Data {
+    uuid: String;
     type: Type;
     name?: string;
     parent?: number;
@@ -24,7 +24,7 @@ export namespace Chunk {
     blocks: Blocks;
     values: Value.Data[];
     wires: Wire.Data[];
-    children?: Chunk.Data[];
+    children?: Pick<Chunk.Data, "uuid" | "offset" | "faces" | "blocks" | "values" | "wires">[];
   }
   export enum Flags {
     HasWires = 2 ** 0,
@@ -94,8 +94,8 @@ export namespace Wire {
   }
 }
 export namespace Block {
-  /** A 2 byte id used to reference blocks. */
-  export type Id = Ids | (number & {});
+  /** A 2 byte id or string uuid used to reference blocks. */
+  export type Id = Ids | (number & {}) | String;
   /** The 2 byte ids used to reference blocks. */
   export enum Ids {
     /** @abstract */
