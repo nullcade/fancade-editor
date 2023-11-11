@@ -25,20 +25,13 @@ export class GameDecoder {
     const description = this.readString();
     this.idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
-    console.log("total chunks:", chunksLen);
     const chunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
-    console.log(chunks.length);
     chunks.forEach(chunk => {
       chunk.blocks.forEach((x, xIndex) => x.forEach((y, yIndex) => y.forEach((block, zIndex) => {
         if(typeof block === "number" && block >= this.idOffset)
           chunk.blocks[xIndex][yIndex][zIndex] = this.uuidMap.reverseGet(block) ?? 0;
       })));
       if (chunk.name || !chunk.parent) return;
-      if(!this.chunksMap.get(chunk.parent)) {
-        console.log("WRONG PARENT");
-        console.log(chunk);
-        console.log([...this.chunksMap.values()]);
-    }
       this.chunksMap.get(chunk.parent)?.children?.push({
         uuid: chunk.uuid,
         offset: chunk.offset,

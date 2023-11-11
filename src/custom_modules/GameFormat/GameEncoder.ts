@@ -58,10 +58,6 @@ export class GameEncoder {
     flatChunks.forEach((chunk, index) =>
       this.chunkIdMap.set(chunk.uuid, index + this.data.idOffset)
     );
-    console.log(this.data.chunks);
-    console.log(flatChunks);
-    console.log(this.data.uuidMap);
-    console.log(this.chunkIdMap);
     this.writeUint16LE(this.data.appVersion);
     this.writeString(this.data.title);
     this.writeString(this.data.author);
@@ -116,12 +112,6 @@ export class GameEncoder {
     blocks.flat(3).forEach(this.writeBlockId.bind(this));
   }
   writeBlockId(value: Block.Id): number {
-    console.log(
-      value,
-      typeof value === "string" ? this.chunkIdMap.get(value) : "NOT UUID",
-      ">>>",
-      typeof value === "number" ? value : this.chunkIdMap.get(value) || 0
-    );
     return this.alloc(2).writeUint16LE(
       typeof value === "number" ? value : this.chunkIdMap.get(value) || 0
     );
