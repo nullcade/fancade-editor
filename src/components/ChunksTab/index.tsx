@@ -13,8 +13,6 @@ import {
 } from "@mui/material";
 import { Game, Chunk } from "custom_modules/GameFormat";
 import {
-  ExpandLess,
-  ExpandMore,
   Lock,
   LockOpen,
   SportsFootball,
@@ -26,6 +24,9 @@ import {
   SelectAllRounded,
   CropSquareRounded,
   Circle,
+  Window,
+  ViewSidebarOutlined,
+  CableSharp,
 } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Area from "components/Area";
@@ -33,6 +34,7 @@ import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import theme from "theme";
 import { nanoid } from "nanoid";
 import OffsetInput from "components/OffsetInput";
+import CommingSoon from "components/CommingSoon";
 
 function ChunksTab({
   game,
@@ -47,6 +49,7 @@ function ChunksTab({
   const [chunk, setChunk] = React.useState<string>("");
   const [childChunk, setChildChunk] = React.useState<string>("");
   const [limitSize, setLimitSize] = useState<boolean>(true);
+  const [commingSoon, setCommingSoon] = useState<boolean>(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value !== "NEW") {
@@ -122,6 +125,7 @@ function ChunksTab({
       onScroll={(event) => doScroll()}
       onResize={(event) => doScroll()}
     >
+      <CommingSoon open={commingSoon} handleClose={() => setCommingSoon(false)} />
       <Area>
         <Stack
           sx={{
@@ -371,6 +375,41 @@ function ChunksTab({
                 return parseInt(event.target.value as string);
               }}
             />
+          </Stack>
+          <Stack flexDirection="row" flexWrap="nowrap">
+          <Button
+            variant="outlined"
+            startIcon={<Window />}
+            color="secondary"
+            onClick={() => setCommingSoon(true)}
+            sx={{
+              width: "100%",
+            }}
+          >
+            Blocks
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<ViewSidebarOutlined />}
+            color="secondary"
+            onClick={() => setCommingSoon(true)}
+            sx={{
+              width: "100%",
+            }}
+          >
+            Faces
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<CableSharp />}
+            color="secondary"
+            onClick={() => setCommingSoon(true)}
+            sx={{
+              width: "100%",
+            }}
+          >
+            Wires
+          </Button>
           </Stack>
         </Stack>
       </Area>
