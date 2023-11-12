@@ -65,6 +65,30 @@ function ChunksTab({
     );
   };
 
+  const handleChangeChild = (event: SelectChangeEvent) => {
+    if (event.target.value !== "NEW") {
+      setChildChunk(event.target.value);
+      return;
+    }
+    if (game.chunks[parseInt(chunk)]) {
+      if (!game.chunks[parseInt(chunk)].offset)
+        game.chunks[parseInt(chunk)].offset = [0, 0, 0];
+      if (!game.chunks[parseInt(chunk)].children)
+        game.chunks[parseInt(chunk)].children = [];
+      setChildChunk(
+        (
+          (game.chunks[parseInt(chunk)].children?.push({
+            uuid: nanoid(),
+            offset: [0, 0, 0],
+            blocks: [],
+            values: [],
+            wires: [],
+          }) ?? 1) - 1
+        ).toString()
+      );
+    }
+  };
+
   function doScroll() {
     stackRef.current &&
       scroll(
@@ -255,7 +279,7 @@ function ChunksTab({
             }}
           >
             <Checkbox
-              defaultChecked={
+              checked={
                 chunk !== "" && game.chunks[parseInt(chunk)].locked
               }
               icon={<LockOpen />}
@@ -313,7 +337,94 @@ function ChunksTab({
             }
           />
         </Stack>
-        <Stack></Stack>
+      </Area>
+      <Area
+        sx={{
+          display: chunk !== "" ? undefined : "none",
+        }}
+      >
+        <Stack
+          sx={{
+            textAlign: "left",
+            ".MuiInputBase-input": {
+              display: "flex",
+            },
+          }}
+        >
+          <FormControl fullWidth>
+            <InputLabel>Child Chunk</InputLabel>
+            <Select
+              value={childChunk}
+              label="Child Chunk"
+              onChange={handleChangeChild}
+            >
+              {game.chunks[parseInt(chunk)] &&
+                game.chunks[parseInt(chunk)].children?.map((item, index) => (
+                  <MenuItem value={index} key={index}>
+                    {item.offset
+                      ? `Offset: ${item.offset[0]}, ${item.offset[1]}, ${item.offset[2]}`
+                      : "Offset: UNKNOWN"}
+                  </MenuItem>
+                ))}
+              <MenuItem value="NEW">
+                <AddRounded
+                  sx={{
+                    marginRight: ".5rem",
+                  }}
+                />
+                New Child
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+      </Area>
+      <Area
+        sx={{
+          display: childChunk !== "" ? undefined : "none",
+        }}
+      >
+        <Stack flexDirection="row">
+          <Button
+            variant="outlined"
+            startIcon={<DeleteOutline />}
+            color="error"
+            onClick={() => {
+              if (isNaN(parseInt(chunk))) return;
+              const children = game.chunks[parseInt(chunk)].children;
+              if(children) delete children[parseInt(childChunk)];
+              setChildChunk("");
+              setGame(game);
+            }}
+            sx={{
+              width: "100%",
+            }}
+          >
+            Delete Child
+          </Button>
+          <OffsetInput
+            sx={{
+              minWidth: "4rem",
+            }}
+            label="Offset"
+            value={
+              childChunk !== ""
+                ? (game.chunks[parseInt(chunk)].children ?? [])[parseInt(childChunk)].offset ?? [0, 0, 0]
+                : [0, 0, 0]
+            }
+            setValue={(value) => {
+              (game.chunks[parseInt(chunk)].children ?? [])[parseInt(childChunk)].offset = value;
+              setGame(game);
+            }}
+            valueCheck={(event) => {
+              if (
+                parseInt(event.target.value as string) > (limitSize ? 3 : 255)
+              )
+                return limitSize ? 3 : 255;
+              if (parseInt(event.target.value as string) < 0) return 0;
+              return parseInt(event.target.value as string);
+            }}
+          />
+        </Stack>
       </Area>
     </Stack>
   );
