@@ -9,6 +9,7 @@ import {
   Switch,
   Checkbox,
   Button,
+  ListItemIcon,
 } from "@mui/material";
 import { Game, Chunk } from "custom_modules/GameFormat";
 import {
@@ -22,6 +23,9 @@ import {
   ViewInArRounded,
   AddRounded,
   DeleteOutline,
+  SelectAllRounded,
+  CropSquareRounded,
+  Circle,
 } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Area from "components/Area";
@@ -279,9 +283,7 @@ function ChunksTab({
             }}
           >
             <Checkbox
-              checked={
-                chunk !== "" && game.chunks[parseInt(chunk)].locked
-              }
+              checked={chunk !== "" && game.chunks[parseInt(chunk)].locked}
               icon={<LockOpen />}
               checkedIcon={<Lock />}
               onChange={(event) => {
@@ -294,29 +296,82 @@ function ChunksTab({
               }}
             />
           </Stack>
-          <OffsetInput
-            sx={{
-              minWidth: "4rem",
-            }}
-            label="Offset"
-            value={
-              chunk !== ""
-                ? game.chunks[parseInt(chunk)].offset ?? [0, 0, 0]
-                : [0, 0, 0]
-            }
-            setValue={(value) => {
-              game.chunks[parseInt(chunk)].offset = value;
-              setGame(game);
-            }}
-            valueCheck={(event) => {
-              if (
-                parseInt(event.target.value as string) > (limitSize ? 3 : 255)
-              )
-                return limitSize ? 3 : 255;
-              if (parseInt(event.target.value as string) < 0) return 0;
-              return parseInt(event.target.value as string);
-            }}
-          />
+          <Stack flexWrap="nowrap" flexDirection="row">
+            <FormControl
+              fullWidth
+              sx={{
+                flexGrow: 1,
+                flexShrink: 1,
+                width: "12rem",
+              }}
+            >
+              <InputLabel>Collider</InputLabel>
+              <Select
+                label="Collider"
+                IconComponent={() => null}
+                value={
+                  (chunk !== "" && game.chunks[parseInt(chunk)].collider) || 0
+                }
+                onChange={(event) => {
+                  game.chunks[parseInt(chunk)].collider = event.target
+                    .value as Chunk.Collider;
+                  setGame(game);
+                }}
+                sx={{
+                  textAlign: "left",
+                  justifyContent: "center",
+                  width: "100%",
+                  ".MuiListItemIcon-root": {
+                    display: "none"
+                  },
+                }}
+              >
+                <MenuItem value={Chunk.Collider.Passthrough}>
+                  <ListItemIcon>
+                    <SelectAllRounded />
+                  </ListItemIcon>
+                  Passthrough
+                </MenuItem>
+                <MenuItem value={Chunk.Collider.Box}>
+                  <ListItemIcon>
+                    <CropSquareRounded />
+                  </ListItemIcon>
+                  Box
+                </MenuItem>
+                <MenuItem value={Chunk.Collider.Sphere}>
+                  <ListItemIcon>
+                    <Circle />
+                  </ListItemIcon>
+                  Sphear
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <OffsetInput
+              sx={
+                {
+                  // minWidth: "4rem",
+                }
+              }
+              label="Offset"
+              value={
+                chunk !== ""
+                  ? game.chunks[parseInt(chunk)].offset ?? [0, 0, 0]
+                  : [0, 0, 0]
+              }
+              setValue={(value) => {
+                game.chunks[parseInt(chunk)].offset = value;
+                setGame(game);
+              }}
+              valueCheck={(event) => {
+                if (
+                  parseInt(event.target.value as string) > (limitSize ? 3 : 255)
+                )
+                  return limitSize ? 3 : 255;
+                if (parseInt(event.target.value as string) < 0) return 0;
+                return parseInt(event.target.value as string);
+              }}
+            />
+          </Stack>
         </Stack>
       </Area>
       <Area
@@ -391,7 +446,7 @@ function ChunksTab({
             onClick={() => {
               if (isNaN(parseInt(chunk))) return;
               const children = game.chunks[parseInt(chunk)].children;
-              if(children) delete children[parseInt(childChunk)];
+              if (children) delete children[parseInt(childChunk)];
               setChildChunk("");
               setGame(game);
             }}
@@ -408,11 +463,15 @@ function ChunksTab({
             label="Offset"
             value={
               childChunk !== ""
-                ? (game.chunks[parseInt(chunk)].children ?? [])[parseInt(childChunk)].offset ?? [0, 0, 0]
+                ? (game.chunks[parseInt(chunk)].children ?? [])[
+                    parseInt(childChunk)
+                  ].offset ?? [0, 0, 0]
                 : [0, 0, 0]
             }
             setValue={(value) => {
-              (game.chunks[parseInt(chunk)].children ?? [])[parseInt(childChunk)].offset = value;
+              (game.chunks[parseInt(chunk)].children ?? [])[
+                parseInt(childChunk)
+              ].offset = value;
               setGame(game);
             }}
             valueCheck={(event) => {
