@@ -370,6 +370,7 @@ function ChunksTab({
                 setGame(game);
               }}
               valueCheck={(event) => {
+                if(Number.isNaN(parseInt(event.target.value as string))) return 0;
                 if (
                   parseInt(event.target.value as string) > (limitSize ? 3 : 255)
                 )
@@ -517,6 +518,7 @@ function ChunksTab({
               setGame(game);
             }}
             valueCheck={(event) => {
+              if(Number.isNaN(parseInt(event.target.value as string))) return 0;
               if (
                 parseInt(event.target.value as string) > (limitSize ? 3 : 255)
               )
