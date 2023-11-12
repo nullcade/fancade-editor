@@ -125,7 +125,10 @@ function ChunksTab({
       onScroll={(event) => doScroll()}
       onResize={(event) => doScroll()}
     >
-      <CommingSoon open={commingSoon} handleClose={() => setCommingSoon(false)} />
+      <CommingSoon
+        open={commingSoon}
+        handleClose={() => setCommingSoon(false)}
+      />
       <Area>
         <Stack
           sx={{
@@ -326,7 +329,7 @@ function ChunksTab({
                   justifyContent: "center",
                   width: "100%",
                   ".MuiListItemIcon-root": {
-                    display: "none"
+                    display: "none",
                   },
                 }}
               >
@@ -377,39 +380,39 @@ function ChunksTab({
             />
           </Stack>
           <Stack flexDirection="row" flexWrap="nowrap">
-          <Button
-            variant="outlined"
-            startIcon={<Window />}
-            color="secondary"
-            onClick={() => setCommingSoon(true)}
-            sx={{
-              width: "100%",
-            }}
-          >
-            Blocks
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<ViewSidebarOutlined />}
-            color="secondary"
-            onClick={() => setCommingSoon(true)}
-            sx={{
-              width: "100%",
-            }}
-          >
-            Faces
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<CableSharp />}
-            color="secondary"
-            onClick={() => setCommingSoon(true)}
-            sx={{
-              width: "100%",
-            }}
-          >
-            Wires
-          </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Window />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Blocks
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<ViewSidebarOutlined />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Faces
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<CableSharp />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Wires
+            </Button>
           </Stack>
         </Stack>
       </Area>
@@ -522,6 +525,41 @@ function ChunksTab({
               return parseInt(event.target.value as string);
             }}
           />
+          <Stack flexDirection="row" flexWrap="nowrap">
+            <Button
+              variant="outlined"
+              startIcon={<Window />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Blocks
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<ViewSidebarOutlined />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Faces
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<CableSharp />}
+              color="secondary"
+              onClick={() => setCommingSoon(true)}
+              sx={{
+                width: "100%",
+              }}
+            >
+              Wires
+            </Button>
+          </Stack>
         </Stack>
       </Area>
     </Stack>
