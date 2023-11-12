@@ -32,12 +32,11 @@ function CommingSoon({
       TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
-      aria-describedby="alert-dialog-slide-description"
     >
-      <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+      <DialogTitle>{"Comming Soon!"}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-slide-description">
-          Comming Soon!
+        <DialogContentText>
+          Wait for it...
         </DialogContentText>
       </DialogContent>
       <DialogActions>
