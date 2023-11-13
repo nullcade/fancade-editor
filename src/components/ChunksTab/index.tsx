@@ -35,6 +35,7 @@ import theme from "theme";
 import { nanoid } from "nanoid";
 import OffsetInput from "components/OffsetInput";
 import CommingSoon from "components/CommingSoon";
+import FacesDialog from "components/FacesDialog";
 
 function ChunksTab({
   game,
@@ -50,6 +51,7 @@ function ChunksTab({
   const [childChunk, setChildChunk] = React.useState<string>("");
   const [limitSize, setLimitSize] = useState<boolean>(true);
   const [commingSoon, setCommingSoon] = useState<boolean>(false);
+  const [facesDialog, setFacesDialog] = useState<boolean>(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value !== "NEW") {
@@ -128,6 +130,11 @@ function ChunksTab({
       <CommingSoon
         open={commingSoon}
         handleClose={() => setCommingSoon(false)}
+      />
+      <FacesDialog
+        open={facesDialog}
+        handleClose={() => setFacesDialog(false)}
+        chunk={game.chunks[parseInt(chunk)]}
       />
       <Area>
         <Stack
@@ -370,7 +377,8 @@ function ChunksTab({
                 setGame(game);
               }}
               valueCheck={(event) => {
-                if(Number.isNaN(parseInt(event.target.value as string))) return 0;
+                if (Number.isNaN(parseInt(event.target.value as string)))
+                  return 0;
                 if (
                   parseInt(event.target.value as string) > (limitSize ? 3 : 255)
                 )
@@ -396,7 +404,7 @@ function ChunksTab({
               variant="outlined"
               startIcon={<ViewSidebarOutlined />}
               color="secondary"
-              onClick={() => setCommingSoon(true)}
+              onClick={() => setFacesDialog(true)}
               sx={{
                 width: "100%",
               }}
@@ -518,7 +526,8 @@ function ChunksTab({
               setGame(game);
             }}
             valueCheck={(event) => {
-              if(Number.isNaN(parseInt(event.target.value as string))) return 0;
+              if (Number.isNaN(parseInt(event.target.value as string)))
+                return 0;
               if (
                 parseInt(event.target.value as string) > (limitSize ? 3 : 255)
               )
