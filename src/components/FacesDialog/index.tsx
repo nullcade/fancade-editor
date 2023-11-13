@@ -82,22 +82,30 @@ function FacesDialog({
               chunk.faces &&
               chunk.faces[0].map((_, y) => (
                 <Stack key={y} gap="2px" flexDirection="row" flexWrap="nowrap">
-                  {chunk.faces && chunk.faces[0].map((_, x) => chunk.faces && (
-                    <ButtonBase
-                      key={x}
-                      sx={{
-                        width: "3rem",
-                        height: "3rem",
-                        backgroundColor: colors[getColors(chunk.faces, layer, side, x, y)],
-                      }}
-                    />
-                  ))}
+                  {chunk.faces &&
+                    chunk.faces[0].map(
+                      (_, x) =>
+                        chunk.faces && (
+                          <ButtonBase
+                            key={x}
+                            sx={{
+                              width: "3rem",
+                              height: "3rem",
+                              backgroundColor:
+                                colors[
+                                  getColors(chunk.faces, layer, side, x, y)
+                                ],
+                            }}
+                          />
+                        )
+                    )}
                 </Stack>
               ))}
           </Stack>
           <Slider
             sx={{
               height: "auto",
+              marginY: "1rem",
             }}
             value={layer + 1}
             valueLabelDisplay="auto"
@@ -113,6 +121,9 @@ function FacesDialog({
           />
         </Stack>
         <Slider
+          sx={{
+            width: "calc(100% - 3rem)",
+          }}
           value={side + 1}
           valueLabelDisplay="auto"
           step={1}

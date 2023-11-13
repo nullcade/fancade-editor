@@ -66,6 +66,10 @@ function ChunksTab({
           name: "New Chunk",
           type: Chunk.Type.Rigid,
           locked: false,
+          faces: new Array(6).fill(
+            new Array(8).fill(new Array(8).fill(new Array(8).fill(0)))
+          ),
+          offset: [0, 0, 0],
           blocks: [],
           values: [],
           wires: [],
@@ -405,6 +409,7 @@ function ChunksTab({
               startIcon={<ViewSidebarOutlined />}
               color="secondary"
               onClick={() => setFacesDialog(true)}
+              disabled={chunk === "" || game.chunks[parseInt(chunk)].type === Chunk.Type.Level}
               sx={{
                 width: "100%",
               }}
