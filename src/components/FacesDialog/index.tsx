@@ -83,22 +83,29 @@ function FacesDialog({
               chunk.faces[0].map((_, y) => (
                 <Stack key={y} gap="2px" flexDirection="row" flexWrap="nowrap">
                   {chunk.faces &&
-                    chunk.faces[0].map(
-                      (_, x) =>
-                        chunk.faces && (
+                    chunk.faces[0].map((_, x) => {
+                      if (chunk.faces) {
+                        const color = getColors(chunk.faces, layer, side, x, y);
+                        return (
                           <ButtonBase
                             key={x}
                             sx={{
                               width: "3rem",
                               height: "3rem",
-                              backgroundColor:
-                                colors[
-                                  getColors(chunk.faces, layer, side, x, y)
-                                ],
+                              background:
+                                !(color & 0x80) && color !== 0x00
+                                  ? `radial-gradient(circle, ${
+                                      colors[color & 0x7f]
+                                    } 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,1) 40%, ${
+                                      colors[color & 0x7f]
+                                    } 45%)`
+                                  : colors[color & 0x7f],
                             }}
                           />
-                        )
-                    )}
+                        );
+                      }
+                      return undefined;
+                    })}
                 </Stack>
               ))}
           </Stack>
