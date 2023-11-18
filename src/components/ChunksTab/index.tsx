@@ -52,6 +52,7 @@ function ChunksTab({
   const [limitSize, setLimitSize] = useState<boolean>(true);
   const [commingSoon, setCommingSoon] = useState<boolean>(false);
   const [facesDialog, setFacesDialog] = useState<boolean>(false);
+  const [childFacesDialog, setChildFacesDialog] = useState<boolean>(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value !== "NEW") {
@@ -80,7 +81,7 @@ function ChunksTab({
 
   const handleChangeChild = (event: SelectChangeEvent) => {
     if (event.target.value !== "NEW") {
-      setChildChunk(event.target.value);
+      setChildChunk(event.target.value.toString());
       return;
     }
     if (game.chunks[parseInt(chunk)]) {
@@ -139,6 +140,17 @@ function ChunksTab({
         open={facesDialog}
         handleClose={() => setFacesDialog(false)}
         chunk={game.chunks[parseInt(chunk)]}
+      />
+      <FacesDialog
+        open={childFacesDialog}
+        handleClose={() => setChildFacesDialog(false)}
+        chunk={
+          childChunk.length > 0
+            ? (game.chunks[parseInt(chunk)].children ?? [])[
+                parseInt(childChunk)
+              ]
+            : undefined
+        }
       />
       <Area>
         <Stack
@@ -409,7 +421,10 @@ function ChunksTab({
               startIcon={<ViewSidebarOutlined />}
               color="secondary"
               onClick={() => setFacesDialog(true)}
-              disabled={chunk === "" || game.chunks[parseInt(chunk)].type === Chunk.Type.Level}
+              disabled={
+                chunk === "" ||
+                game.chunks[parseInt(chunk)].type === Chunk.Type.Level
+              }
               sx={{
                 width: "100%",
               }}
@@ -557,7 +572,11 @@ function ChunksTab({
               variant="outlined"
               startIcon={<ViewSidebarOutlined />}
               color="secondary"
-              onClick={() => setCommingSoon(true)}
+              onClick={() => setChildFacesDialog(true)}
+              disabled={
+                chunk === "" ||
+                game.chunks[parseInt(chunk)].type === Chunk.Type.Level
+              }
               sx={{
                 width: "100%",
               }}
