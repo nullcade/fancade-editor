@@ -14,7 +14,7 @@ import { Chunk } from "custom_modules/GameFormat";
 import React, { useState } from "react";
 import getColors from "./getColors";
 
-const colors: {
+const webColors: {
   [key: number]: string;
 } = {
   0x00: "#00000000",
@@ -147,6 +147,139 @@ const colors: {
   0x7f: "#002629",
 };
 
+const colors: {
+  [key: number]: string;
+} = {
+  0x00: "#00000000",
+  0x01: "#1E1E28",
+  0x02: "#434352",
+  0x03: "#6A6C7D",
+  0x04: "#989BAA",
+  0x05: "#C9CBD4",
+  0x06: "#FFFFFF",
+  0x07: "#9A5862",
+  0x08: "#C77285",
+  0x09: "#E9A19E",
+  0x0a: "#FFBEAF",
+  0x0b: "#FFE1CA",
+  0x0c: "#FFFCF9",
+  0x0d: "#C93954",
+  0x0e: "#FF4F70",
+  0x0f: "#FFA5A5",
+  0x10: "#D35645",
+  0x11: "#FF7858",
+  0x12: "#FFB48A",
+  0x13: "#F1B400",
+  0x14: "#FFE300",
+  0x15: "#FFFF82",
+  0x16: "#008F50",
+  0x17: "#45CB52",
+  0x18: "#BDFF73",
+  0x19: "#0072E6",
+  0x1a: "#0096FF",
+  0x1b: "#00C9FF",
+  0x1c: "#6E58A9",
+  0x1d: "#9476E4",
+  0x1e: "#BA93FF",
+  0x1f: "#F777B4",
+  0x20: "#FF9EDA",
+  0x21: "#FFC4F4",
+  0x22: "#010000",
+  0x23: "#00001D",
+  0x24: "#000024",
+  0x25: "#010028",
+  0x26: "#010021",
+  0x27: "#00002D",
+  0x28: "#00003D",
+  0x29: "#1F000A",
+  0x2a: "#260002",
+  0x2b: "#2D0000",
+  0x2c: "#260002",
+  0x2d: "#330001",
+  0x2e: "#400000",
+  0x2f: "#150001",
+  0x30: "#040000",
+  0x31: "#290006",
+  0x32: "#330000",
+  0x33: "#210003",
+  0x34: "#740000",
+  0x35: "#490000",
+  0x36: "#780000",
+  0x37: "#720001",
+  0x38: "#000B05",
+  0x39: "#000103",
+  0x3a: "#000900",
+  0x3b: "#000115",
+  0x3c: "#000115",
+  0x3d: "#02344F",
+  0x3e: "#050029",
+  0x3f: "#000016",
+  0x40: "#000014",
+  0x41: "#100004",
+  0x42: "#140200",
+  0x43: "#2B030E",
+  0x44: "#020000",
+  0x45: "#24202E",
+  0x46: "#444353",
+  0x47: "#696A7E",
+  0x48: "#8C8FA0",
+  0x49: "#B3BFCC",
+  0x4a: "#FEFFFF",
+  0x4b: "#5F404F",
+  0x4c: "#9E6577",
+  0x4d: "#BF8D9C",
+  0x4e: "#E7AD97",
+  0x4f: "#FFE3D1",
+  0x50: "#FFFEF5",
+  0x51: "#A8323B",
+  0x52: "#FF5764",
+  0x53: "#FFCDCE",
+  0x54: "#E06134",
+  0x55: "#FD9659",
+  0x56: "#FFBA86",
+  0x57: "#FFE964",
+  0x58: "#FFFB90",
+  0x59: "#FFFFF9",
+  0x5a: "#157A51",
+  0x5b: "#32DB7F",
+  0x5c: "#CCFF7F",
+  0x5d: "#175B9A",
+  0x5e: "#05CBF1",
+  0x5f: "#6CF4FF",
+  0x60: "#564278",
+  0x61: "#9488DC",
+  0x62: "#E6E7FB",
+  0x63: "#DC5989",
+  0x64: "#FEA8E7",
+  0x65: "#FFCCEE",
+  0x66: "#020002",
+  0x67: "#000300",
+  0x68: "#150006",
+  0x69: "#161A2D",
+  0x6a: "#4A4853",
+  0x6b: "#57446A",
+  0x6c: "#506FA6",
+  0x6d: "#370014",
+  0x6e: "#39000B",
+  0x6f: "#4C0000",
+  0x70: "#8F2A2E",
+  0x71: "#923634",
+  0x72: "#A52B26",
+  0x73: "#390221",
+  0x74: "#7A0027",
+  0x75: "#B13837",
+  0x76: "#962202",
+  0x77: "#A62D07",
+  0x78: "#B3462E",
+  0x79: "#A24717",
+  0x7a: "#C56B25",
+  0x7b: "#D8721E",
+  0x7c: "#003332",
+  0x7d: "#00282D",
+  0x7e: "#21A258",
+  0x7f: "#25085A",
+};
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
@@ -163,7 +296,7 @@ function FacesDialog({
 }: {
   open: boolean;
   handleClose: () => void;
-  chunk?: Chunk.Data;
+  chunk?: Omit<Chunk.Data, "type" | "locked">;
 }) {
   const [side, setSide] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
   const [layer, setLayer] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
@@ -193,13 +326,12 @@ function FacesDialog({
                               width: "3rem",
                               height: "3rem",
                               background:
-                                !(color & 0x80) && color !== 0x00
-                                  ? `radial-gradient(circle, ${
-                                      colors[color & 0x7f]
-                                    } 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,1) 40%, ${
-                                      colors[color & 0x7f]
-                                    } 45%)`
-                                  : colors[color & 0x7f],
+                                (!(color & 0x80) && color !== 0x00
+                                  ? "radial-gradient(circle, transparent 20%, white 25%, black 35%, transparent 40%), "
+                                  : "") +
+                                `linear-gradient(135deg, ${
+                                  colors[color & 0x7f]
+                                } 50%, ${webColors[color & 0x7f]} 50%)`,
                             }}
                           />
                         );
