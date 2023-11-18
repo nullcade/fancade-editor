@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps, TextFieldVariants } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 
 function ControlledTextField({
   setValue,
@@ -11,7 +11,8 @@ function ControlledTextField({
   valueCheck?: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => TextFieldProps["value"] | null;
-} & Omit<TextFieldProps, "variant">) {
+} & Omit<TextFieldProps, "variant">, ref: React.ForwardedRef<HTMLDivElement>
+) {
   const [value, setLocalValue] = useState<TextFieldProps["value"]>(props.value);
   useEffect(() => {
     setLocalValue(props.value);
@@ -27,7 +28,8 @@ function ControlledTextField({
       onBlur={() => {
         setValue(value);
       }}
+      ref={ref}
     />
   );
 }
-export default ControlledTextField;
+export default forwardRef(ControlledTextField);

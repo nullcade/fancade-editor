@@ -8,11 +8,16 @@ import {
   Slide,
   Stack,
   Slider,
+  Select,
+  IconButton,
+  MenuItem,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { Chunk } from "custom_modules/GameFormat";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import getColors from "./getColors";
+import ControlledTextField from "components/ControlledTextArea";
+import { AddRounded, RemoveRounded } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -300,6 +305,7 @@ function FacesDialog({
 
   const [side, setSide] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
   const [layer, setLayer] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
+  const layerInputRef = useRef<null | HTMLDivElement>(null);
   return (
     <Dialog
       open={open}
@@ -309,71 +315,116 @@ function FacesDialog({
     >
       <DialogTitle>{"Block Faces"}</DialogTitle>
       <DialogContent>
-        <Stack flexDirection="row" flexWrap="nowrap">
-          <Stack gap="2px" flexDirection="column" flexWrap="nowrap">
-            {chunk &&
-              chunk.faces &&
-              chunk.faces[0].map((_, y) => (
-                <Stack key={y} gap="2px" flexDirection="row" flexWrap="nowrap">
-                  {chunk.faces &&
-                    chunk.faces[0].map((_, x) => {
-                      if (chunk.faces) {
-                        const color = getColors(chunk.faces, layer, side, x, y);
-                        return (
-                          <ButtonBase
-                            key={x}
-                            sx={{
-                              width: "3rem",
-                              height: "3rem",
-                              background:
-                                (!(color & 0x80) && color !== 0x00
-                                  ? "radial-gradient(circle, transparent 20%, white 25%, black 35%, transparent 40%), "
-                                  : "") +
-                                `linear-gradient(135deg, ${
-                                  colors[color & 0x7f]
-                                } 50%, ${webColors[color & 0x7f]} 50%)`,
-                            }}
-                          />
-                        );
-                      }
-                      return undefined;
-                    })}
-                </Stack>
-              ))}
-          </Stack>
-          <Slider
-            sx={{
-              height: "auto",
-              marginY: "1rem",
-            }}
-            value={layer + 1}
-            valueLabelDisplay="auto"
-            step={1}
-            marks
-            min={1}
-            max={8}
-            onChange={(_, value) =>
-              typeof value === "number" &&
-              setLayer((value - 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7)
-            }
-            orientation="vertical"
-          />
+        <Stack gap="2px" flexDirection="column" flexWrap="nowrap">
+          {chunk &&
+            chunk.faces &&
+            chunk.faces[0].map((_, y) => (
+              <Stack key={y} gap="2px" flexDirection="row" flexWrap="nowrap">
+                {chunk.faces &&
+                  chunk.faces[0].map((_, x) => {
+                    if (chunk.faces) {
+                      const color = getColors(chunk.faces, layer, side, x, y);
+                      return (
+                        <ButtonBase
+                          key={x}
+                          sx={{
+                            width: "3rem",
+                            height: "3rem",
+                            background:
+                              (color & 0x7f) === 0x00
+                                ? "linear-gradient(0deg, red 0%, transparent 5%, transparent 95%, red 100%), linear-gradient(90deg, red 0%, transparent 5%, transparent 95%, red 100%)"
+                                : (!(color & 0x80)
+                                    ? "radial-gradient(circle, transparent 20%, white 25%, black 35%, transparent 40%), "
+                                    : "") +
+                                  `linear-gradient(135deg, ${
+                                    colors[color & 0x7f]
+                                  } 50%, ${webColors[color & 0x7f]} 50%)`,
+                          }}
+                        />
+                      );
+                    }
+                    return undefined;
+                  })}
+              </Stack>
+            ))}
         </Stack>
-        <Slider
+        <Stack
+          flexDirection="row"
           sx={{
-            width: "calc(100% - 3rem)",
+            marginTop: "1rem",
+            alignItems: "center",
           }}
-          value={side + 1}
-          valueLabelDisplay="auto"
-          step={1}
-          marks
-          min={1}
-          max={6}
-          onChange={(_, value) =>
-            typeof value === "number" &&
-            setSide((value - 1) as 0 | 1 | 2 | 3 | 4 | 5)
-          }
-        />
+        >
+          <Select
+            value={side}
+            onChange={(event) =>
+              setSide(
+                typeof event.target.value === "string"
+                  ? (parseInt(event.target.value) as 0 | 1 | 2 | 3 | 4 | 5)
+                  : event.target.value
+              )
+            }
+          >
+            <MenuItem value={0}>X+</MenuItem>
+            <MenuItem value={1}>X-</MenuItem>
+            <MenuItem value={2}>Y+</MenuItem>
+            <MenuItem value={3}>Y-</MenuItem>
+            <MenuItem value={4}>Z+</MenuItem>
+            <MenuItem value={5}>Z-</MenuItem>
+          </Select>
+          <IconButton
+            onClick={() =>
+              setLayer(
+                (layer <= 0 ? 0 : layer - 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+              )
+            }
+          >
+            <RemoveRounded />
+          </IconButton>
+          <ControlledTextField
+            type="number"
+            label="layer"
+            value={layer}
+            setValue={(value) =>
+              setLayer(
+                parseInt((value as string | number).toString()) as
+                  | 0
+                  | 1
+                  | 2
+                  | 3
+                  | 4
+                  | 5
+                  | 6
+                  | 7
+              )
+            }
+            valueCheck={(event) => {
+              const num = parseInt(event.target.value);
+              if (num > 7) return "7";
+              if (num < 0) return "0";
+              if (Number.isNaN(num)) return "0";
+              if (Math.floor(num) !== num) return Math.floor(num).toString();
+              return event.target.value;
+            }}
+            ref={layerInputRef}
+            sx={{
+              input: {
+                textAlign: "center",
+              },
+              maxWidth: "3.5rem",
+              textAlign: "center",
+            }}
+          />
+          <IconButton
+            onClick={() =>
+              setLayer(
+                (layer >= 7 ? 7 : layer + 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+              )
+            }
+          >
+            <AddRounded />
+          </IconButton>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
