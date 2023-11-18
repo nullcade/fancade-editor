@@ -7,7 +7,6 @@ import {
   DialogTitle,
   Slide,
   Stack,
-  Slider,
   Select,
   IconButton,
   MenuItem,
