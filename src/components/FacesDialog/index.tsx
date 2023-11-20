@@ -14,7 +14,6 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { Chunk } from "custom_modules/GameFormat";
 import React, { useRef, useState } from "react";
-import getColors from "./getColors";
 import ControlledTextField from "components/ControlledTextArea";
 import {
   AddRounded,
@@ -25,6 +24,7 @@ import {
 } from "@mui/icons-material";
 import { GithubPicker } from "react-color";
 import tinycolor from "tinycolor2";
+import getFace from "./getFace";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -372,10 +372,16 @@ function FacesDialog({
                 {chunk.faces &&
                   chunk.faces[0].map((_, x) => {
                     if (chunk.faces) {
-                      const color = getColors(chunk.faces, layer, side, x, y);
+                      const face = new getFace(chunk.faces, layer, side, x, y);
+                      const color = face.get();
                       return (
                         <ButtonBase
                           key={x}
+                          onClick={() => {
+                            if (chunk.faces) {
+                              face.set(brushColor);
+                            }
+                          }}
                           sx={{
                             width: "3rem",
                             height: "3rem",
@@ -486,7 +492,7 @@ function FacesDialog({
           >
             <ButtonBase
               onClick={() => {
-                if(displayColorPicker) setBrushColor(0);
+                if (displayColorPicker) setBrushColor(0);
                 setDisplayColorPicker(!displayColorPicker);
               }}
               sx={{
@@ -501,11 +507,16 @@ function FacesDialog({
                   brushColor === 0 ? `3px solid ${transparentBorderColor}` : "",
               }}
             >
-              <ClearRounded sx={{
-                visibility: !displayColorPicker ? "hidden" : undefined,
-                height: "2rem",
-                width: "2rem"
-              }} htmlColor={tinycolor.mostReadable(colors[brushColor], Object.keys(defaultColors)).toHexString()} />
+              <ClearRounded
+                sx={{
+                  visibility: !displayColorPicker ? "hidden" : undefined,
+                  height: "2rem",
+                  width: "2rem",
+                }}
+                htmlColor={tinycolor
+                  .mostReadable(colors[brushColor], Object.keys(defaultColors))
+                  .toHexString()}
+              />
             </ButtonBase>
             <Stack
               sx={{
@@ -524,7 +535,7 @@ function FacesDialog({
                 color={colors[brushColor].toLowerCase()}
                 onChange={(value) => {
                   setBrushColor(defaultColors[value.hex.toUpperCase()]);
-                  setDisplayColorPicker(false)
+                  setDisplayColorPicker(false);
                 }}
                 styles={{
                   default: {
@@ -541,14 +552,11 @@ function FacesDialog({
           </Stack>
         </Stack>
       </DialogContent>
-      <DialogActions
-        sx={{
-          justifyContent: "space-between",
-        }}
-      >
+      <DialogActions>
         <IconButton onClick={() => setGlueBrush(!glueBrush)}>
           {glueBrush ? <CenterFocusWeakRounded /> : <Brush />}
         </IconButton>
+        <Stack />
         <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
