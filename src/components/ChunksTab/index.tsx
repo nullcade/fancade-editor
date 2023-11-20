@@ -67,8 +67,12 @@ function ChunksTab({
           name: "New Chunk",
           type: Chunk.Type.Rigid,
           locked: false,
-          faces: new Array(6).fill(
-            new Array(8).fill(new Array(8).fill(new Array(8).fill(0)))
+          faces: JSON.parse(
+            JSON.stringify(
+              new Array(6).fill(
+                new Array(8).fill(new Array(8).fill(new Array(8).fill(0)))
+              )
+            )
           ),
           offset: [0, 0, 0],
           blocks: [],
