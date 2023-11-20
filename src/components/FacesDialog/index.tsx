@@ -379,7 +379,11 @@ function FacesDialog({
                           key={x}
                           onClick={() => {
                             if (chunk.faces) {
-                              face.set(brushColor);
+                              if (glueBrush) {
+                                face.set(face.get() ^ 0x80);
+                              } else {
+                                face.set(brushColor);
+                              }
                             }
                           }}
                           sx={{
