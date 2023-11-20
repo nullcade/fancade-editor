@@ -15,13 +15,13 @@ export class getFace {
   ) {
     this.side = side;
     if (side === 0) {
-      this.x = layer;
-      this.y = faces[0].length - 1 - y;
-      this.z = x;
+      this.x = faces[0].length - 1 - y;
+      this.y = x;
+      this.z = layer;
     } else if (side === 1) {
-      this.x = faces[0].length - 1 - layer;
-      this.y = faces[0].length - 1 - y;
-      this.z = faces[0].length - 1 - x;
+      this.x = faces[0].length - 1 - y;
+      this.y = faces[0].length - 1 - x;
+      this.z = faces[0].length - 1 - layer;
     } else if (side === 2) {
       this.x = x;
       this.y = layer;
@@ -31,13 +31,13 @@ export class getFace {
       this.y = faces[0].length - 1 - layer;
       this.z = y;
     } else if (side === 4) {
-      this.x = faces[0].length - 1 - x;
-      this.y = faces[0].length - 1 - y;
-      this.z = layer;
+      this.x = layer;
+      this.y = faces[0].length - 1 - x;
+      this.z = faces[0].length - 1 - y;
     } else if (side === 5) {
-      this.x = x;
-      this.y = faces[0].length - 1 - y;
-      this.z = faces[0].length - 1 - layer;
+      this.x = faces[0].length - 1 - layer;
+      this.y = x;
+      this.z = faces[0].length - 1 - y;
     } else {
       this.x = 0;
       this.y = 0;
