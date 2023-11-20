@@ -16,7 +16,15 @@ import { Chunk } from "custom_modules/GameFormat";
 import React, { useRef, useState } from "react";
 import getColors from "./getColors";
 import ControlledTextField from "components/ControlledTextArea";
-import { AddRounded, RemoveRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  Brush,
+  CenterFocusWeakRounded,
+  ClearRounded,
+  RemoveRounded,
+} from "@mui/icons-material";
+import { GithubPicker } from "react-color";
+import tinycolor from "tinycolor2";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -36,6 +44,7 @@ function FacesDialog({
   handleClose: () => void;
   chunk?: Omit<Chunk.Data, "type" | "locked">;
 }) {
+  const transparentBorderColor = "#888888";
   const webColors: {
     [key: number]: string;
   } = {
@@ -51,7 +60,7 @@ function FacesDialog({
     0x09: "#E9A19E",
     0x0a: "#FFBEAF",
     0x0b: "#FFE1CA",
-    0x0c: "#FFFCF9",
+    0x0c: "#FFE4E4",
     0x0d: "#C93954",
     0x0e: "#FF4F70",
     0x0f: "#FFA5A5",
@@ -184,7 +193,7 @@ function FacesDialog({
     0x09: "#E9A19E",
     0x0a: "#FFBEAF",
     0x0b: "#FFE1CA",
-    0x0c: "#FFFCF9",
+    0x0c: "#FFE4E4",
     0x0d: "#C93954",
     0x0e: "#FF4F70",
     0x0f: "#FFA5A5",
@@ -302,8 +311,49 @@ function FacesDialog({
     0x7f: "#25085A",
   };
 
+  const defaultColors: {
+    [key: string]: number;
+  } = {
+    "#1E1E28": 0x01,
+    "#434352": 0x02,
+    "#6A6C7D": 0x03,
+    "#989BAA": 0x04,
+    "#C9CBD4": 0x05,
+    "#FFFFFF": 0x06,
+    "#9A5862": 0x07,
+    "#C77285": 0x08,
+    "#E9A19E": 0x09,
+    "#FFBEAF": 0x0a,
+    "#FFE1CA": 0x0b,
+    "#FFE4E4": 0x0c,
+    "#C93954": 0x0d,
+    "#FF4F70": 0x0e,
+    "#FFA5A5": 0x0f,
+    "#D35645": 0x10,
+    "#FF7858": 0x11,
+    "#FFB48A": 0x12,
+    "#F1B400": 0x13,
+    "#FFE300": 0x14,
+    "#FFFF82": 0x15,
+    "#008F50": 0x16,
+    "#45CB52": 0x17,
+    "#BDFF73": 0x18,
+    "#0072E6": 0x19,
+    "#0096FF": 0x1a,
+    "#00C9FF": 0x1b,
+    "#6E58A9": 0x1c,
+    "#9476E4": 0x1d,
+    "#BA93FF": 0x1e,
+    "#F777B4": 0x1f,
+    "#FF9EDA": 0x20,
+    "#FFC4F4": 0x21,
+  };
+
   const [side, setSide] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
   const [layer, setLayer] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
+  const [glueBrush, setGlueBrush] = useState<boolean>(false);
+  const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false);
+  const [brushColor, setBrushColor] = useState<number>(0);
   const layerInputRef = useRef<null | HTMLDivElement>(null);
   return (
     <Dialog
@@ -331,7 +381,7 @@ function FacesDialog({
                             height: "3rem",
                             background:
                               (color & 0x7f) === 0x00
-                                ? "linear-gradient(0deg, red 0%, transparent 5%, transparent 95%, red 100%), linear-gradient(90deg, red 0%, transparent 5%, transparent 95%, red 100%)"
+                                ? `linear-gradient(0deg, ${transparentBorderColor} 0%, transparent 5%, transparent 95%, ${transparentBorderColor} 100%), linear-gradient(90deg, ${transparentBorderColor} 0%, transparent 5%, transparent 95%, ${transparentBorderColor} 100%)`
                                 : (!(color & 0x80)
                                     ? "radial-gradient(circle, transparent 20%, white 25%, black 35%, transparent 40%), "
                                     : "") +
@@ -349,6 +399,7 @@ function FacesDialog({
         </Stack>
         <Stack
           flexDirection="row"
+          flexWrap="nowrap"
           sx={{
             marginTop: "1rem",
             alignItems: "center",
@@ -423,9 +474,81 @@ function FacesDialog({
           >
             <AddRounded />
           </IconButton>
+          <Stack
+            sx={{
+              height: "100%",
+              maxHeight: "3rem",
+              width: "auto",
+              maxWidth: "3rem",
+              aspectRatio: "1/1",
+              position: "relative",
+            }}
+          >
+            <ButtonBase
+              onClick={() => {
+                if(displayColorPicker) setBrushColor(0);
+                setDisplayColorPicker(!displayColorPicker);
+              }}
+              sx={{
+                aspectRatio: "1/1",
+                height: "100%",
+                borderRadius: "1rem",
+                background:
+                  brushColor === 0
+                    ? ""
+                    : `linear-gradient(135deg, ${colors[brushColor]} 50%, ${webColors[brushColor]} 50%)`,
+                outline:
+                  brushColor === 0 ? `3px solid ${transparentBorderColor}` : "",
+              }}
+            >
+              <ClearRounded sx={{
+                visibility: !displayColorPicker ? "hidden" : undefined,
+                height: "2rem",
+                width: "2rem"
+              }} htmlColor={tinycolor.mostReadable(colors[brushColor], Object.keys(defaultColors)).toHexString()} />
+            </ButtonBase>
+            <Stack
+              sx={{
+                visibility: displayColorPicker ? undefined : "hidden",
+                position: "absolute",
+                width: "auto",
+                top: "50%",
+                right: "100%",
+                transform: "translate(-1rem, -50%)",
+                zIndex: 2,
+              }}
+            >
+              <GithubPicker
+                triangle="hide"
+                colors={Object.keys(defaultColors)}
+                color={colors[brushColor].toLowerCase()}
+                onChange={(value) => {
+                  setBrushColor(defaultColors[value.hex.toUpperCase()]);
+                  setDisplayColorPicker(false)
+                }}
+                styles={{
+                  default: {
+                    card: {
+                      width: "275px",
+                      height: "75px",
+                      flexWrap: "wrap-reverse",
+                      flexDirection: "column-reverse",
+                    },
+                  },
+                }}
+              />
+            </Stack>
+          </Stack>
         </Stack>
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
+        <IconButton onClick={() => setGlueBrush(!glueBrush)}>
+          {glueBrush ? <CenterFocusWeakRounded /> : <Brush />}
+        </IconButton>
         <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
