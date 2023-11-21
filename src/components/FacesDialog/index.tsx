@@ -382,7 +382,8 @@ function FacesDialog({
                               if (glueBrush) {
                                 face.set(face.get() ^ 0x80);
                               } else {
-                                face.set(brushColor);
+                                if (brushColor === 0) face.set(0);
+                                else face.set((face.get() & 0x80) + brushColor);
                               }
                             }
                           }}
