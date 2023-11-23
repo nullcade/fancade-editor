@@ -47,13 +47,25 @@ function DragAndDrop({
           setError(2);
         } else {
           try {
-            setFile(
-              new GameDecoder(
-                Buffer.from(
-                  zlib.inflate(await event.dataTransfer.files[0].arrayBuffer())
+            if (event.dataTransfer.files[0].name.toLowerCase().endsWith(".fc.json")) {
+              setFile(
+                JSON.parse(
+                  new TextDecoder().decode(
+                    await event.dataTransfer.files[0].arrayBuffer()
+                  )
                 )
-              ).decGame()
-            );
+              );
+            } else {
+              setFile(
+                new GameDecoder(
+                  Buffer.from(
+                    zlib.inflate(
+                      await event.dataTransfer.files[0].arrayBuffer()
+                    )
+                  )
+                ).decGame()
+              );
+            }
             setError(-1);
           } catch (err) {
             console.error(err);

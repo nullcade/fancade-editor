@@ -65,7 +65,7 @@ function FileExport({ game }: { game: Game.Data }) {
               idOffset: game.idOffset,
               chunks: flatChunks(game.chunks),
             }, null, 4),
-            (game.title.length !== 0 ? game.title : "New Game") + ".json",
+            (game.title.length !== 0 ? game.title : "New Game") + ".fc.json",
           );
         }}
       >
