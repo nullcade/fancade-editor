@@ -10,6 +10,9 @@ import {
   Checkbox,
   Button,
   ListItemIcon,
+  IconButton,
+  Popper,
+  Fade,
 } from "@mui/material";
 import { Game, Chunk } from "custom_modules/GameFormat";
 import {
@@ -27,6 +30,7 @@ import {
   Window,
   ViewSidebarOutlined,
   CableSharp,
+  Fingerprint,
 } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Area from "components/Area";
@@ -53,6 +57,10 @@ function ChunksTab({
   const [commingSoon, setCommingSoon] = useState<boolean>(false);
   const [facesDialog, setFacesDialog] = useState<boolean>(false);
   const [childFacesDialog, setChildFacesDialog] = useState<boolean>(false);
+  const [uuidCopied, setUuidCopied] = useState<boolean>(false);
+  const [uuidCopyButton, setUuidCopyButton] = useState<HTMLDivElement | null>(
+    null
+  );
 
   const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value !== "NEW") {
@@ -158,8 +166,11 @@ function ChunksTab({
       />
       <Area>
         <Stack
+          flexDirection="row"
+          flexWrap="nowrap"
           sx={{
             textAlign: "left",
+            alignItems: "center",
             ".MuiInputBase-input": {
               display: "flex",
             },
@@ -210,6 +221,44 @@ function ChunksTab({
               </MenuItem>
             </Select>
           </FormControl>
+          <IconButton
+            disabled={!game.chunks[parseInt(chunk)]}
+            onClick={(event) => {
+              setUuidCopyButton(event.target as HTMLDivElement);
+              navigator.clipboard.writeText(game.chunks[parseInt(chunk)].uuid);
+              setTimeout(() => setUuidCopied(false), 1000);
+              setUuidCopied(true);
+            }}
+            sx={{
+              flexGrow: 0,
+              aspectRatio: "1/1",
+            }}
+          >
+            <Fingerprint fontSize="large" />
+          </IconButton>
+          <Popper
+            open={uuidCopied}
+            sx={{ position: "absolute" }}
+            anchorEl={uuidCopyButton}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Stack
+                  sx={{
+                    backgroundColor: "#388e3c",
+                    paddingX: ".5rem",
+                    paddingY: "0.2rem",
+                    borderRadius: "3px",
+                    marginTop: ".5rem",
+                    color: "white",
+                  }}
+                >
+                  Copied!
+                </Stack>
+              </Fade>
+            )}
+          </Popper>
         </Stack>
       </Area>
       <Area

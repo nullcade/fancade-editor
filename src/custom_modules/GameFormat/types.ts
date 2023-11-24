@@ -12,7 +12,7 @@ export namespace Game {
 }
 export namespace Chunk {
   export interface Data {
-    uuid: String;
+    uuid: string;
     type: Type;
     name?: string;
     parent?: number;
@@ -95,7 +95,7 @@ export namespace Wire {
 }
 export namespace Block {
   /** A 2 byte id or string uuid used to reference blocks. */
-  export type Id = Ids | (number & {}) | String;
+  export type Id = Ids | (number & {}) | string;
   /** The 2 byte ids used to reference blocks. */
   export enum Ids {
     /** @abstract */
