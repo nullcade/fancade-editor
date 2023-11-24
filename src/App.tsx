@@ -66,7 +66,7 @@ function App() {
           >
             <Tab label="Info" value="0" />
             <Tab label="Chunks" value="1" />
-            <Tab label="Blocks" value="2" />
+            <Tab label="Scripting" value="2" />
           </TabList>
           <TabPanel value="0" sx={tabPanelSx}>
             <InfoTab game={file} setGame={setFile} scroll={(top: boolean, bottom: boolean) => setScroll({ top, bottom })} />
