@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.14.13",
     "@mui/lab": "^5.0.0-alpha.148",
     "@mui/material": "^5.14.13",
+    "@typescript-eslint/parser": "^5.62.0",
     "buffer": "^6.0.3",
     "idb": "^7.1.1",
     "nanoid": "^5.0.2",
