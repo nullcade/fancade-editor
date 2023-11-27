@@ -1,10 +1,14 @@
 import { createTheme } from "@mui/material";
 
+export const colors = {
+  main: "#28292a"
+}
+
 let theme = createTheme({
   palette: {
     mode: "dark",
     area: {
-      main: "#28292a",
+      main: colors.main,
     },
   },
 });

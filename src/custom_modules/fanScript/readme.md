@@ -33,7 +33,7 @@
 
 | Block name   | Script                                                       |
 | ------------ | ------------------------------------------------------------ |
-| if           | `if(condition: booleanWire) callIfTrue() else callIfFalse()` |
+| if           | `if(condition: BoolWire) callIfTrue() else callIfFalse()` |
 | Swipe Sensor | `onSwipe(callback: (direction: VecWire) => void): [VecWire]` |
 | Collision | `onCollision(object: ObjWire, callback: (collidedObject: ObjWire, impulse: NumberWire, Normal: VecWire) => void): [ObjWire, NumberWire, VecWire]`|
 ||
