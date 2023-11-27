@@ -17,3 +17,8 @@ code {
   font-family: "Custom Sans";
   src: url("../public/custom_sans.woff2");
 }
+
+@font-face {
+  font-family: "JetBrainsMono-Regular";
+  src: url("../public/JetBrainsMono-Regular.woff2");
+}

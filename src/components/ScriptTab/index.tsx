@@ -14,41 +14,320 @@ function ScriptTab({
       height="100%"
       theme="vs-dark"
       language="typescript"
-      defaultValue={"onTouch(Touching.Begins,Count.First,()=>{\n\twin();\n});"}
+      defaultValue={
+        "onTouch(Touching.Begins, Count.First, () => {\n\twin();\n});"
+      }
+      options={{
+        fontFamily: "JetBrainsMono-Regular",
+        fontLigatures: true,
+      }}
       beforeMount={(monaco) => {
         monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
           ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
           noLib: true,
         });
+        monaco.editor.EditorOptions.fontFamily.applyUpdate(
+          "JetBrainsMono-Regular",
+          "JetBrainsMono-Regular"
+        );
         monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          `declare interface NumWire {}
-          declare interface VecWire {}
-          declare interface BoolWire {}
-          declare interface RotWire {}
-          declare interface ObjWire {}
-          declare interface ConWire {}
-          
-          declare function win(): void;
-          declare function lose(): void;
-          
-          declare enum Touching {
-            Touching = 'touching',
-            Begins = 'begins',
-            Ends = 'ends',
-          }
-          declare enum Count {
-            First = "first",
-            Second = "second",
-            Third = "third",
-          }
-          
-          declare function onTouch(
-            touching: Touching,
-            count: Count,
-            callback: (screenX: NumWire, screenY: NumWire) => void
-          ): [NumWire, NumWire];
-          `,
+          `
+          type NonNegativeInteger<T extends number> = number extends T
+          ? never
+          : \`\${T}\` extends \`-\${string}\` | \`\${string}.\${string}\`
+          ? never
+          : T;
+        
+        declare interface NumWire {}
+        declare interface VecWire {}
+        declare interface BoolWire {}
+        declare interface RotWire {}
+        declare interface ObjWire {}
+        declare interface ConWire {}
+        
+        // Game
+        declare enum Amount {
+          TenFixed = "tenfixed",
+          TenLinear = "tenlinear",
+          TenDouble = "tendouble",
+          HundredFixed = "hundredfixed",
+          HundredLinear = "hundredlinear",
+          HundredDouble = "hundreddouble",
+          ThousandFixed = "thousandfixed",
+          ThousandLinear = "thousandlinear",
+          ThousandDouble = "thousanddouble",
+          TenThousandFixed = "tenthousandfixed",
+        }
+        declare function win(): void;
+        declare function lose(): void;
+        declare function setScore(score?: NumWire, coins?: NumWire): void;
+        declare function setCamera(
+          prespective: boolean,
+          position?: VecWire,
+          rotation?: RotWire,
+          range?: NumWire
+        ): void;
+        declare function setLight(position?: VecWire, rotation?: RotWire): void;
+        declare function getScreenSize(): [NumWire, NumWire];
+        declare function getAccelerometer(): [VecWire];
+        declare function getFrame(): [NumWire];
+        declare function addMenuItem(
+          name: string,
+          count: NonNegativeInteger<number>,
+          amount: Amount,
+          variable?: NumWire,
+          picture?: ObjWire
+        ): void;
+        
+        // Objects
+        declare function getPosition(object?: ObjWire): [VecWire, RotWire];
+        declare function setPosition(
+          object?: ObjWire,
+          position?: VecWire,
+          rotation?: RotWire
+        ): void;
+        declare function addRaycast(
+          from?: VecWire,
+          to?: VecWire
+        ): [BoolWire, VecWire, ObjWire];
+        declare function getSize(object?: ObjWire): [VecWire, VecWire];
+        declare function setVisible(object?: ObjWire, visible?: BoolWire): void;
+        declare function copyObject(object?: ObjWire): [ObjWire];
+        declare function deleteObject(object?: ObjWire): void;
+        
+        // Sound
+        declare enum Sound {
+          Chirp = "chirp",
+          Scrape = "scrape",
+          Squeek = "squeek",
+          Engine = "engine",
+          Button = "button",
+          Ball = "ball",
+          Piano = "piano",
+          Marimba = "marimba",
+          Pad = "pad",
+          Beep = "beep",
+          Plop = "plop",
+          Flop = "flop",
+          Splash = "splash",
+          Boom = "boom",
+          Hit = "hit",
+          Clang = "clang",
+          Jump = "jump",
+        }
+        declare function playSound(
+          loop: boolean,
+          sound: Sound,
+          volume?: NumWire,
+          pitch?: NumWire
+        ): [NumWire];
+        declare function stopSound(channel?: NumWire): void;
+        declare function setVolumePitch(
+          channel?: NumWire,
+          volume?: NumWire,
+          pitch?: NumWire
+        ): void;
+        
+        // Physics
+        declare function addForce(
+          object?: ObjWire,
+          force?: VecWire,
+          applyAt?: VecWire,
+          torque?: VecWire
+        ): void;
+        declare function getVelocity(object?: ObjWire): [VecWire, VecWire];
+        declare function addForce(
+          object?: ObjWire,
+          velocity?: VecWire,
+          spin?: VecWire
+        ): void;
+        declare function setLocked(
+          object?: ObjWire,
+          position?: VecWire,
+          rotation?: VecWire
+        ): void;
+        declare function setMass(object?: ObjWire, mass?: NumWire): void;
+        declare function setFriction(object?: ObjWire, friction?: NumWire): void;
+        declare function setBounciness(object?: ObjWire, bounciness?: NumWire): void;
+        declare function setGravity(gravity?: VecWire): void;
+        declare function addConstraint(
+          base?: ObjWire,
+          part?: ObjWire,
+          pivot?: VecWire
+        ): [ConWire];
+        declare function setLinearLimits(
+          constraint?: ConWire,
+          lower?: VecWire,
+          upper?: VecWire
+        ): void;
+        declare function setAngularLimits(
+          constraint?: ConWire,
+          lower?: VecWire,
+          upper?: VecWire
+        ): void;
+        declare function setLinearSpring(
+          constraint?: ConWire,
+          stiffness?: VecWire,
+          damping?: VecWire
+        ): void;
+        declare function setAngularSpring(
+          constraint?: ConWire,
+          stiffness?: VecWire,
+          damping?: VecWire
+        ): void;
+        declare function setLinearMotor(
+          constraint?: ConWire,
+          speed?: VecWire,
+          force?: VecWire
+        ): void;
+        declare function setAngularMotor(
+          constraint?: ConWire,
+          speed?: VecWire,
+          force?: VecWire
+        ): void;
+        
+        // Control
+        declare enum Touching {
+          Touching = "touching",
+          Begins = "begins",
+          Ends = "ends",
+        }
+        declare enum Count {
+          First = "first",
+          Second = "second",
+          Third = "third",
+        }
+        declare function onPlay(callback?: () => void): void;
+        declare function onUpdate(callback?: () => void): void;
+        declare function onBoxart(callback?: () => void): void;
+        declare function onTouch(
+          touching: Touching,
+          count: Count,
+          callback?: (screenX: NumWire, screenY: NumWire) => void
+        ): [NumWire, NumWire];
+        declare function onSwipe(callback?: (direction: VecWire) => void): [VecWire];
+        declare function addButton(callback?: () => void): void;
+        declare function addJoystick(): [VecWire];
+        declare function onCollision(
+          firstObject?: ObjWire,
+          callback?: (secondObject: ObjWire, impluse: NumWire, normal: VecWire) => void
+        ): [ObjWire, NumWire, VecWire];
+        declare function loop(
+          from?: NumWire,
+          to?: NumWire,
+          callback: (counter: NumWire) => void
+        ): [NumWire];
+        
+        // Math
+        declare function negate(number?: NumWire): [NumWire];
+        declare function inverse(rotation?: RotWire): [RotWire];
+        declare function addNumbers(a?: NumWire, b?: NumWire): [NumWire];
+        declare function addVectors(a?: VecWire, b?: VecWire): [VecWire];
+        declare function subtractNumbers(a?: NumWire, b?: NumWire): [NumWire];
+        declare function subtractVectors(a?: VecWire, b?: VecWire): [VecWire];
+        declare function multiply(a?: NumWire, b?: NumWire): [NumWire];
+        declare function scale(vector?: VecWire, by?: NumWire): [VecWire];
+        declare function rotate(vector?: VecWire, by?: RotWire): [RotWire];
+        declare function combine(a?: RotWire, b?: RotWire): [RotWire];
+        declare function devide(a?: NumWire, b?: NumWire): [NumWire];
+        declare function power(a?: NumWire, b?: NumWire): [NumWire];
+        declare function equalNumbers(a?: NumWire, b?: NumWire): [BoolWire];
+        declare function equalVector(a?: VecWire, b?: VecWire): [BoolWire];
+        declare function equalObjects(a?: ObjWire, b?: ObjWire): [BoolWire];
+        declare function equalBoolean(a?: BoolWire, b?: BoolWire): [BoolWire];
+        declare function lessThan(a?: NumWire, b?: NumWire): [BoolWire];
+        declare function greaterThan(a?: NumWire, b?: NumWire): [BoolWire];
+        declare function and(a?: BoolWire, b?: BoolWire): [BoolWire];
+        declare function or(a?: BoolWire, b?: BoolWire): [BoolWire];
+        declare function not(a?: BoolWire): [BoolWire];
+        declare function random(min?: NumWire, max?: NumWire): [NumWire];
+        declare function setRandomSeed(seed?: NumWire): [NumWire];
+        declare function min(a?: NumWire, b?: NumWire): [NumWire];
+        declare function max(a?: NumWire, b?: NumWire): [NumWire];
+        declare function sin(number?: NumWire): [NumWire];
+        declare function cos(number?: NumWire): [NumWire];
+        declare function round(number?: NumWire): [NumWire];
+        declare function floor(number?: NumWire): [NumWire];
+        declare function ceil(number?: NumWire): [NumWire];
+        declare function abs(number?: NumWire): [NumWire];
+        declare function sin(number?: NumWire): [NumWire];
+        declare function mod(a?: NumWire, b?: NumWire): [NumWire];
+        declare function log(number?: NumWire, base?: NumWire): [NumWire];
+        declare function breakVector(vector?: VecWire): [NumWire, NumWire, NumWire];
+        declare function makeVector(x?: NumWire, y?: NumWire, z?: NumWire): [VecWire];
+        declare function normalize(vector?: VecWire): [VecWire];
+        declare function dotProduct(a?: VecWire, b?: VecWire): [NumWire];
+        declare function crossProduct(a?: VecWire, b?: VecWire): [VecWire];
+        declare function breakRotation(rotation?: RotWire): [NumWire, NumWire, NumWire];
+        declare function makeRotation(
+          xAngle?: NumWire,
+          yAngle?: NumWire,
+          zAngle?: NumWire
+        ): [RotWire];
+        declare function distance(a?: VecWire, b?: VecWire): [NumWire];
+        declare function lerp(
+          from?: RotWire,
+          to?: RotWire,
+          amount?: NumWire
+        ): [RotWire];
+        declare function axisAngle(axis?: VecWire, angle?: NumWire): [RotWire];
+        declare function screenToWorld(
+          screenX?: NumWire,
+          screenY?: NumWire
+        ): [VecWire, VecWire];
+        declare function worldToScreen(position?: VecWire): [NumWire, NumWire];
+        declare function lineVsPlane(
+          lineFrom?: VecWire,
+          lineTo?: VecWire,
+          planePoint?: VecWire,
+          planeNormal?: VecWire
+        ): [VecWire];
+        declare function lookRotation(direction?: VecWire, up?: VecWire): [RotWire];
+        
+        // Values
+        declare function Number(number?: number): NumWire;
+        declare function Vector(vector?: [number, number, number]): VecWire;
+        declare function Rotation(rotation?: [number, number, number]): RotWire;
+        declare function Boolean(boolean?: boolean): BoolWire;
+        
+        // Variables
+        declare function getNumber(name: string): [NumWire];
+        declare function getObject(name: string): [ObjWire];
+        declare function getVector(name: string): [VecWire];
+        declare function getRotation(name: string): [RotWire];
+        declare function getBoolean(name: string): [BoolWire];
+        declare function getConstraint(name: string): [ConWire];
+        declare function setNumber(name: string, value?: NumWire): void;
+        declare function setObject(name: string, value?: ObjWire): void;
+        declare function setVector(name: string, value?: VecWire): void;
+        declare function setRotation(name: string, value?: RotWire): void;
+        declare function setBoolean(name: string, value?: BoolWire): void;
+        declare function setConstraint(name: string, value?: ConWire): void;
+        declare function setNumberVar(variable?: NumWire, value?: NumWire): void;
+        declare function setObjectVar(variable?: ObjWire, value?: ObjWire): void;
+        declare function setVectorVar(variable?: VecWire, value?: VecWire): void;
+        declare function setRotationVar(variable?: RotWire, value?: RotWire): void;
+        declare function setBooleanVar(variable?: BoolWire, value?: BoolWire): void;
+        declare function setConstraintVar(variable?: ConWire, value?: ConWire): void;
+        declare function getNumberItem(variable?: NumWire, index?: NumWire): [NumWire];
+        declare function getObjectItem(variable?: ObjWire, index?: NumWire): [ObjWire];
+        declare function getVectorItem(variable?: VecWire, index?: NumWire): [VecWire];
+        declare function getRotationItem(
+          variable?: RotWire,
+          index?: NumWire
+        ): [RotWire];
+        declare function getBooleanItem(
+          variable?: BoolWire,
+          index?: NumWire
+        ): [BoolWire];
+        declare function getConstraintItem(
+          variable?: ConWire,
+          index?: NumWire
+        ): [ConWire];
+        declare function increase(variable?: NumWire): void;
+        declare function decrease(variable?: NumWire): void;
+        `,
           "fanscript.d.ts"
         );
       }}
