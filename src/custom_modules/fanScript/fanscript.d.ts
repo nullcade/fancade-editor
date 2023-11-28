@@ -12,7 +12,7 @@ declare interface ObjWire {}
 declare interface ConWire {}
 
 // Game
-declare enum Amount {
+declare enum Price {
   TenFixed = "tenfixed",
   TenLinear = "tenlinear",
   TenDouble = "tendouble",
@@ -40,7 +40,7 @@ declare function getFrame(): [NumWire];
 declare function addMenuItem(
   name: string,
   count: NonNegativeInteger<number>,
-  amount: Amount,
+  price: Price,
   variable?: NumWire,
   picture?: ObjWire
 ): void;
