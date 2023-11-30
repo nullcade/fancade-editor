@@ -1,8 +1,8 @@
 import { createTheme } from "@mui/material";
 
 export const colors = {
-  main: "#28292a"
-}
+  main: "#28292a",
+};
 
 let theme = createTheme({
   palette: {
@@ -37,6 +37,7 @@ theme = createTheme(theme, {
             display: "none",
           },
           MozAppearance: "textfield",
+          fontFamily: "'Baloo Bhaijaan 2', sans-serif",
         },
       },
     },
