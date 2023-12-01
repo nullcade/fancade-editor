@@ -1,8 +1,10 @@
+
+
 type NonNegativeInteger<T extends number> = number extends T
   ? never
   : `${T}` extends `-${string}` | `${string}.${string}`
-    ? never
-    : T;
+  ? never
+  : T;
 
 declare interface NumWire {}
 declare interface VecWire {}
@@ -31,7 +33,7 @@ declare function setCamera(
   prespective: boolean,
   position?: VecWire,
   rotation?: RotWire,
-  range?: NumWire,
+  range?: NumWire
 ): void;
 declare function setLight(position?: VecWire, rotation?: RotWire): void;
 declare function getScreenSize(): [NumWire, NumWire];
@@ -42,7 +44,7 @@ declare function addMenuItem(
   count: NonNegativeInteger<number>,
   price: Price,
   variable?: NumWire,
-  picture?: ObjWire,
+  picture?: ObjWire
 ): void;
 
 // Objects
@@ -50,11 +52,11 @@ declare function getPosition(object?: ObjWire): [VecWire, RotWire];
 declare function setPosition(
   object?: ObjWire,
   position?: VecWire,
-  rotation?: RotWire,
+  rotation?: RotWire
 ): void;
 declare function addRaycast(
   from?: VecWire,
-  to?: VecWire,
+  to?: VecWire
 ): [BoolWire, VecWire, ObjWire];
 declare function getSize(object?: ObjWire): [VecWire, VecWire];
 declare function setVisible(object?: ObjWire, visible?: BoolWire): void;
@@ -85,13 +87,13 @@ declare function playSound(
   loop: boolean,
   sound: Sound,
   volume?: NumWire,
-  pitch?: NumWire,
+  pitch?: NumWire
 ): [NumWire];
 declare function stopSound(channel?: NumWire): void;
 declare function setVolumePitch(
   channel?: NumWire,
   volume?: NumWire,
-  pitch?: NumWire,
+  pitch?: NumWire
 ): void;
 
 // Physics
@@ -99,18 +101,18 @@ declare function addForce(
   object?: ObjWire,
   force?: VecWire,
   applyAt?: VecWire,
-  torque?: VecWire,
+  torque?: VecWire
 ): void;
 declare function getVelocity(object?: ObjWire): [VecWire, VecWire];
 declare function addForce(
   object?: ObjWire,
   velocity?: VecWire,
-  spin?: VecWire,
+  spin?: VecWire
 ): void;
 declare function setLocked(
   object?: ObjWire,
   position?: VecWire,
-  rotation?: VecWire,
+  rotation?: VecWire
 ): void;
 declare function setMass(object?: ObjWire, mass?: NumWire): void;
 declare function setFriction(object?: ObjWire, friction?: NumWire): void;
@@ -119,37 +121,37 @@ declare function setGravity(gravity?: VecWire): void;
 declare function addConstraint(
   base?: ObjWire,
   part?: ObjWire,
-  pivot?: VecWire,
+  pivot?: VecWire
 ): [ConWire];
 declare function setLinearLimits(
   constraint?: ConWire,
   lower?: VecWire,
-  upper?: VecWire,
+  upper?: VecWire
 ): void;
 declare function setAngularLimits(
   constraint?: ConWire,
   lower?: VecWire,
-  upper?: VecWire,
+  upper?: VecWire
 ): void;
 declare function setLinearSpring(
   constraint?: ConWire,
   stiffness?: VecWire,
-  damping?: VecWire,
+  damping?: VecWire
 ): void;
 declare function setAngularSpring(
   constraint?: ConWire,
   stiffness?: VecWire,
-  damping?: VecWire,
+  damping?: VecWire
 ): void;
 declare function setLinearMotor(
   constraint?: ConWire,
   speed?: VecWire,
-  force?: VecWire,
+  force?: VecWire
 ): void;
 declare function setAngularMotor(
   constraint?: ConWire,
   speed?: VecWire,
-  force?: VecWire,
+  force?: VecWire
 ): void;
 
 // Control
@@ -169,19 +171,19 @@ declare function onBoxart(callback?: () => void): void;
 declare function onTouch(
   touching: Touching,
   count: Count,
-  callback?: (screenX: NumWire, screenY: NumWire) => void,
+  callback?: (screenX: NumWire, screenY: NumWire) => void
 ): [NumWire, NumWire];
 declare function onSwipe(callback?: (direction: VecWire) => void): [VecWire];
 declare function addButton(callback?: () => void): void;
 declare function addJoystick(): [VecWire];
 declare function onCollision(
   firstObject?: ObjWire,
-  callback?: (secondObject: ObjWire, impluse: NumWire, normal: VecWire) => void,
+  callback?: (secondObject: ObjWire, impluse: NumWire, normal: VecWire) => void
 ): [ObjWire, NumWire, VecWire];
 declare function loop(
   from?: NumWire,
   to?: NumWire,
-  callback: (counter: NumWire) => void,
+  callback: (counter: NumWire) => void
 ): [NumWire];
 
 // Math
@@ -228,25 +230,25 @@ declare function breakRotation(rotation?: RotWire): [NumWire, NumWire, NumWire];
 declare function makeRotation(
   xAngle?: NumWire,
   yAngle?: NumWire,
-  zAngle?: NumWire,
+  zAngle?: NumWire
 ): [RotWire];
 declare function distance(a?: VecWire, b?: VecWire): [NumWire];
 declare function lerp(
   from?: RotWire,
   to?: RotWire,
-  amount?: NumWire,
+  amount?: NumWire
 ): [RotWire];
 declare function axisAngle(axis?: VecWire, angle?: NumWire): [RotWire];
 declare function screenToWorld(
   screenX?: NumWire,
-  screenY?: NumWire,
+  screenY?: NumWire
 ): [VecWire, VecWire];
 declare function worldToScreen(position?: VecWire): [NumWire, NumWire];
 declare function lineVsPlane(
   lineFrom?: VecWire,
   lineTo?: VecWire,
   planePoint?: VecWire,
-  planeNormal?: VecWire,
+  planeNormal?: VecWire
 ): [VecWire];
 declare function lookRotation(direction?: VecWire, up?: VecWire): [RotWire];
 
@@ -280,15 +282,15 @@ declare function getObjectItem(variable?: ObjWire, index?: NumWire): [ObjWire];
 declare function getVectorItem(variable?: VecWire, index?: NumWire): [VecWire];
 declare function getRotationItem(
   variable?: RotWire,
-  index?: NumWire,
+  index?: NumWire
 ): [RotWire];
 declare function getBooleanItem(
   variable?: BoolWire,
-  index?: NumWire,
+  index?: NumWire
 ): [BoolWire];
 declare function getConstraintItem(
   variable?: ConWire,
-  index?: NumWire,
+  index?: NumWire
 ): [ConWire];
 declare function increase(variable?: NumWire): void;
 declare function decrease(variable?: NumWire): void;
