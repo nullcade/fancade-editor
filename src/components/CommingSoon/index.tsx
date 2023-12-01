@@ -14,7 +14,7 @@ const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
   },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -35,9 +35,7 @@ function CommingSoon({
     >
       <DialogTitle>{"Comming Soon!"}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Wait for it...
-        </DialogContentText>
+        <DialogContentText>Wait for it...</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>

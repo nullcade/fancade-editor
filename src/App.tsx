@@ -103,7 +103,7 @@ function App() {
               borderColor: colors.main,
               borderWidth: "2px",
               borderStyle: "solid",
-              overflow: "visible"
+              overflow: "visible",
             }}
           >
             <ScriptTab game={file} setGame={setFile} />

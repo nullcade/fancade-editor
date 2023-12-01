@@ -11,7 +11,7 @@ export class getFace {
     layer: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     side: 0 | 1 | 2 | 3 | 4 | 5,
     x: number,
-    y: number
+    y: number,
   ) {
     this.side = side;
     if (side === 0) {

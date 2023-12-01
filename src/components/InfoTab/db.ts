@@ -8,7 +8,7 @@ export const gamesDB = openDB("games", undefined, {
 });
 
 export async function listGames() {
-  return await (await gamesDB).getAllKeys("games") as string[];
+  return (await (await gamesDB).getAllKeys("games")) as string[];
 }
 
 export async function loadGame(key: string) {

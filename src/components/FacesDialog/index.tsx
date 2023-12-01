@@ -30,7 +30,7 @@ const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
   },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -422,7 +422,7 @@ function FacesDialog({
               setSide(
                 typeof event.target.value === "string"
                   ? (parseInt(event.target.value) as 0 | 1 | 2 | 3 | 4 | 5)
-                  : event.target.value
+                  : event.target.value,
               )
             }
           >
@@ -436,7 +436,7 @@ function FacesDialog({
           <IconButton
             onClick={() =>
               setLayer(
-                (layer <= 0 ? 0 : layer - 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+                (layer <= 0 ? 0 : layer - 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
               )
             }
           >
@@ -456,7 +456,7 @@ function FacesDialog({
                   | 4
                   | 5
                   | 6
-                  | 7
+                  | 7,
               )
             }
             valueCheck={(event) => {
@@ -479,7 +479,7 @@ function FacesDialog({
           <IconButton
             onClick={() =>
               setLayer(
-                (layer >= 7 ? 7 : layer + 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+                (layer >= 7 ? 7 : layer + 1) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
               )
             }
           >

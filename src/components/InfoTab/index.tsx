@@ -26,7 +26,10 @@ import ControlledTextField from "components/ControlledTextArea/index.tsx";
 import { storeGame, loadGame, listGames, deleteGame } from "./db";
 
 function sortGames(a: string, b: string) {
-  return ({ [a]: -1, [b]: 1 } as Record<string, number | undefined>)["New Game"] ?? a.localeCompare(b);
+  return (
+    ({ [a]: -1, [b]: 1 } as Record<string, number | undefined>)["New Game"] ??
+    a.localeCompare(b)
+  );
 }
 
 function InfoTab({
@@ -50,10 +53,12 @@ function InfoTab({
   }
 
   function doScroll() {
-    stackRef.current && scroll(
-      stackRef.current.scrollTop < 15,
-      stackRef.current.scrollTop + 15 > (stackRef.current.scrollHeight - stackRef.current.offsetHeight)
-    )
+    stackRef.current &&
+      scroll(
+        stackRef.current.scrollTop < 15,
+        stackRef.current.scrollTop + 15 >
+          stackRef.current.scrollHeight - stackRef.current.offsetHeight,
+      );
   }
 
   useEffect(() => {
@@ -78,16 +83,16 @@ function InfoTab({
       sx={{
         overflowY: "scroll",
         height: "fit-content",
-        maxHeight: '100%',
+        maxHeight: "100%",
         "-ms-overflow-style": "none",
         "scrollbar-width": "none",
         ":-webkit-scrollbar": {
-          display: "none"
-        }
+          display: "none",
+        },
       }}
       ref={stackRef}
-      onScroll={event => doScroll()}
-      onResize={event => doScroll()}
+      onScroll={(event) => doScroll()}
+      onResize={(event) => doScroll()}
     >
       <Area sx={{ paddingRight: 0 }}>
         <ListItem
@@ -236,7 +241,11 @@ function InfoTab({
       <Area>
         <Stack>
           <Stack direction="row">
-            <FileImport setFile={setGame} />
+            <FileImport
+              setFile={setGame}
+              storedGames={storedGames}
+              setStoredGames={setStoredGames}
+            />
             <FileExport game={game} />
           </Stack>
         </Stack>

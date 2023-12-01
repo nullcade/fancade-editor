@@ -29,7 +29,7 @@ function ScriptTab({
         });
         monaco.editor.EditorOptions.fontFamily.applyUpdate(
           "JetBrainsMono-Regular",
-          "JetBrainsMono-Regular"
+          "JetBrainsMono-Regular",
         );
         monaco.languages.typescript.typescriptDefaults.addExtraLib(
           `
@@ -328,7 +328,7 @@ function ScriptTab({
         declare function increase(variable?: NumWire): void;
         declare function decrease(variable?: NumWire): void;
         `,
-          "fanscript.d.ts"
+          "fanscript.d.ts",
         );
       }}
     />

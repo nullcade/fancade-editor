@@ -59,7 +59,7 @@ function ChunksTab({
   const [childFacesDialog, setChildFacesDialog] = useState<boolean>(false);
   const [uuidCopied, setUuidCopied] = useState<boolean>(false);
   const [uuidCopyButton, setUuidCopyButton] = useState<HTMLDivElement | null>(
-    null
+    null,
   );
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -78,16 +78,16 @@ function ChunksTab({
           faces: JSON.parse(
             JSON.stringify(
               new Array(6).fill(
-                new Array(8).fill(new Array(8).fill(new Array(8).fill(0)))
-              )
-            )
+                new Array(8).fill(new Array(8).fill(new Array(8).fill(0))),
+              ),
+            ),
           ),
           offset: [0, 0, 0],
           blocks: [],
           values: [],
           wires: [],
         }) - 1
-      ).toString()
+      ).toString(),
     );
   };
 
@@ -110,7 +110,7 @@ function ChunksTab({
             values: [],
             wires: [],
           }) ?? 1) - 1
-        ).toString()
+        ).toString(),
       );
     }
   };
@@ -120,7 +120,7 @@ function ChunksTab({
       scroll(
         stackRef.current.scrollTop < 15,
         stackRef.current.scrollTop + 15 >
-          stackRef.current.scrollHeight - stackRef.current.offsetHeight
+          stackRef.current.scrollHeight - stackRef.current.offsetHeight,
       );
   }
 
@@ -352,7 +352,7 @@ function ChunksTab({
                 return String.fromCharCode(
                   ...new TextEncoder()
                     .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255)
+                    .slice(0, limitSize ? 16 : 255),
                 );
               return event.target.value;
             }}

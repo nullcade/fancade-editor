@@ -47,23 +47,27 @@ function DragAndDrop({
           setError(2);
         } else {
           try {
-            if (event.dataTransfer.files[0].name.toLowerCase().endsWith(".fc.json")) {
+            if (
+              event.dataTransfer.files[0].name
+                .toLowerCase()
+                .endsWith(".fc.json")
+            ) {
               setFile(
                 JSON.parse(
                   new TextDecoder().decode(
-                    await event.dataTransfer.files[0].arrayBuffer()
-                  )
-                )
+                    await event.dataTransfer.files[0].arrayBuffer(),
+                  ),
+                ),
               );
             } else {
               setFile(
                 new GameDecoder(
                   Buffer.from(
                     zlib.inflate(
-                      await event.dataTransfer.files[0].arrayBuffer()
-                    )
-                  )
-                ).decGame()
+                      await event.dataTransfer.files[0].arrayBuffer(),
+                    ),
+                  ),
+                ).decGame(),
               );
             }
             setError(-1);
@@ -93,8 +97,8 @@ function DragAndDrop({
           error === -1
             ? "rgba(0, 64, 0, 0.5)"
             : error
-            ? "rgba(64, 0, 0, 0.5)"
-            : "rgba(0, 0, 0, 0.5)",
+              ? "rgba(64, 0, 0, 0.5)"
+              : "rgba(0, 0, 0, 0.5)",
         position: "fixed",
         top: 0,
         left: 0,

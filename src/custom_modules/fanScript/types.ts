@@ -46,7 +46,7 @@ export namespace FanScript {
       pins: RequireOnlyOne<
         {
           execute: 0 | 1;
-          parameter: { id: ParameterId; type: number, name: string };
+          parameter: { id: ParameterId; type: number; name: string };
         },
         "execute" | "parameter"
       >[];

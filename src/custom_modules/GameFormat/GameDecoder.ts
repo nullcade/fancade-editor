@@ -25,11 +25,16 @@ export class GameDecoder {
     this.idOffset = this.readUint16LE();
     const chunksLen = this.readUint16LE();
     const chunks = Array.from({ length: chunksLen }, this.readChunk.bind(this));
-    chunks.forEach(chunk => {
-      chunk.blocks.forEach((x, xIndex) => x.forEach((y, yIndex) => y.forEach((block, zIndex) => {
-        if(typeof block === "number" && block >= this.idOffset)
-          chunk.blocks[xIndex][yIndex][zIndex] = this.uuidMap.get(block) ?? 0;
-      })));
+    chunks.forEach((chunk) => {
+      chunk.blocks.forEach((x, xIndex) =>
+        x.forEach((y, yIndex) =>
+          y.forEach((block, zIndex) => {
+            if (typeof block === "number" && block >= this.idOffset)
+              chunk.blocks[xIndex][yIndex][zIndex] =
+                this.uuidMap.get(block) ?? 0;
+          }),
+        ),
+      );
       if (chunk.name || !chunk.parent) return;
       this.chunksMap.get(chunk.parent)?.children?.push({
         uuid: chunk.uuid,
@@ -47,7 +52,7 @@ export class GameDecoder {
       author,
       description,
       idOffset: this.idOffset,
-      chunks: [...this.chunksMap.values()]
+      chunks: [...this.chunksMap.values()],
     };
   }
 
@@ -101,8 +106,9 @@ export class GameDecoder {
       values,
       wires,
       children,
-    }
-    if (parent === index + this.idOffset || !parent) this.chunksMap.set(index + this.idOffset, chunk);
+    };
+    if (parent === index + this.idOffset || !parent)
+      this.chunksMap.set(index + this.idOffset, chunk);
 
     return chunk;
   }

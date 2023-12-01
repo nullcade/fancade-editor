@@ -33,7 +33,7 @@ declare module "nanoid" {
    */
   export function customAlphabet(
     alphabet: string,
-    defaultSize?: number
+    defaultSize?: number,
   ): (size?: number) => string;
 
   /**
@@ -64,7 +64,7 @@ declare module "nanoid" {
   export function customRandom(
     alphabet: string,
     size: number,
-    random: (bytes: number) => Uint8Array
+    random: (bytes: number) => Uint8Array,
   ): () => string;
 
   /**

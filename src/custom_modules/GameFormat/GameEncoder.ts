@@ -53,10 +53,10 @@ export class GameEncoder {
             values: chunk.values,
             wires: chunk.wires,
           });
-        })
+        }),
     );
     flatChunks.forEach((chunk, index) =>
-      this.chunkIdMap.set(chunk.uuid, index + this.data.idOffset)
+      this.chunkIdMap.set(chunk.uuid, index + this.data.idOffset),
     );
     this.writeUint16LE(this.data.appVersion);
     this.writeString(this.data.title);
@@ -113,7 +113,7 @@ export class GameEncoder {
   }
   writeBlockId(value: Block.Id): number {
     return this.alloc(2).writeUint16LE(
-      typeof value === "number" ? value : this.chunkIdMap.get(value) || 0
+      typeof value === "number" ? value : this.chunkIdMap.get(value) || 0,
     );
   }
   writeValue(value: Value.Data): void {
@@ -178,7 +178,7 @@ export class GameEncoder {
         value
           .slice(i << 3, (i + 1) << 3)
           .reduce<number>((pre, cur, b) => pre + (cur << b), 0),
-        i
+        i,
       );
     return this.off;
   }

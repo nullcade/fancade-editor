@@ -24,7 +24,10 @@ export namespace Chunk {
     blocks: Blocks;
     values: Value.Data[];
     wires: Wire.Data[];
-    children?: Pick<Chunk.Data, "uuid" | "offset" | "faces" | "blocks" | "values" | "wires">[];
+    children?: Pick<
+      Chunk.Data,
+      "uuid" | "offset" | "faces" | "blocks" | "values" | "wires"
+    >[];
   }
   export enum Flags {
     HasWires = 2 ** 0,
@@ -456,8 +459,8 @@ export type Fill<
 > = number extends N
   ? T[]
   : N extends Acc["length"]
-  ? Acc
-  : Fill<N, T, [...Acc, T]>;
+    ? Acc
+    : Fill<N, T, [...Acc, T]>;
 export type Multiply<
   A extends number,
   B extends number,

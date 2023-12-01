@@ -15,24 +15,26 @@ function OffsetInput({
   setValue: (value: Vec) => void;
   value: Vec;
   valueCheck?: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => number | null;
 } & Omit<TextFieldProps, "variant">) {
   return (
-    <Stack sx={{
-      flexDirection: "row",
-      gap: 0,
-      flexShrink: 1,
-      flexWrap: "nowrap"
-    }}>
+    <Stack
+      sx={{
+        flexDirection: "row",
+        gap: 0,
+        flexShrink: 1,
+        flexWrap: "nowrap",
+      }}
+    >
       <ControlledTextField
         {...props}
         sx={{
           ...sx,
           ".MuiOutlinedInput-notchedOutline": {
             borderRadius: "4px 0 0 4px",
-            borderRight: "none"
-          }
+            borderRight: "none",
+          },
         }}
         label={label}
         value={value[0]}
@@ -48,8 +50,8 @@ function OffsetInput({
         sx={{
           ...sx,
           ".MuiOutlinedInput-notchedOutline": {
-            borderRadius: 0
-          }
+            borderRadius: 0,
+          },
         }}
         value={value[1]}
         setValue={(v) => {
@@ -65,8 +67,8 @@ function OffsetInput({
           ...sx,
           ".MuiOutlinedInput-notchedOutline": {
             borderRadius: "0 4px 4px 0",
-            borderLeft: "none"
-          }
+            borderLeft: "none",
+          },
         }}
         value={value[2]}
         setValue={(v) => {
