@@ -51,7 +51,8 @@ function FileImport({
           id="zip-input"
           ref={zipInput}
           onChange={async () => {
-            const zip = await unzip(zipInput.current?.files[0]);
+            const zip = zipInput.current?.files && await unzip(zipInput.current?.files[0]);
+            if (!zip) return;
             const entries = Object.values(zip.entries).filter(
               (e) => !e.name.includes("."),
             );
