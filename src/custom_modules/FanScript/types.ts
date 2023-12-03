@@ -60,6 +60,17 @@ type ParameterArgument = {
 };
 export type FunctionArgument = WireArgument | ParameterArgument;
 
+function getBlockChildren(
+  blockId: number,
+  xSize: number,
+  zSize: number
+): { blockId: number; offset: [number, number, number] }[] {
+  return new Array(xSize * zSize - 1).fill({}).map((_, index) => ({
+    blockId: blockId + index + 1,
+    offset: [Math.floor((index + 1) / zSize), 0, (index + 1) % zSize],
+  }));
+}
+
 export const FanScriptFunctions: {
   [key: string]: {
     blockId: number;
@@ -73,7 +84,7 @@ export const FanScriptFunctions: {
   };
 } = {
   win: {
-    blockId: 252,
+    blockId: Block.Ids.E_WIN_E,
     arguments: [
       {
         type: ArgumentTypes.Parameter,
@@ -84,14 +95,10 @@ export const FanScriptFunctions: {
     ],
     beforeOffset: [3, 1, 14],
     afterOffset: [3, 1, 0],
-    children: [
-      { blockId: 253, offset: [0, 0, 1] },
-      { blockId: 254, offset: [1, 0, 0] },
-      { blockId: 255, offset: [1, 0, 1] },
-    ],
+    children: getBlockChildren(Block.Ids.E_WIN_E, 2, 2),
   },
   lose: {
-    blockId: 256,
+    blockId: Block.Ids.E_LOSE_E,
     arguments: [
       {
         type: ArgumentTypes.Parameter,
@@ -102,10 +109,66 @@ export const FanScriptFunctions: {
     ],
     beforeOffset: [3, 1, 14],
     afterOffset: [3, 1, 0],
-    children: [
-      { blockId: 257, offset: [0, 0, 1] },
-      { blockId: 258, offset: [1, 0, 0] },
-      { blockId: 259, offset: [1, 0, 1] },
+    children: getBlockChildren(Block.Ids.E_LOSE_E, 2, 2),
+  },
+  inspectNumber: {
+    blockId: Block.Ids.EF_INSPECT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
     ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EF_INSPECT_E, 2, 2),
+  },
+  inspectVector: {
+    blockId: Block.Ids.EV_INSPECT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EV_INSPECT_E, 2, 2),
+  },
+  inspectRotation: {
+    blockId: Block.Ids.EQ_INSPECT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EQ_INSPECT_E, 2, 2),
+  },
+  inspectBoolean: {
+    blockId: Block.Ids.ET_INSPECT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.ET_INSPECT_E, 2, 2),
+  },
+  inspectObject: {
+    blockId: Block.Ids.EO_INSPECT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_INSPECT_E, 2, 2),
   },
 };

@@ -26,8 +26,8 @@ declare enum Price {
   ThousandDouble = "thousanddouble",
   TenThousandFixed = "tenthousandfixed",
 }
-declare function win(): void;
-declare function lose(): void;
+declare function win(delay?: NonNegativeInteger<number>): void;
+declare function lose(delay?: NonNegativeInteger<number>): void;
 declare function setScore(score?: NumWire, coins?: NumWire): void;
 declare function setCamera(
   prespective: boolean,
@@ -257,6 +257,11 @@ declare function Number(number?: number): NumWire;
 declare function Vector(vector?: [number, number, number]): VecWire;
 declare function Rotation(rotation?: [number, number, number]): RotWire;
 declare function Boolean(boolean?: boolean): BoolWire;
+declare function inspectNumber(value?: NumWire): void;
+declare function inspectVector(value?: VecWire): void;
+declare function inspectRotation(value?: RotWire): void;
+declare function inspectBoolean(value?: BoolWire): void;
+declare function inspectObject(value?: ObjWire): void;
 
 // Variables
 declare function getNumber(name: string): [NumWire];
