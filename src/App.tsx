@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
@@ -15,6 +15,14 @@ function App() {
     top: false,
     bottom: false,
   });
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (message) => {
+        alert(message.data.type);
+      });
+    }
+  }, []);
 
   const tabPanelSx = {
     position: "relative",
