@@ -4,7 +4,7 @@ import { unzip } from "unzipit";
 import { storeGame } from "components/InfoTab/db";
 import { Buffer } from "buffer";
 import { Button, ButtonGroup } from "@mui/material";
-import { Publish, FolderZip, DataObject } from "@mui/icons-material";
+import { Publish, DataObject } from "@mui/icons-material";
 import { GameDecoder, Game, Chunk } from "custom_modules/GameFormat";
 
 function decode(arr: ArrayBuffer) {
