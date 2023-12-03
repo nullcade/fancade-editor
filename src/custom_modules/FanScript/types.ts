@@ -75,6 +75,7 @@ export const FanScriptFunctions: {
   [key: string]: {
     blockId: number;
     arguments: FunctionArgument[];
+    outputWires?: WireArgument["offset"][];
     beforeOffset: [number, number, number];
     afterOffset: [number, number, number];
     children: {
@@ -170,5 +171,182 @@ export const FanScriptFunctions: {
     beforeOffset: [3, 1, 14],
     afterOffset: [3, 1, 0],
     children: getBlockChildren(Block.Ids.EO_INSPECT_E, 2, 2),
+  },
+  setMass: {
+    blockId: Block.Ids.EOF_SET_MASS_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EOF_SET_MASS_E, 2, 2),
+  },
+  setFriction: {
+    blockId: Block.Ids.EOF_SET_FRICTION_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EOF_SET_FRICTION_E, 2, 2),
+  },
+  setBounciness: {
+    blockId: Block.Ids.EOF_SET_BOUNCE_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EOF_SET_BOUNCE_E, 2, 2),
+  },
+  setGravity: {
+    blockId: Block.Ids.EV_SET_GRAVITY_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EV_SET_GRAVITY_E, 2, 2),
+  },
+  setScore: {
+    blockId: Block.Ids.EFF_SET_SCORE_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 1,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EFF_SET_SCORE_E, 2, 2),
+  },
+  setLight: {
+    blockId: Block.Ids.EVQ_SET_LIT_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EVQ_SET_LIT_E, 2, 2),
+  },
+  addMenuItem: {
+    blockId: Block.Ids.EFpO_MENU_ITEM_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Parameter,
+        index: 1,
+        valueType: 1,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Parameter,
+        index: 2,
+        valueType: 1,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EFpO_MENU_ITEM_E, 2, 2),
+  },
+  setVisible: {
+    blockId: Block.Ids.EOT_SET_VISIBLE_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EOT_SET_VISIBLE_E, 2, 2),
+  },
+  copyObject: {
+    blockId: Block.Ids.EO_CREATE_EO,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_CREATE_EO, 2, 2),
+  },
+  deleteObject: {
+    blockId: Block.Ids.EO_DESTROY_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),
   },
 };
