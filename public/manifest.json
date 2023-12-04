@@ -25,14 +25,6 @@
   "share_target": {
     "action": "/",
     "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "files": [
-        {
-          "name": "Fancade Game",
-          "accept": [".zip"]
-        }
-      ]
-    }
+    "enctype": "multipart/form-data"
   }
 }
