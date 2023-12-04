@@ -29,8 +29,12 @@
     "params": {
       "files": [
         {
-          "name": "anything",
-          "accept": ["*"]
+          "name": "zip",
+          "accept": [".zip"]
+        },
+        {
+          "name": "everything else",
+          "accept": ["*/*"]
         }
       ]
     }
