@@ -8,12 +8,21 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   console.log(url);
   if (event.request.method === "POST" && url.pathname === "/zip-file") {
-    console.log("hmm?")
+    console.log("hmm?");
     event.waitUntil(
       (async function () {
-        console.log("ok buddy")
+        console.log("ok buddy");
         const client = await self.clients.get(event.resultingClientId);
+        /**
+         * @type {FormData}
+         */
         const data = await event.request.formData();
+        console.log(data.keys());
+        Array.from(data.keys()).forEach(value => {
+          console.log(`${value} :`);
+          console.log(data.getAll("value"));
+        });
+        console.log("done");
         const files = data.get("file");
         client.postMessage({ files });
         console.log(client);
