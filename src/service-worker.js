@@ -1,17 +1,19 @@
-/* eslint-disable no-restricted-globals */
 import { precacheAndRoute } from "workbox-precaching";
 
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(window.self.__WB_MANIFEST);
 
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.endsWith("/zip-file")) {
+window.self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  if (event.request.method === "POST" && url.pathname === "/") {
     event.waitUntil(
-      (async () => {
+      (async function () {
+        const client = await window.self.clients.get(event.resultingClientId);
         const data = await event.request.formData();
-        const cache = await caches.open("zips");
-        await cache.put("/", data);
-        event.respondWith(Response.redirect("/", 303));
+        const files = data.get("file");
+        client.postMessage({ files });
       })()
     );
+    event.respondWith(Response.redirect("/", 303));
+    return;
   }
 });

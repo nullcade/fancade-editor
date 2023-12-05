@@ -1,16 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import zlib from "pako";
-import { ZipInfo, unzip } from "unzipit";
+import { unzip } from "unzipit";
 import { storeGame } from "components/InfoTab/db";
 import { Buffer } from "buffer";
-import {
-  Button,
-  ButtonGroup,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  LinearProgress,
-} from "@mui/material";
+import { Button, ButtonGroup } from "@mui/material";
 import { Publish, DataObject } from "@mui/icons-material";
 import { GameDecoder, Game, Chunk } from "custom_modules/GameFormat";
 
@@ -29,50 +22,9 @@ function FileImport({
 }) {
   const binInput = useRef<HTMLInputElement>(null);
   const jsonInput = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const importZip = useCallback(
-    async (zip: ZipInfo) => {
-      const entries = Object.values(zip.entries).filter(
-        (e) => !e.name.includes(".")
-      );
-      for await (const entry of entries) {
-        const game = decode(await entry.arrayBuffer());
-        await storeGame(game);
-        if (!storedGames.includes(game.title)) {
-          storedGames.push(game.title);
-          setStoredGames(storedGames);
-        }
-      }
-    },
-    [setStoredGames, storedGames]
-  );
-
-  useEffect(() => {
-    caches.open("zips").then((cache) =>
-      cache.keys().then(async (cacheKeys) => {
-        if (cacheKeys.length > 0) {
-          setLoading(true);
-          for (const cacheKey of cacheKeys) {
-            const data = await cacheKey.blob();
-            const zip = await unzip(data);
-            importZip(zip);
-            cache.delete(cacheKey.url);
-          }
-          setLoading(false);
-        }
-      })
-    );
-  }, [importZip]);
 
   return (
     <ButtonGroup>
-      <Dialog open={loading}>
-        <DialogTitle>Loading</DialogTitle>
-        <DialogContent>
-          <LinearProgress />
-        </DialogContent>
-      </Dialog>
       <Button
         variant="outlined"
         startIcon={<Publish />}
@@ -88,13 +40,19 @@ function FileImport({
             if (!binInput.current?.files) return;
             if (binInput.current.files[0].name.endsWith(".zip")) {
               const zip = await unzip(binInput.current.files[0]);
-              setLoading(true);
-              await importZip(zip);
-              setLoading(false);
+              const entries = Object.values(zip.entries).filter(
+                (e) => !e.name.includes(".")
+              );
+              for await (const entry of entries) {
+                const game = decode(await entry.arrayBuffer());
+                await storeGame(game);
+                if (!storedGames.includes(game.title)) {
+                  storedGames.push(game.title);
+                  setStoredGames(storedGames);
+                }
+              }
             } else {
-              setLoading(true);
               setFile(decode(await binInput.current?.files[0].arrayBuffer()));
-              setLoading(false);
             }
           }}
           style={{ display: "none" }}
