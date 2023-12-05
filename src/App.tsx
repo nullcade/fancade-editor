@@ -20,6 +20,7 @@ function App() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (message) => {
         alert(message.data.type);
+        console.log(message);
       });
     }
   }, []);
