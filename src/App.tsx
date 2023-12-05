@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (message) => {
-        alert(message.data.type);
+        alert((message.data.files as File[])[0].type);
         console.log(message);
       });
     }
