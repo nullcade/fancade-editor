@@ -34,7 +34,7 @@ function App() {
         alert("loading");
         console.log(message);
         setLoadingZip(true);
-        (message.data.files as File[]).forEach(async (file) => {
+        (message.data.files as File[]).forEach(async (file, index, array) => {
           console.log(file);
           const zip = await unzip(file);
           console.log(zip);
@@ -52,10 +52,11 @@ function App() {
             } finally {
             }
           }
+          if (index + 1 === array.length) {
+            window.location.reload();
+            setLoadingZip(false);
+          }
         });
-        setLoadingZip(false);
-        console.log("hi");
-        window.location.reload();
       });
     }
   }, []);
