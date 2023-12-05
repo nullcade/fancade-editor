@@ -18,6 +18,7 @@ import ScriptTab from "components/ScriptTab";
 import { unzip } from "unzipit";
 import zlib from "pako";
 import { storeGame } from "components/InfoTab/db";
+import { Buffer } from "buffer";
 
 function App() {
   const [tab, setTab] = useState<"0" | "1" | "2">("0");
