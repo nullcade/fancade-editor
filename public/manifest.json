@@ -18,12 +18,12 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/zip-file",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#0096FF",
   "background_color": "#1f1f1f",
   "share_target": {
-    "action": "/",
+    "action": "/zip-file",
     "method": "GET",
     "enctype": "multipart/form-data",
     "params": {
