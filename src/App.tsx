@@ -32,19 +32,13 @@ function App() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (message) => {
-        alert("loading");
-        console.log(message);
         setLoadingZip(true);
         (message.data.files as File[]).forEach(async (file, index, array) => {
-          console.log(file);
           const zip = await unzip(file);
-          console.log(zip);
           const entries = Object.values(zip.entries).filter(
             (e) => !e.name.includes(".")
           );
-          console.log(entries);
           for await (const entry of entries) {
-            console.log(entry);
             try {
               const game = new GameDecoder(
                 Buffer.from(zlib.inflate(await entry.arrayBuffer()))
