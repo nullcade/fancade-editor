@@ -41,7 +41,7 @@ function App() {
           }
         });
         setLoadingZip(false);
-        window.location.reload(false);
+        window.location.reload();
       });
     }
   }, []);
