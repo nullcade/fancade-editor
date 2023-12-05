@@ -31,6 +31,7 @@ function App() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (message) => {
+        alert("loading");
         console.log(message);
         setLoadingZip(true);
         (message.data.files as File[]).forEach(async (file) => {
