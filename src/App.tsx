@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Stack, Tab, ThemeProvider } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, LinearProgress, Stack, Tab, ThemeProvider } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
-import { Game, emptyGame } from "custom_modules/GameFormat";
+import { Game, GameDecoder, emptyGame } from "custom_modules/GameFormat";
 import ChunksTab from "components/ChunksTab";
 import DragAndDrop from "components/DragAndDrop";
 import theme, { colors } from "theme";
 import ScriptTab from "components/ScriptTab";
+import { unzip } from "unzipit";
+import zlib from "pako";
+import { storeGame } from "components/InfoTab/db";
 
 function App() {
   const [tab, setTab] = useState<"0" | "1" | "2">("0");
@@ -15,12 +18,30 @@ function App() {
     top: false,
     bottom: false,
   });
+  const [loadingZip, setLoadingZip] = useState<boolean>(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (message) => {
-        alert((message.data.files as File[])[0].type);
         console.log(message);
+        setLoadingZip(true);
+        (message.data.files as File[]).forEach(async (file) => {
+          const zip = await unzip(file);
+          const entries = Object.values(zip.entries).filter(
+            (e) => !e.name.includes(".")
+          );
+          for await (const entry of entries) {
+            try {
+              const game = new GameDecoder(
+                Buffer.from(zlib.inflate(await entry.arrayBuffer()))
+              ).decGame();
+              await storeGame(game);
+            } finally {
+            }
+          }
+        });
+        setLoadingZip(false);
+        window.location.reload(false);
       });
     }
   }, []);
@@ -73,6 +94,12 @@ function App() {
           flexWrap: "nowrap",
         }}
       >
+        <Dialog open={loadingZip}>
+          <DialogTitle>Loading</DialogTitle>
+          <DialogContent>
+            <LinearProgress />
+          </DialogContent>
+        </Dialog>
         <TabContext value={tab}>
           <TabList
             onChange={(a, b) => {

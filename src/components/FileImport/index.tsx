@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import zlib from "pako";
 import { unzip } from "unzipit";
 import { storeGame } from "components/InfoTab/db";
 import { Buffer } from "buffer";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Dialog, DialogContent, DialogTitle, LinearProgress } from "@mui/material";
 import { Publish, DataObject } from "@mui/icons-material";
 import { GameDecoder, Game, Chunk } from "custom_modules/GameFormat";
 
@@ -22,9 +22,16 @@ function FileImport({
 }) {
   const binInput = useRef<HTMLInputElement>(null);
   const jsonInput = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <ButtonGroup>
+      <Dialog open={loading}>
+        <DialogTitle>Loading</DialogTitle>
+        <DialogContent>
+          <LinearProgress />
+        </DialogContent>
+      </Dialog>
       <Button
         variant="outlined"
         startIcon={<Publish />}
@@ -38,22 +45,27 @@ function FileImport({
           ref={binInput}
           onChange={async () => {
             if (!binInput.current?.files) return;
+            setLoading(true);
             if (binInput.current.files[0].name.endsWith(".zip")) {
               const zip = await unzip(binInput.current.files[0]);
               const entries = Object.values(zip.entries).filter(
                 (e) => !e.name.includes(".")
               );
               for await (const entry of entries) {
-                const game = decode(await entry.arrayBuffer());
-                await storeGame(game);
-                if (!storedGames.includes(game.title)) {
-                  storedGames.push(game.title);
-                  setStoredGames(storedGames);
+                try {
+                  const game = decode(await entry.arrayBuffer());
+                  await storeGame(game);
+                  if (!storedGames.includes(game.title)) {
+                    storedGames.push(game.title);
+                    setStoredGames(storedGames);
+                  }
+                } finally {
                 }
               }
             } else {
               setFile(decode(await binInput.current?.files[0].arrayBuffer()));
             }
+            setLoading(false);
           }}
           style={{ display: "none" }}
           accept={".fc,.bin,.zip"}
