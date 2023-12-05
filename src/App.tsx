@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogTitle, LinearProgress, Stack, Tab, ThemeProvider } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  Stack,
+  Tab,
+  ThemeProvider,
+} from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import InfoTab from "components/InfoTab";
 import { Game, GameDecoder, emptyGame } from "custom_modules/GameFormat";
@@ -26,11 +34,15 @@ function App() {
         console.log(message);
         setLoadingZip(true);
         (message.data.files as File[]).forEach(async (file) => {
+          console.log(file);
           const zip = await unzip(file);
+          console.log(zip);
           const entries = Object.values(zip.entries).filter(
             (e) => !e.name.includes(".")
           );
+          console.log(entries);
           for await (const entry of entries) {
+            console.log(entry);
             try {
               const game = new GameDecoder(
                 Buffer.from(zlib.inflate(await entry.arrayBuffer()))
@@ -41,6 +53,7 @@ function App() {
           }
         });
         setLoadingZip(false);
+        console.log("hi");
         window.location.reload();
       });
     }
