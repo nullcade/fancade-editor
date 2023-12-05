@@ -18,7 +18,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "/zip-file",
   "display": "standalone",
   "theme_color": "#0096FF",
   "background_color": "#1f1f1f",
@@ -31,10 +31,6 @@
         {
           "name": "zip",
           "accept": [".zip"]
-        },
-        {
-          "name": "everything else",
-          "accept": ["*/*"]
         }
       ]
     }
