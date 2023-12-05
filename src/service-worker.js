@@ -1,8 +1,9 @@
+/* eslint-disable no-restricted-globals */
 import { precacheAndRoute } from "workbox-precaching";
 
-precacheAndRoute(window.self.__WB_MANIFEST);
+precacheAndRoute(self.__WB_MANIFEST);
 
-window.self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", (event) => {
   if (event.request.url.endsWith("/zip-file")) {
     event.waitUntil(
       (async () => {
