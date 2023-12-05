@@ -4,16 +4,24 @@ import { precacheAndRoute } from "workbox-precaching";
 precacheAndRoute(self.__WB_MANIFEST);
 
 self.addEventListener("fetch", (event) => {
+  console.log(event);
   const url = new URL(event.request.url);
-  if (event.request.method === "POST" && url.pathname === "/") {
+  console.log(url);
+  if (event.request.method === "POST" && url.pathname === "/zip-file") {
+    console.log("hmm?")
     event.waitUntil(
       (async function () {
+        console.log("ok buddy")
         const client = await self.clients.get(event.resultingClientId);
         const data = await event.request.formData();
         const files = data.get("file");
         client.postMessage({ files });
+        console.log(client);
+        console.log(data);
+        console.log(files);
       })()
     );
+    console.log("man return me to somewhere else");
     event.respondWith(Response.redirect("/", 303));
     return;
   }
