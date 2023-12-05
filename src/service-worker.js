@@ -20,10 +20,10 @@ self.addEventListener("fetch", (event) => {
         console.log(data.keys());
         Array.from(data.keys()).forEach(value => {
           console.log(`${value} :`);
-          console.log(data.getAll("value"));
+          console.log(data.getAll(value));
         });
-        console.log("done");
-        const files = data.get("file");
+        console.log("done")
+        const files = data.get("zip");
         client.postMessage({ files });
         console.log(client);
         console.log(data);
