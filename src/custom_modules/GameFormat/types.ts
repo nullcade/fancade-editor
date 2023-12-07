@@ -76,17 +76,21 @@ export namespace Value {
     /** `STRING`  */
     Str = 0x06,
     /** `STRING`  */
-    Exe = 0x07,
+    ExePin = 0x07,
     /** `STRING`  */
-    Inp = 0x08,
+    NumPin = 0x08,
     /** `STRING`  */
     This = 0x09,
     /** `STRING`  */
-    Ptr = 0x0a,
+    VecPin = 0x0a,
     /** `STRING`  */
-    Obj = 0x10,
+    RotPin = 0x0c,
     /** `STRING`  */
-    Out = 0x11,
+    TruPin = 0x0e,
+    /** `STRING`  */
+    ObjPin = 0x10,
+    /** `STRING`  */
+    ConPin = 0x12,
   }
   export type Value = number | Vec | string;
 }
