@@ -6,14 +6,14 @@ export class GameDecoder {
   buff: Buffer;
   off: number;
   chunksMap: Map<number, Chunk.Data>;
-  uuidMap: Map<number, String>;
+  uuidMap: Map<number, string>;
   idOffset: number;
 
   constructor(buff: Buffer) {
     this.buff = buff;
     this.off = 0;
     this.chunksMap = new Map<number, Chunk.Data>();
-    this.uuidMap = new Map<number, String>();
+    this.uuidMap = new Map<number, string>();
     this.idOffset = 0;
   }
 
