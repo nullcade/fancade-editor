@@ -1,4 +1,4 @@
-import { Chunk } from "custom_modules/GameFormat";
+import { Chunk, Value } from "custom_modules/GameFormat";
 import { FanScript, FanScriptBlocks } from "./types";
 import ts from "typescript";
 import { nanoid } from "nanoid";
@@ -29,7 +29,9 @@ function parseProgramStatement(
     if (stack.afterStack.length > 0) {
       wires.push({
         position: [
-          [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
+          stack.afterStack[stack.afterStack.length - 1].blockY === 32769
+            ? [32769, 32769, 32769]
+            : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
           [0, result.blocks.length, 0],
         ],
         offset: [
@@ -61,7 +63,9 @@ export function parse(script: string): FanScript.Result {
     script,
     ts.ScriptTarget.Latest
   );
-  const afterStack: { blockY: number; offset: [number, number, number] }[] = [];
+  const afterStack: { blockY: number; offset: [number, number, number] }[] = [
+    { blockY: 32769, offset: [3, 1, 14] },
+  ];
   const beforeStack: { blockY: number; offset: [number, number, number] }[] =
     [];
   console.log(ts.isExpressionStatement(scriptObject.statements[0]));
@@ -70,9 +74,18 @@ export function parse(script: string): FanScript.Result {
     blocks: [],
     newBlocks: [],
   };
-  scriptObject.statements.forEach((item) =>
-    parseProgramStatement(item, { afterStack, beforeStack }, result)
-  );
+  scriptObject.statements.forEach((item, index, statementsArray) => {
+    parseProgramStatement(item, { afterStack, beforeStack }, result);
+    if (index === statementsArray.length - 1) {
+      result.blocks[result.blocks.length - 1].wires.push({
+        position: [
+          [0, afterStack[afterStack.length - 1].blockY, 0],
+          [32769, 32769, 32769],
+        ],
+        offset: [afterStack[afterStack.length - 1].offset, [3, 1, 0]],
+      });
+    }
+  });
   console.log(result);
   return result;
 }
@@ -96,7 +109,20 @@ export function fancadeResult(
           )
         ),
         faces: ScriptBlockFaces.bottomLeft,
-        values: [],
+        values: [
+          {
+            index: 0,
+            type: Value.Type.ExePin,
+            position: [3, 1, 14],
+            value: "Before",
+          },
+          {
+            index: 1,
+            type: Value.Type.ExePin,
+            position: [3, 1, 0],
+            value: "After",
+          },
+        ],
         wires: [],
         children: [
           {
