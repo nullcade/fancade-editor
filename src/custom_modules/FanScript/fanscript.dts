@@ -1,9 +1,3 @@
-type NonNegativeInteger<T extends number> = number extends T
-  ? never
-  : `${T}` extends `-${string}` | `${string}.${string}`
-  ? never
-  : T;
-
 declare interface NumWire {}
 declare interface VecWire {}
 declare interface BoolWire {}
@@ -30,8 +24,8 @@ declare enum LeaderboardOrder {
   FastestTime = "fastesttime",
   LongestTime = "logesttime",
 }
-declare function win(delay?: NonNegativeInteger<number>): void;
-declare function lose(delay?: NonNegativeInteger<number>): void;
+declare function win(delay?: number): void;
+declare function lose(delay?: number): void;
 declare function setScore(
   leaderboardOrder: LeaderboardOrder,
   score?: NumWire,
@@ -49,7 +43,7 @@ declare function getAccelerometer(): [VecWire];
 declare function getFrame(): [NumWire];
 declare function addMenuItem(
   name: string,
-  count: NonNegativeInteger<number>,
+  count: number,
   price: Price,
   variable?: NumWire,
   picture?: ObjWire
