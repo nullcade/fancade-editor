@@ -1,5 +1,8 @@
-import { FanScript, FanScriptFunctions } from "./types";
-import * as ts from "typescript";
+import { Chunk } from "custom_modules/GameFormat";
+import { FanScript, FanScriptBlocks } from "./types";
+import ts from "typescript";
+import { nanoid } from "nanoid";
+import ScriptBlockFaces from "./scriptBlockFaces";
 
 function parseProgramStatement(
   statement: ts.Statement,
@@ -18,7 +21,7 @@ function parseProgramStatement(
     console.log(stack);
     const funcName = statement.expression.expression.escapedText.toString();
     console.log(funcName);
-    if (!FanScriptFunctions[funcName]) return;
+    if (!FanScriptBlocks[funcName]) return;
     const wires: {
       position: [[number, number, number], [number, number, number]];
       offset: [[number, number, number], [number, number, number]];
@@ -31,28 +34,28 @@ function parseProgramStatement(
         ],
         offset: [
           stack.afterStack[stack.afterStack.length - 1].offset,
-          FanScriptFunctions[funcName].beforeOffset,
+          FanScriptBlocks[funcName].beforeOffset,
         ],
       });
       stack.afterStack[stack.afterStack.length - 1] = {
         blockY: result.blocks.length,
-        offset: FanScriptFunctions[funcName].afterOffset,
+        offset: FanScriptBlocks[funcName].afterOffset,
       };
     } else {
       stack.afterStack.push({
         blockY: result.blocks.length,
-        offset: FanScriptFunctions[funcName].afterOffset,
+        offset: FanScriptBlocks[funcName].afterOffset,
       });
     }
     result.blocks.push({
-      id: FanScriptFunctions[funcName].blockId,
+      id: FanScriptBlocks[funcName].blockId,
       name: funcName,
       wires,
     });
   }
 }
 
-export function parse(script: string): FanScript.Result | void {
+export function parse(script: string): FanScript.Result {
   const scriptObject = ts.createSourceFile(
     "x.ts",
     script,
@@ -71,4 +74,71 @@ export function parse(script: string): FanScript.Result | void {
     parseProgramStatement(item, { afterStack, beforeStack }, result)
   );
   console.log(result);
+  return result;
+}
+
+export function fancadeResult(
+  result: FanScript.Result
+): (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] {
+  const arr: (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] =
+    [];
+  result.blocks.forEach((block, index, blocksArray) => {
+    if (index === 0) {
+      arr.push({
+        uuid: nanoid(),
+        type: Chunk.Type.Script,
+        offset: [0, 0, 0],
+        name: "scriptBlock",
+        locked: false,
+        blocks: JSON.parse(
+          JSON.stringify(
+            blocksArray.length > 4
+              ? new Array(blocksArray.length).fill(
+                  new Array(blocksArray.length).fill(
+                    new Array(blocksArray.length)
+                  )
+                )
+              : new Array(4).fill(new Array(4).fill(new Array(4)))
+          )
+        ),
+        faces: ScriptBlockFaces.bottomLeft,
+        values: [],
+        wires: [],
+        children: [
+          {
+            uuid: nanoid(),
+            values: [],
+            blocks: [],
+            wires: [],
+            faces: ScriptBlockFaces.bottomRight,
+            offset: [1, 0, 0],
+          },
+          {
+            uuid: nanoid(),
+            values: [],
+            blocks: [],
+            wires: [],
+            faces: ScriptBlockFaces.topLeft,
+            offset: [0, 0, 1],
+          },
+          {
+            uuid: nanoid(),
+            values: [],
+            blocks: [],
+            wires: [],
+            faces: ScriptBlockFaces.topRight,
+            offset: [1, 0, 1],
+          },
+        ],
+      });
+    }
+    const myChunk = arr[arr.length - 1];
+    myChunk.blocks[0][index][0] = block.id;
+    FanScriptBlocks[block.name].children.forEach((child) => {
+      myChunk.blocks[child.offset[0]][index][child.offset[2]] = child.blockId;
+    });
+    myChunk.wires.push(...block.wires);
+  });
+  
+  return arr;
 }

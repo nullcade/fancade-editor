@@ -24,10 +24,10 @@ export namespace Chunk {
     blocks: Blocks;
     values: Value.Data[];
     wires: Wire.Data[];
-    children?: Pick<
+    children?: (Pick<
       Chunk.Data,
       "uuid" | "offset" | "faces" | "blocks" | "values" | "wires"
-    >[];
+    > & { offset: Vec })[];
   }
   export enum Flags {
     HasWires = 2 ** 0,
@@ -448,24 +448,24 @@ export type Grid<
   N extends readonly number[] | readonly [],
   T = number,
   Acc extends never[] = [],
-  S extends number = N["length"],
+  S extends number = N["length"]
 > = Acc["length"] extends S
   ? T
   : Grid<N, Fill<[never, ...Acc, ...N][S], T>, [...Acc, never], S>;
 export type Fill<
   N extends number,
   T = undefined,
-  Acc extends T[] = [],
+  Acc extends T[] = []
 > = number extends N
   ? T[]
   : N extends Acc["length"]
-    ? Acc
-    : Fill<N, T, [...Acc, T]>;
+  ? Acc
+  : Fill<N, T, [...Acc, T]>;
 export type Multiply<
   A extends number,
   B extends number,
   Acc extends undefined[] = [],
-  I extends never[] = [],
+  I extends never[] = []
 > = I["length"] extends A
   ? Acc["length"]
   : Multiply<A, B, [...Acc, ...Fill<B>], [...I, never]>;

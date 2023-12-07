@@ -5,7 +5,7 @@ import Monaco from "monaco-editor";
 import { Stack } from "@mui/material";
 import { ConstructionRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { parse } from "custom_modules/FanScript";
+import { parse, fancadeResult } from "custom_modules/FanScript";
 import FanScript from "../../custom_modules/FanScript/fanscript.dts?raw";
 
 function ScriptTab({
@@ -35,7 +35,9 @@ function ScriptTab({
           onClick={() => {
             if (building || script.current === null) return;
             setBuilding(true);
-            parse(script.current.getValue());
+            game.chunks.push(
+              ...fancadeResult(parse(script.current.getValue()))
+            );
           }}
           disabled={!buildable}
         >

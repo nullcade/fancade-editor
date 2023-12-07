@@ -71,7 +71,7 @@ function getBlockChildren(
   }));
 }
 
-export const FanScriptFunctions: {
+export const FanScriptBlocks: {
   [key: string]: {
     blockId: number;
     arguments: FunctionArgument[];
