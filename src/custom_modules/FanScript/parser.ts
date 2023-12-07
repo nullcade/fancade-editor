@@ -92,13 +92,7 @@ export function fancadeResult(
         locked: false,
         blocks: JSON.parse(
           JSON.stringify(
-            blocksArray.length > 4
-              ? new Array(blocksArray.length).fill(
-                  new Array(blocksArray.length).fill(
-                    new Array(blocksArray.length)
-                  )
-                )
-              : new Array(4).fill(new Array(4).fill(new Array(4)))
+            new Array(4).fill(new Array(blocksArray.length).fill(new Array(4)))
           )
         ),
         faces: ScriptBlockFaces.bottomLeft,
@@ -139,6 +133,6 @@ export function fancadeResult(
     });
     myChunk.wires.push(...block.wires);
   });
-  
+
   return arr;
 }
