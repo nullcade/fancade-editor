@@ -2,7 +2,15 @@ import { Game } from "custom_modules/GameFormat";
 import React, { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import Monaco from "monaco-editor";
-import { Stack } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+} from "@mui/material";
 import { ConstructionRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { parse, fancadeResult } from "custom_modules/FanScript";
@@ -19,8 +27,24 @@ function ScriptTab({
   const monacoRef = useRef<typeof Monaco.editor | null>(null);
   const [building, setBuilding] = useState<boolean>(false);
   const [buildable, setBuildable] = useState<boolean>(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState<boolean>(false);
+  const dialogTitle = useRef<string>("");
+  const dialogBody = useRef<string>("");
   return (
     <Stack height="100%" flexDirection="column" flexWrap="nowrap">
+      <Dialog
+        open={errorDialogOpen}
+        keepMounted
+        onClose={() => setErrorDialogOpen(false)}
+      >
+        <DialogTitle>{dialogTitle.current}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{dialogBody.current}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
       <Stack
         flexDirection="row"
         flexWrap="nowrap"
@@ -35,10 +59,15 @@ function ScriptTab({
           onClick={() => {
             if (building || script.current === null) return;
             setBuilding(true);
-            game.chunks.push(
-              ...fancadeResult(parse(script.current.getValue()))
-            );
-            setBuilding(false);
+            try {
+              const parsed = parse(script.current.getValue());
+              game.chunks.push(...fancadeResult(parsed));
+            } catch (error) {
+              dialogTitle.current = "Compilation Error";
+              dialogBody.current = (error as Error).message;
+              setErrorDialogOpen(true);
+            }
+              setBuilding(false);
           }}
           disabled={!buildable}
         >
