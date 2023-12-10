@@ -1,5 +1,5 @@
 import { Chunk, Value } from "custom_modules/GameFormat";
-import { FanScript, FanScriptBlocks } from "./types";
+import { ArgumentTypes, FanScript, FanScriptBlocks } from "./types";
 import ts from "typescript";
 import { nanoid } from "nanoid";
 import ScriptBlockFaces from "./scriptBlockFaces";
@@ -192,6 +192,7 @@ function parseProgramStatement(
       position: [[number, number, number], [number, number, number]];
       offset: [[number, number, number], [number, number, number]];
     }[] = [];
+    const values: Value.Data[] = [];
     if (stack.afterStack.length > 0) {
       wires.push({
         position: [
@@ -215,10 +216,37 @@ function parseProgramStatement(
         offset: FanScriptBlocks[funcName].afterOffset,
       });
     }
+    statement.expression.arguments.forEach((value, index) => {
+      const argumentType = FanScriptBlocks[funcName].arguments[index];
+      if (!argumentType) throw new Error("Argument out of index");
+      if (argumentType.type === ArgumentTypes.Parameter) {
+        const realValue = valueSolver(
+          value,
+          stack.variableStack,
+          stack.functionStack
+        );
+        if (
+          !(
+            typeof realValue === "string" ||
+            typeof realValue === "number" ||
+            typeof realValue === "boolean"
+          )
+        )
+          throw new Error("Wires are not assignable to parameters!");
+        values.push({
+          index: argumentType.index,
+          position: [0, result.blocks.length, 0],
+          type: argumentType.valueType,
+          value:
+            typeof realValue === "boolean" ? (realValue ? 1 : 0) : realValue,
+        });
+      }
+    });
     result.blocks.push({
       id: FanScriptBlocks[funcName].blockId,
       name: funcName,
       wires,
+      values,
     });
   } else if (
     ts.isVariableStatement(statement)
@@ -361,6 +389,7 @@ export function fancadeResult(
       myChunk.blocks[child.offset[0]][index][child.offset[2]] = child.blockId;
     });
     myChunk.wires.push(...block.wires);
+    myChunk.values.push(...block.values);
   });
 
   return arr;

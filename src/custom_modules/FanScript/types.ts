@@ -21,6 +21,7 @@ export namespace FanScript {
         position: [[number, number, number], [number, number, number]];
         offset: [[number, number, number], [number, number, number]];
       }[];
+      values: Value.Data[];
     }[];
     newBlocks: {
       id: Block.Id;
@@ -39,6 +40,7 @@ export namespace FanScript {
           position: [[number, number, number], [number, number, number]];
           offset: [[number, number, number], [number, number, number]];
         }[];
+        values: Value.Data[];
       }[];
     }[];
   }
