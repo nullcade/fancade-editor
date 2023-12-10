@@ -7,22 +7,22 @@ declare interface ConWire {}
 
 // Game
 declare enum Price {
-  TenFixed = "tenfixed",
-  TenLinear = "tenlinear",
-  TenDouble = "tendouble",
-  HundredFixed = "hundredfixed",
-  HundredLinear = "hundredlinear",
-  HundredDouble = "hundreddouble",
-  ThousandFixed = "thousandfixed",
-  ThousandLinear = "thousandlinear",
-  ThousandDouble = "thousanddouble",
-  TenThousandFixed = "tenthousandfixed",
+  TenFixed = 0,
+  TenLinear = 2,
+  TenDouble = 3,
+  HundredFixed = 4,
+  HundredLinear = 5,
+  HundredDouble = 6,
+  ThousandFixed = 7,
+  ThousandLinear = 8,
+  ThousandDouble = 9,
+  TenThousandFixed = 10,
 }
 declare enum LeaderboardOrder {
-  MostPoints = "mostpoints",
-  FewestPoints = "fewestpoints",
-  FastestTime = "fastesttime",
-  LongestTime = "logesttime",
+  MostPoints = 0,
+  FewestPoints = 2,
+  FastestTime = 3,
+  LongestTime = 4,
 }
 declare function win(delay?: number): void;
 declare function lose(delay?: number): void;
@@ -67,23 +67,23 @@ declare function deleteObject(object?: ObjWire): void;
 
 // Sound
 declare enum Sound {
-  Chirp = "chirp",
-  Scrape = "scrape",
-  Squeek = "squeek",
-  Engine = "engine",
-  Button = "button",
-  Ball = "ball",
-  Piano = "piano",
-  Marimba = "marimba",
-  Pad = "pad",
-  Beep = "beep",
-  Plop = "plop",
-  Flop = "flop",
-  Splash = "splash",
-  Boom = "boom",
-  Hit = "hit",
-  Clang = "clang",
-  Jump = "jump",
+  Chirp = 0,
+  Scrape = 1,
+  Squeek = 2,
+  Engine = 3,
+  Button = 4,
+  Ball = 5,
+  Piano = 6,
+  Marimba = 7,
+  Pad = 8,
+  Beep = 9,
+  Plop = 10,
+  Flop = 11,
+  Splash = 12,
+  Boom = 13,
+  Hit = 14,
+  Clang = 15,
+  Jump = 16,
 }
 declare function playSound(
   loop: boolean,
@@ -158,14 +158,14 @@ declare function setAngularMotor(
 
 // Control
 declare enum Touching {
-  Touching = "touching",
-  Begins = "begins",
-  Ends = "ends",
+  Touching = 0,
+  Begins = 1,
+  Ends = 2,
 }
 declare enum Count {
-  First = "first",
-  Second = "second",
-  Third = "third",
+  First = 0,
+  Second = 1,
+  Third = 2,
 }
 declare function onPlay(callback?: () => void): void;
 declare function onUpdate(callback?: () => void): void;

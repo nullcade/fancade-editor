@@ -1,5 +1,10 @@
 import { Chunk, Value } from "custom_modules/GameFormat";
-import { ArgumentTypes, FanScript, FanScriptBlocks } from "./types";
+import {
+  ArgumentTypes,
+  FanScript,
+  FanScriptBlocks,
+  SelectableParameters,
+} from "./types";
 import ts from "typescript";
 import { nanoid } from "nanoid";
 import ScriptBlockFaces from "./scriptBlockFaces";
@@ -148,6 +153,23 @@ function valueSolver(
           throw new Error("Wrong operation type!");
       }
   }
+  if (ts.isPropertyAccessExpression(value)) {
+    if (!(ts.isIdentifier(value.expression) && ts.isIdentifier(value.name)))
+      throw new Error("Property access is only valid with solid names.");
+    if (!SelectableParameters[value.expression.escapedText.toString()])
+      throw new Error(
+        `"${value.expression.escapedText.toString()}" is not defined`
+      );
+    const parameter =
+      SelectableParameters[value.expression.escapedText.toString()][
+        value.name.escapedText.toString()
+      ];
+    if (parameter === undefined)
+      throw new Error(
+        `${value.expression.escapedText.toString()} have no parameter "${value.name.escapedText.toString()}"`
+      );
+    return parameter;
+  }
   if (ts.isNumericLiteral(value)) return parseInt(value.text);
   if (ts.isStringLiteral(value)) return value.text;
   if (value.kind === ts.SyntaxKind.TrueKeyword) return true;
@@ -233,6 +255,7 @@ function parseProgramStatement(
           )
         )
           throw new Error("Wires are not assignable to parameters!");
+        if (!realValue) return;
         values.push({
           index: argumentType.index,
           position: [0, result.blocks.length, 0],

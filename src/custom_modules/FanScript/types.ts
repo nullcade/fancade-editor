@@ -46,6 +46,60 @@ export namespace FanScript {
   }
 }
 
+export const SelectableParameters: {
+  [key: string]: {
+    [key: string]: number;
+  };
+} = {
+  Price: {
+    TenFixed: 0,
+    TenLinear: 2,
+    TenDouble: 3,
+    HundredFixed: 4,
+    HundredLinear: 5,
+    HundredDouble: 6,
+    ThousandFixed: 7,
+    ThousandLinear: 8,
+    ThousandDouble: 9,
+    TenThousandFixed: 10,
+  },
+  LeaderboardOrder: {
+    MostPoints: 0,
+    FewestPoints: 2,
+    FastestTime: 3,
+    LongestTime: 4,
+  },
+  Sound: {
+    Chirp: 0,
+    Scrape: 1,
+    Squeek: 2,
+    Engine: 3,
+    Button: 4,
+    Ball: 5,
+    Piano: 6,
+    Marimba: 7,
+    Pad: 8,
+    Beep: 9,
+    Plop: 10,
+    Flop: 11,
+    Splash: 12,
+    Boom: 13,
+    Hit: 14,
+    Clang: 15,
+    Jump: 16,
+  },
+  Touching: {
+    Touching: 0,
+    Begins: 1,
+    Ends: 2,
+  },
+  Count: {
+    First: 0,
+    Second: 1,
+    Third: 2,
+  },
+};
+
 export enum ArgumentTypes {
   Wire = "wire",
   Parameter = "parameter",
