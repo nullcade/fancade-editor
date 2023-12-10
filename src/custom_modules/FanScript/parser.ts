@@ -4,11 +4,177 @@ import ts from "typescript";
 import { nanoid } from "nanoid";
 import ScriptBlockFaces from "./scriptBlockFaces";
 
+function valueSolver(
+  value: ts.Node,
+  variableStack: {
+    [key: string]:
+      | number
+      | string
+      | boolean
+      | { blockY: number; offset: [number, number, number] };
+  },
+  functionStack: {
+    [key: string]: {};
+  }
+):
+  | number
+  | string
+  | boolean
+  | { blockY: number; offset: [number, number, number] } {
+  if (ts.isParenthesizedExpression(value)) {
+    return valueSolver(value.expression, variableStack, functionStack);
+  }
+  if (ts.isBinaryExpression(value)) {
+    const left = valueSolver(value.left, variableStack, functionStack);
+    const right = valueSolver(value.right, variableStack, functionStack);
+    // if (typeof left !== typeof right) throw Error("Different type values");
+    if (typeof left === "number" && typeof right === "number")
+      switch (value.operatorToken.kind) {
+        case 29:
+          return left < right;
+        case 31:
+          return left > right;
+        case 32:
+          return left <= right;
+        case 33:
+          return left >= right;
+        case 39:
+          return left + right;
+        case 40:
+          return left - right;
+        case 41:
+          return left * right;
+        case 42:
+          return left ** right;
+        case 43:
+          return left / right;
+        case 44:
+          return left % right;
+        case 50:
+          return left & right;
+        case 51:
+          return left | right;
+        case 52:
+          return left ^ right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else if (typeof left === "boolean" && typeof right === "boolean")
+      switch (value.operatorToken.kind) {
+        case 29:
+          return left < right;
+        case 31:
+          return left > right;
+        case 32:
+          return left <= right;
+        case 33:
+          return left >= right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else if (typeof left === "string" && typeof right === "string")
+      switch (value.operatorToken.kind) {
+        case 29:
+          return left < right;
+        case 31:
+          return left > right;
+        case 32:
+          return left <= right;
+        case 33:
+          return left >= right;
+        case 39:
+          return left + right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else if (typeof left !== "number" && typeof right !== "number")
+      switch (value.operatorToken.kind) {
+        case 29:
+          return left < right;
+        case 31:
+          return left > right;
+        case 32:
+          return left <= right;
+        case 33:
+          return left >= right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else if (typeof left === "number" && typeof right === "string")
+      switch (value.operatorToken.kind) {
+        case 39:
+          return left + right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else if (typeof left === "string" && typeof right === "number")
+      switch (value.operatorToken.kind) {
+        case 39:
+          return left + right;
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+    else
+      switch (value.operatorToken.kind) {
+        case 55:
+          return left && right;
+        case 56:
+          return left || right;
+        default:
+          throw new Error("Wrong operation type!");
+      }
+  }
+  if (ts.isNumericLiteral(value)) return parseInt(value.text);
+  if (ts.isStringLiteral(value)) return value.text;
+  if (value.kind === ts.SyntaxKind.TrueKeyword) return true;
+  if (value.kind === ts.SyntaxKind.FalseKeyword) return false;
+  if (ts.isIdentifier(value)) {
+    if (!variableStack[value.text])
+      throw new Error(`"${value.text}" is not defined`);
+    return variableStack[value.text];
+  }
+  return false;
+}
+
 function parseProgramStatement(
   statement: ts.Statement,
   stack: {
     afterStack: { blockY: number; offset: [number, number, number] }[];
     beforeStack: { blockY: number; offset: [number, number, number] }[];
+    variableStack: {
+      [key: string]:
+        | number
+        | string
+        | boolean
+        | { blockY: number; offset: [number, number, number] };
+    };
+    functionStack: {
+      [key: string]: {};
+    };
   },
   result: FanScript.Result
 ) {
@@ -54,6 +220,29 @@ function parseProgramStatement(
       name: funcName,
       wires,
     });
+  } else if (
+    ts.isVariableStatement(statement)
+    //variable assignment
+  ) {
+    if (!(statement.declarationList.flags & ts.NodeFlags.Const))
+      throw new Error("Only const variables are possible!");
+    statement.declarationList.forEachChild((child) => {
+      if (!ts.isVariableDeclaration(child))
+        throw new Error("Invalid variable declaration type");
+      if (!child.initializer) throw new Error("Wrong variable assignment");
+      if (ts.isCallExpression(child.initializer)) {
+        throw new Error("comming soon");
+      }
+      if (ts.isArrayBindingPattern(child.name)) {
+        throw new Error("comming soon");
+      } else if (ts.isIdentifier(child.name)) {
+        stack.variableStack[child.name.text] = valueSolver(
+          child.initializer,
+          stack.variableStack,
+          stack.functionStack
+        );
+      }
+    });
   }
 }
 
@@ -68,6 +257,14 @@ export function parse(script: string): FanScript.Result {
   ];
   const beforeStack: { blockY: number; offset: [number, number, number] }[] =
     [];
+  const variableStack: {
+    [key: string]:
+      | number
+      | string
+      | boolean
+      | { blockY: number; offset: [number, number, number] };
+  } = {};
+  const functionStack: { [key: string]: {} } = {};
   console.log(ts.isExpressionStatement(scriptObject.statements[0]));
   const result: FanScript.Result = {
     originalScript: script,
@@ -75,8 +272,12 @@ export function parse(script: string): FanScript.Result {
     newBlocks: [],
   };
   scriptObject.statements.forEach((item, index, statementsArray) => {
-    parseProgramStatement(item, { afterStack, beforeStack }, result);
-    if (index === statementsArray.length - 1) {
+    parseProgramStatement(
+      item,
+      { afterStack, beforeStack, variableStack, functionStack },
+      result
+    );
+    if (index === statementsArray.length - 1 && result.blocks.length > 0) {
       result.blocks[result.blocks.length - 1].wires.push({
         position: [
           [0, afterStack[afterStack.length - 1].blockY, 0],
@@ -87,6 +288,8 @@ export function parse(script: string): FanScript.Result {
     }
   });
   console.log(result);
+  console.log("vars");
+  console.log(variableStack);
   return result;
 }
 
