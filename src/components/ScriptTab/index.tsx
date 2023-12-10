@@ -38,6 +38,7 @@ function ScriptTab({
             game.chunks.push(
               ...fancadeResult(parse(script.current.getValue()))
             );
+            setBuilding(false);
           }}
           disabled={!buildable}
         >
@@ -61,6 +62,9 @@ function ScriptTab({
           setBuildable(
             monaco.editor.getModelMarkers({ owner: "typescript" }).length === 0
           );
+        }}
+        onChange={() => {
+          setBuildable(true);
         }}
         onValidate={() =>
           setBuildable(
