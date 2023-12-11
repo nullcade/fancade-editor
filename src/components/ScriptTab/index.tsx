@@ -27,6 +27,7 @@ function ScriptTab({
   const monacoRef = useRef<typeof Monaco.editor | null>(null);
   const [building, setBuilding] = useState<boolean>(false);
   const [buildable, setBuildable] = useState<boolean>(false);
+  const [builded, setBuilded] = useState<boolean>(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState<boolean>(false);
   const dialogTitle = useRef<string>("");
   const dialogBody = useRef<string>("");
@@ -55,6 +56,7 @@ function ScriptTab({
         <LoadingButton
           variant="outlined"
           loadingPosition="start"
+          color={builded ? "success" : undefined}
           startIcon={<ConstructionRounded />}
           onClick={() => {
             if (building || script.current === null) return;
@@ -68,8 +70,11 @@ function ScriptTab({
               setErrorDialogOpen(true);
             }
             setBuilding(false);
+            setBuilded(true);
+            setTimeout(() => setBuilded(false), 1000);
           }}
-          disabled={!buildable}
+          disabled={!buildable || building}
+          loading={building}
         >
           Build
         </LoadingButton>
