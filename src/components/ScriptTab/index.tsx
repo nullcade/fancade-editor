@@ -67,7 +67,7 @@ function ScriptTab({
               dialogBody.current = (error as Error).message;
               setErrorDialogOpen(true);
             }
-              setBuilding(false);
+            setBuilding(false);
           }}
           disabled={!buildable}
         >
@@ -107,7 +107,8 @@ function ScriptTab({
           );
           monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
             ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
-            noLib: true,
+            // noLib: true,
+            lib: ["es2015.iterable"],
           });
           monaco.editor.EditorOptions.fontFamily.applyUpdate(
             "JetBrainsMono-Regular",
@@ -119,7 +120,7 @@ function ScriptTab({
               .then((fileContent) =>
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(
                   fileContent,
-                  "fanscript.d.ts"
+                  "defaultLib:lib.es6.d.ts"
                 )
               )
           );

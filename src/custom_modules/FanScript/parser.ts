@@ -183,7 +183,7 @@ function valueSolver(
 }
 
 function parseProgramStatement(
-  statement: ts.Statement,
+  statement: ts.Node,
   stack: {
     afterStack: { blockY: number; offset: [number, number, number] }[];
     beforeStack: { blockY: number; offset: [number, number, number] }[];
@@ -200,14 +200,16 @@ function parseProgramStatement(
   },
   result: FanScript.Result
 ) {
+  const myExpression = ts.isExpressionStatement(statement)
+    ? statement.expression
+    : statement;
   if (
-    ts.isExpressionStatement(statement) &&
-    ts.isCallExpression(statement.expression) &&
-    ts.isIdentifier(statement.expression.expression)
+    ts.isCallExpression(myExpression) &&
+    ts.isIdentifier(myExpression.expression)
     // funxtion call
   ) {
     console.log(stack);
-    const funcName = statement.expression.expression.escapedText.toString();
+    const funcName = myExpression.expression.escapedText.toString();
     console.log(funcName);
     if (!FanScriptBlocks[funcName]) return;
     const wires: {
@@ -238,7 +240,7 @@ function parseProgramStatement(
         offset: FanScriptBlocks[funcName].afterOffset,
       });
     }
-    statement.expression.arguments.forEach((value, index) => {
+    myExpression.arguments.forEach((value, index) => {
       const argumentType = FanScriptBlocks[funcName].arguments[index];
       if (!argumentType) throw new Error("Argument out of index");
       if (argumentType.type === ArgumentTypes.Parameter) {
@@ -271,6 +273,10 @@ function parseProgramStatement(
       wires,
       values,
     });
+    return {
+      blockY: result.blocks.length - 1,
+      wiresOffset: FanScriptBlocks[funcName].outputWires,
+    };
   } else if (
     ts.isVariableStatement(statement)
     //variable assignment
@@ -281,11 +287,48 @@ function parseProgramStatement(
       if (!ts.isVariableDeclaration(child))
         throw new Error("Invalid variable declaration type");
       if (!child.initializer) throw new Error("Wrong variable assignment");
-      if (ts.isCallExpression(child.initializer)) {
-        throw new Error("comming soon");
-      }
-      if (ts.isArrayBindingPattern(child.name)) {
-        throw new Error("comming soon");
+      if (
+        ts.isCallExpression(child.initializer) &&
+        !ts.isArrayBindingPattern(child.name)
+      )
+        throw new Error(
+          "Cannot assign function calls to anything other than arrays."
+        );
+      if (
+        !ts.isCallExpression(child.initializer) &&
+        ts.isArrayBindingPattern(child.name)
+      )
+        throw new Error("Can only assign function calls to arrays.");
+      if (
+        ts.isCallExpression(child.initializer) &&
+        ts.isArrayBindingPattern(child.name)
+      ) {
+        const outputWires = parseProgramStatement(
+          child.initializer,
+          stack,
+          result
+        ) ?? { blockY: 0, wiresOffset: [] };
+        child.name.elements.forEach((element, elementIndex) => {
+          if (!ts.isBindingElement(element))
+            throw new Error(
+              "Function calls are only assignable to simple arrays."
+            );
+          if (!ts.isIdentifier(element.name))
+            throw new Error(
+              "Function calls are only assignable to name arrays."
+            );
+          if (
+            !(
+              outputWires.wiresOffset &&
+              elementIndex < outputWires.wiresOffset?.length
+            )
+          )
+            throw new Error("Argument out of index.");
+          stack.variableStack[element.name.escapedText.toString()] = {
+            blockY: outputWires.blockY,
+            offset: outputWires.wiresOffset[elementIndex],
+          };
+        });
       } else if (ts.isIdentifier(child.name)) {
         stack.variableStack[child.name.text] = valueSolver(
           child.initializer,
