@@ -243,12 +243,12 @@ function parseProgramStatement(
     myExpression.arguments.forEach((value, index) => {
       const argumentType = FanScriptBlocks[funcName].arguments[index];
       if (!argumentType) throw new Error("Argument out of index");
+      const realValue = valueSolver(
+        value,
+        stack.variableStack,
+        stack.functionStack
+      );
       if (argumentType.type === ArgumentTypes.Parameter) {
-        const realValue = valueSolver(
-          value,
-          stack.variableStack,
-          stack.functionStack
-        );
         if (
           !(
             typeof realValue === "string" ||
@@ -264,6 +264,23 @@ function parseProgramStatement(
           type: argumentType.valueType,
           value:
             typeof realValue === "boolean" ? (realValue ? 1 : 0) : realValue,
+        });
+      } else if (argumentType.type === ArgumentTypes.Wire) {
+        if (
+          typeof realValue === "string" ||
+          typeof realValue === "number" ||
+          typeof realValue === "boolean"
+        )
+          throw new Error("Parameters are not assignable to wires!");
+        wires.push({
+          position: [
+            [0, realValue.blockY, 0],
+            [0, result.blocks.length, 0],
+          ],
+          offset: [
+            realValue.offset,
+            argumentType.offset,
+          ],
         });
       }
     });
