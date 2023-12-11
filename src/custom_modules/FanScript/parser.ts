@@ -217,32 +217,43 @@ function parseProgramStatement(
       offset: [[number, number, number], [number, number, number]];
     }[] = [];
     const values: Value.Data[] = [];
-    if (stack.afterStack.length > 0) {
-      wires.push({
-        position: [
-          stack.afterStack[stack.afterStack.length - 1].blockY === 32769
-            ? [32769, 32769, 32769]
-            : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
-          [0, result.blocks.length, 0],
-        ],
-        offset: [
-          stack.afterStack[stack.afterStack.length - 1].offset,
-          FanScriptBlocks[funcName].beforeOffset,
-        ],
-      });
-      stack.afterStack[stack.afterStack.length - 1] = {
-        blockY: result.blocks.length,
-        offset: FanScriptBlocks[funcName].afterOffset,
-      };
-    } else {
-      stack.afterStack.push({
-        blockY: result.blocks.length,
-        offset: FanScriptBlocks[funcName].afterOffset,
-      });
-    }
+    let skips = 0;
     myExpression.arguments.forEach((value, index) => {
-      const argumentType = FanScriptBlocks[funcName].arguments[index];
+      const argumentType = FanScriptBlocks[funcName].arguments[index + skips];
       if (!argumentType) throw new Error("Argument out of index");
+      if (ts.isSpreadElement(value)) {
+        if (!ts.isCallExpression(value.expression))
+          throw new Error("Spreading is only supported for function calls");
+        if (argumentType.type === ArgumentTypes.Parameter)
+          throw new Error(
+            "Cannot pass Spreaded function as parameter, please fill in the parameters first"
+          );
+        const realValue = parseProgramStatement(
+          value.expression,
+          stack,
+          result
+        ) ?? { blockY: 0, wiresOffset: [] };
+        if (!realValue.wiresOffset) realValue.wiresOffset = [];
+        if (realValue.wiresOffset.length === 0)
+          throw new Error(
+            "Function has no output, call it instead of passing it as an argument"
+          );
+        realValue.wiresOffset.forEach((offset, outputIndex) => {
+          if (!(FanScriptBlocks[funcName].arguments.length > index + skips + outputIndex)) return;
+            const currentArgumentType =
+              FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
+          if (currentArgumentType.type === ArgumentTypes.Wire)
+            wires.push({
+              position: [
+                [0, realValue.blockY, 0],
+                [0, result.blocks.length, 0],
+              ],
+              offset: [offset, currentArgumentType.offset],
+            });
+        });
+        skips += realValue.wiresOffset.length - 1;
+        return;
+      }
       const realValue = valueSolver(
         value,
         stack.variableStack,
@@ -277,13 +288,33 @@ function parseProgramStatement(
             [0, realValue.blockY, 0],
             [0, result.blocks.length, 0],
           ],
-          offset: [
-            realValue.offset,
-            argumentType.offset,
-          ],
+          offset: [realValue.offset, argumentType.offset],
         });
       }
     });
+    if (stack.afterStack.length > 0) {
+      wires.push({
+        position: [
+          stack.afterStack[stack.afterStack.length - 1].blockY === 32769
+            ? [32769, 32769, 32769]
+            : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
+          [0, result.blocks.length, 0],
+        ],
+        offset: [
+          stack.afterStack[stack.afterStack.length - 1].offset,
+          FanScriptBlocks[funcName].beforeOffset,
+        ],
+      });
+      stack.afterStack[stack.afterStack.length - 1] = {
+        blockY: result.blocks.length,
+        offset: FanScriptBlocks[funcName].afterOffset,
+      };
+    } else {
+      stack.afterStack.push({
+        blockY: result.blocks.length,
+        offset: FanScriptBlocks[funcName].afterOffset,
+      });
+    }
     result.blocks.push({
       id: FanScriptBlocks[funcName].blockId,
       name: funcName,
