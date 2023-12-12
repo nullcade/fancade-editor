@@ -44,6 +44,17 @@ export namespace FanScript {
       }[];
     }[];
   }
+  export const scriptTypes = [
+    "string",
+    "number",
+    "boolean",
+    "NumWire",
+    "VecWire",
+    "BoolWire",
+    "RotWire",
+    "ObjWire",
+    "ConWire",
+  ];
 }
 
 export const SelectableParameters: {
@@ -401,6 +412,54 @@ export const FanScriptBlocks: {
         offset: [0, 1, 11],
       },
     ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),
+  },
+  playSound: {
+    blockId: Block.Ids.EFF_SFX_PLAY_FE,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 1,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Parameter,
+        index: 1,
+        valueType: 1,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),
+  },
+  stopSound: {
+    blockId: Block.Ids.EF_SFX_STOP_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),
+  },
+  onPlay: {
+    blockId: Block.Ids.E_PLAY_EE,
+    arguments: [{ type: ArgumentTypes.Wire, offset: [14, 1, 11] }],
     beforeOffset: [3, 1, 14],
     afterOffset: [3, 1, 0],
     children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),

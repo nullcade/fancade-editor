@@ -19,7 +19,11 @@ function valueSolver(
       | { blockY: number; offset: [number, number, number] };
   },
   functionStack: {
-    [key: string]: {};
+    [key: string]: {
+      body: ts.Block;
+      parameters: string[];
+      wiresStart: number;
+    };
   }
 ):
   | number
@@ -156,17 +160,13 @@ function valueSolver(
   if (ts.isPropertyAccessExpression(value)) {
     if (!(ts.isIdentifier(value.expression) && ts.isIdentifier(value.name)))
       throw new Error("Property access is only valid with solid names.");
-    if (!SelectableParameters[value.expression.escapedText.toString()])
-      throw new Error(
-        `"${value.expression.escapedText.toString()}" is not defined`
-      );
+    if (!SelectableParameters[value.expression.text])
+      throw new Error(`"${value.expression.text}" is not defined`);
     const parameter =
-      SelectableParameters[value.expression.escapedText.toString()][
-        value.name.escapedText.toString()
-      ];
+      SelectableParameters[value.expression.text][value.name.text];
     if (parameter === undefined)
       throw new Error(
-        `${value.expression.escapedText.toString()} have no parameter "${value.name.escapedText.toString()}"`
+        `${value.expression.text} have no parameter "${value.name.text}"`
       );
     return parameter;
   }
@@ -195,7 +195,11 @@ function parseProgramStatement(
         | { blockY: number; offset: [number, number, number] };
     };
     functionStack: {
-      [key: string]: {};
+      [key: string]: {
+        body: ts.Block;
+        parameters: string[];
+        wiresStart: number;
+      };
     };
   },
   result: FanScript.Result
@@ -209,15 +213,113 @@ function parseProgramStatement(
     // funxtion call
   ) {
     console.log(stack);
-    const funcName = myExpression.expression.escapedText.toString();
+    const funcName = myExpression.expression.text;
     console.log(funcName);
-    if (!FanScriptBlocks[funcName]) return;
+    if (!FanScriptBlocks[funcName] && !stack.functionStack[funcName])
+      throw new Error(`"${funcName}" is not a function name`);
     const wires: {
       position: [[number, number, number], [number, number, number]];
       offset: [[number, number, number], [number, number, number]];
     }[] = [];
     const values: Value.Data[] = [];
     let skips = 0;
+    if (stack.functionStack[funcName]) {
+      const tempVariableStack: {
+        [key: string]:
+          | number
+          | string
+          | boolean
+          | { blockY: number; offset: [number, number, number] };
+      } = {};
+      myExpression.arguments.forEach((argument, index) => {
+        if (ts.isSpreadElement(argument)) {
+          if (!ts.isCallExpression(argument.expression))
+            throw new Error("Spreading is only supported for function calls");
+          if (index < stack.functionStack[funcName].wiresStart)
+            throw new Error(
+              "Cannot pass Spreaded function as parameter, please fill in the parameters first"
+            );
+          const realValue =
+            parseProgramStatement(argument.expression, stack, result) ?? [];
+          if (realValue.length === 0)
+            throw new Error(
+              "Function has no output, call it instead of passing it as an argument"
+            );
+          realValue.forEach((wireValue, outputIndex) => {
+            if (
+              !(
+                stack.functionStack[funcName].parameters.length >
+                index + skips + outputIndex
+              )
+            )
+              return;
+            tempVariableStack[
+              stack.functionStack[funcName].parameters[
+                index + skips + outputIndex
+              ]
+            ] = wireValue;
+          });
+          skips += realValue.length - 1;
+          return;
+        }
+        const realValue = valueSolver(
+          argument,
+          tempVariableStack,
+          stack.functionStack
+        );
+        tempVariableStack[
+          stack.functionStack[funcName].parameters[index + skips]
+        ] = realValue;
+      });
+      const outputValues: {
+        blockY: number;
+        offset: [number, number, number];
+      }[] = [];
+      stack.functionStack[funcName].body.statements.forEach(
+        (statement, index, statements) => {
+          if (index + 1 === statements.length) {
+            if (!ts.isReturnStatement(statement))
+              throw new Error("No return found in function.");
+            if (!statement.expression) return;
+            if (!ts.isArrayLiteralExpression(statement.expression))
+              throw new Error("Only arrays are allowed for return statement.");
+            statement.expression.elements.forEach((element) => {
+              const realValue = valueSolver(
+                element,
+                tempVariableStack,
+                stack.functionStack
+              );
+              if (
+                typeof realValue === "string" ||
+                typeof realValue === "number" ||
+                typeof realValue === "boolean"
+              )
+                throw new Error(
+                  "Only wires are accepted as values to be returned."
+                );
+              outputValues.push(realValue);
+            });
+            return;
+          }
+          if (ts.isReturnStatement(statement))
+            throw new Error("Return can only be at the end of function");
+          if (ts.isVariableStatement(statement))
+            statement.declarationList.declarations.forEach((declaration) => {
+              if (!declaration.initializer)
+                throw new Error("Const declarations needs initializer.");
+              if (ts.isArrowFunction(declaration.initializer))
+                throw new Error("Cannot assign functions inside functions");
+            });
+          parseProgramStatement(statement, {
+            afterStack: stack.afterStack,
+            beforeStack: stack.beforeStack,
+            variableStack: tempVariableStack,
+            functionStack: stack.functionStack,
+          }, result);
+        }
+      );
+      return outputValues;
+    }
     myExpression.arguments.forEach((value, index) => {
       const argumentType = FanScriptBlocks[funcName].arguments[index + skips];
       if (!argumentType) throw new Error("Argument out of index");
@@ -228,30 +330,32 @@ function parseProgramStatement(
           throw new Error(
             "Cannot pass Spreaded function as parameter, please fill in the parameters first"
           );
-        const realValue = parseProgramStatement(
-          value.expression,
-          stack,
-          result
-        ) ?? { blockY: 0, wiresOffset: [] };
-        if (!realValue.wiresOffset) realValue.wiresOffset = [];
-        if (realValue.wiresOffset.length === 0)
+        const realValue =
+          parseProgramStatement(value.expression, stack, result) ?? [];
+        if (realValue.length === 0)
           throw new Error(
             "Function has no output, call it instead of passing it as an argument"
           );
-        realValue.wiresOffset.forEach((offset, outputIndex) => {
-          if (!(FanScriptBlocks[funcName].arguments.length > index + skips + outputIndex)) return;
-            const currentArgumentType =
-              FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
+        realValue.forEach((wireValue, outputIndex) => {
+          if (
+            !(
+              FanScriptBlocks[funcName].arguments.length >
+              index + skips + outputIndex
+            )
+          )
+            return;
+          const currentArgumentType =
+            FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
           if (currentArgumentType.type === ArgumentTypes.Wire)
             wires.push({
               position: [
-                [0, realValue.blockY, 0],
+                [0, wireValue.blockY, 0],
                 [0, result.blocks.length, 0],
               ],
-              offset: [offset, currentArgumentType.offset],
+              offset: [wireValue.offset, currentArgumentType.offset],
             });
         });
-        skips += realValue.wiresOffset.length - 1;
+        skips += realValue.length - 1;
         return;
       }
       const realValue = valueSolver(
@@ -321,10 +425,10 @@ function parseProgramStatement(
       wires,
       values,
     });
-    return {
+    return FanScriptBlocks[funcName].outputWires?.map((vec) => ({
       blockY: result.blocks.length - 1,
-      wiresOffset: FanScriptBlocks[funcName].outputWires,
-    };
+      offset: vec,
+    }));
   } else if (
     ts.isVariableStatement(statement)
     //variable assignment
@@ -351,11 +455,8 @@ function parseProgramStatement(
         ts.isCallExpression(child.initializer) &&
         ts.isArrayBindingPattern(child.name)
       ) {
-        const outputWires = parseProgramStatement(
-          child.initializer,
-          stack,
-          result
-        ) ?? { blockY: 0, wiresOffset: [] };
+        const outputWires =
+          parseProgramStatement(child.initializer, stack, result) ?? [];
         child.name.elements.forEach((element, elementIndex) => {
           if (!ts.isBindingElement(element))
             throw new Error(
@@ -365,24 +466,80 @@ function parseProgramStatement(
             throw new Error(
               "Function calls are only assignable to name arrays."
             );
-          if (
-            !(
-              outputWires.wiresOffset &&
-              elementIndex < outputWires.wiresOffset?.length
-            )
-          )
+          if (!(elementIndex < outputWires.length))
             throw new Error("Argument out of index.");
-          stack.variableStack[element.name.escapedText.toString()] = {
-            blockY: outputWires.blockY,
-            offset: outputWires.wiresOffset[elementIndex],
+          stack.variableStack[element.name.text] = {
+            blockY: outputWires[elementIndex].blockY,
+            offset: outputWires[elementIndex].offset,
           };
         });
       } else if (ts.isIdentifier(child.name)) {
-        stack.variableStack[child.name.text] = valueSolver(
-          child.initializer,
-          stack.variableStack,
-          stack.functionStack
-        );
+        if (ts.isArrowFunction(child.initializer)) {
+          const parameters: string[] = [];
+          let wiresStart = 0;
+          child.initializer.parameters.forEach((parameter) => {
+            if (!parameter.type)
+              throw new Error("Types assignment is required for functions.");
+            let type = "";
+            if (ts.isTypeReferenceNode(parameter.type)) {
+              if (!ts.isIdentifier(parameter.type.typeName))
+                throw new Error("Only single type referencing is valid.");
+              if (!FanScript.scriptTypes.includes(parameter.type.typeName.text))
+                throw new Error(
+                  `Only valid types are "${FanScript.scriptTypes.join('", "')}"`
+                );
+              type = parameter.type.typeName.text;
+            } else if (
+              parameter.type.kind === ts.SyntaxKind.StringKeyword ||
+              parameter.type.kind === ts.SyntaxKind.NumberKeyword ||
+              parameter.type.kind === ts.SyntaxKind.BooleanKeyword
+            ) {
+              if (parameter.questionToken)
+                throw new Error(
+                  "Cannot assign optional parametes to arrow functions"
+                );
+              type =
+                parameter.type.kind === ts.SyntaxKind.StringKeyword
+                  ? "string"
+                  : parameter.type.kind === ts.SyntaxKind.NumberKeyword
+                  ? "number"
+                  : parameter.type.kind === ts.SyntaxKind.BooleanKeyword
+                  ? "boolean"
+                  : "";
+              if (wiresStart < parameters.length)
+                throw new Error(
+                  "Parameters are always before wires in function arguments"
+                );
+              wiresStart++;
+            } else {
+              throw new Error("Wrong type refrencing method.");
+            }
+            if (!FanScript.scriptTypes.includes(type))
+              throw new Error(
+                `Only valid types are "${FanScript.scriptTypes.join('", "')}"`
+              );
+            if (!ts.isIdentifier(parameter.name))
+              throw new Error("parameters can only be a name");
+            parameters.push(parameter.name.text);
+          });
+          if (!ts.isBlock(child.initializer.body))
+            throw new Error(
+              "Only block initializer is possible for arrow function"
+            );
+          // if (child.initializer.type)
+          //   throw new Error("Do not use return types for functions")
+          stack.functionStack[child.name.text] = {
+            body: child.initializer.body,
+            parameters,
+            wiresStart,
+          };
+        } else {
+          stack.variableStack[child.name.text] = valueSolver(
+            child.initializer,
+            stack.variableStack,
+            stack.functionStack
+          );
+        }
       }
     });
   }
@@ -406,7 +563,13 @@ export function parse(script: string): FanScript.Result {
       | boolean
       | { blockY: number; offset: [number, number, number] };
   } = {};
-  const functionStack: { [key: string]: {} } = {};
+  const functionStack: {
+    [key: string]: {
+      body: ts.Block;
+      parameters: string[];
+      wiresStart: number;
+    };
+  } = {};
   console.log(ts.isExpressionStatement(scriptObject.statements[0]));
   const result: FanScript.Result = {
     originalScript: script,
