@@ -352,7 +352,7 @@ function ChunksTab({
                 return String.fromCharCode(
                   ...new TextEncoder()
                     .encode(event.target.value as string)
-                    .slice(0, limitSize ? 16 : 255),
+                    .slice(0, limitSize ? 16 : 255)
                 );
               return event.target.value;
             }}
@@ -400,6 +400,10 @@ function ChunksTab({
                     .value as Chunk.Collider;
                   setGame(game);
                 }}
+                disabled={
+                  chunk === "" ||
+                  game.chunks[parseInt(chunk)].type === Chunk.Type.Level
+                }
                 sx={{
                   textAlign: "left",
                   justifyContent: "center",
