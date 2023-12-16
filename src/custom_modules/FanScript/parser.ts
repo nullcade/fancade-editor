@@ -202,6 +202,7 @@ function parseProgramStatement(
       };
     };
   },
+  chunks: Chunk.Data[],
   result: FanScript.Result
 ) {
   const myExpression = ts.isExpressionStatement(statement)
@@ -212,9 +213,70 @@ function parseProgramStatement(
     ts.isIdentifier(myExpression.expression)
     // funxtion call
   ) {
-    console.log(stack);
     const funcName = myExpression.expression.text;
-    console.log(funcName);
+    if (funcName === "Object") {
+      const [blockId, offsetX, offsetY, offsetZ] = myExpression.arguments.map(
+        (argument) =>
+          valueSolver(argument, stack.variableStack, stack.functionStack)
+      );
+      if (!(typeof blockId === "string" || typeof blockId === "number"))
+        throw new Error("blockId can only be a number or string");
+      if (
+        typeof offsetX !== "number" ||
+        typeof offsetY !== "number" ||
+        typeof offsetZ !== "number"
+      )
+        throw new Error(
+          "Object function can only take number values for wire position."
+        );
+      if (typeof blockId === "number") {
+        result.blocks.push({
+          id: blockId,
+          name: "",
+          wires: [],
+          values: [],
+        });
+        if (blockId === SelectableParameters["Blocks"]["ARCH"]) {
+          result.blocks.push({
+            id: blockId + 1,
+            name: "",
+            wires: [],
+            values: [],
+          });
+        }
+      } else {
+        const onlyChunks = chunks.filter((item) => item.uuid === blockId);
+        if (onlyChunks.length === 0)
+          throw new Error(`uuid "${blockId}" not found!`);
+        const blockChunk = onlyChunks[0];
+        const blockY = result.blocks.length;
+        let height = Math.max(
+          blockChunk.offset ? blockChunk.offset[1] : 0,
+          ...(blockChunk.children
+            ? blockChunk.children.map((child) => child.offset[1])
+            : [])
+        );
+        result.blocks.push({
+          id: blockId,
+          name: "",
+          wires: [],
+          values: [],
+        });
+        for (let i = 0; i <= height; i++)
+          result.blocks.push({
+            id: 0,
+            name: "",
+            wires: [],
+            values: [],
+          });
+        return [
+          {
+            blockY,
+            offset: [offsetX, offsetY, offsetZ] as [number, number, number],
+          },
+        ];
+      }
+    }
     if (!FanScriptBlocks[funcName] && !stack.functionStack[funcName])
       throw new Error(`"${funcName}" is not a function name`);
     const wires: {
@@ -240,7 +302,8 @@ function parseProgramStatement(
               "Cannot pass Spreaded function as parameter, please fill in the parameters first"
             );
           const realValue =
-            parseProgramStatement(argument.expression, stack, result) ?? [];
+            parseProgramStatement(argument.expression, stack, chunks, result) ??
+            [];
           if (realValue.length === 0)
             throw new Error(
               "Function has no output, call it instead of passing it as an argument"
@@ -310,12 +373,17 @@ function parseProgramStatement(
               if (ts.isArrowFunction(declaration.initializer))
                 throw new Error("Cannot assign functions inside functions");
             });
-          parseProgramStatement(statement, {
-            afterStack: stack.afterStack,
-            beforeStack: stack.beforeStack,
-            variableStack: tempVariableStack,
-            functionStack: stack.functionStack,
-          }, result);
+          parseProgramStatement(
+            statement,
+            {
+              afterStack: stack.afterStack,
+              beforeStack: stack.beforeStack,
+              variableStack: tempVariableStack,
+              functionStack: stack.functionStack,
+            },
+            chunks,
+            result
+          );
         }
       );
       return outputValues;
@@ -331,7 +399,7 @@ function parseProgramStatement(
             "Cannot pass Spreaded function as parameter, please fill in the parameters first"
           );
         const realValue =
-          parseProgramStatement(value.expression, stack, result) ?? [];
+          parseProgramStatement(value.expression, stack, chunks, result) ?? [];
         if (realValue.length === 0)
           throw new Error(
             "Function has no output, call it instead of passing it as an argument"
@@ -442,10 +510,11 @@ function parseProgramStatement(
       if (
         ts.isCallExpression(child.initializer) &&
         !ts.isArrayBindingPattern(child.name)
-      )
+      ) {
         throw new Error(
           "Cannot assign function calls to anything other than arrays."
         );
+      }
       if (
         !ts.isCallExpression(child.initializer) &&
         ts.isArrayBindingPattern(child.name)
@@ -456,7 +525,7 @@ function parseProgramStatement(
         ts.isArrayBindingPattern(child.name)
       ) {
         const outputWires =
-          parseProgramStatement(child.initializer, stack, result) ?? [];
+          parseProgramStatement(child.initializer, stack, chunks, result) ?? [];
         child.name.elements.forEach((element, elementIndex) => {
           if (!ts.isBindingElement(element))
             throw new Error(
@@ -545,7 +614,7 @@ function parseProgramStatement(
   }
 }
 
-export function parse(script: string): FanScript.Result {
+export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
   const scriptObject = ts.createSourceFile(
     "x.ts",
     script,
@@ -570,7 +639,6 @@ export function parse(script: string): FanScript.Result {
       wiresStart: number;
     };
   } = {};
-  console.log(ts.isExpressionStatement(scriptObject.statements[0]));
   const result: FanScript.Result = {
     originalScript: script,
     blocks: [],
@@ -580,6 +648,7 @@ export function parse(script: string): FanScript.Result {
     parseProgramStatement(
       item,
       { afterStack, beforeStack, variableStack, functionStack },
+      chunks,
       result
     );
     if (index === statementsArray.length - 1 && result.blocks.length > 0) {
@@ -592,17 +661,16 @@ export function parse(script: string): FanScript.Result {
       });
     }
   });
-  console.log(result);
-  console.log("vars");
-  console.log(variableStack);
   return result;
 }
 
 export function fancadeResult(
-  result: FanScript.Result
+  result: FanScript.Result,
+  chunks: Chunk.Data[]
 ): (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] {
   const arr: (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] =
     [];
+  const objWires: { [key: number]: [number, number, number] } = {};
   result.blocks.forEach((block, index, blocksArray) => {
     if (index === 0) {
       arr.push({
@@ -661,12 +729,81 @@ export function fancadeResult(
       });
     }
     const myChunk = arr[arr.length - 1];
-    myChunk.blocks[0][index][0] = block.id;
-    FanScriptBlocks[block.name].children.forEach((child) => {
-      myChunk.blocks[child.offset[0]][index][child.offset[2]] = child.blockId;
-    });
-    myChunk.wires.push(...block.wires);
-    myChunk.values.push(...block.values);
+    if (block.id === 0) return;
+    if (
+      typeof block.id === "number" &&
+      Object.values(SelectableParameters["Blocks"]).includes(block.id)
+    ) {
+      myChunk.blocks[0][index][0] = block.id;
+      if (block.id === SelectableParameters["Blocks"]["ARCH"])
+        myChunk.blocks[0][index + 1][0] = block.id + 1;
+    } else if (typeof block.id === "string") {
+      const onlyChunks = chunks.filter((item) => item.uuid === block.id);
+      if (onlyChunks.length === 0)
+        throw new Error(`cannot handle uuid "${block.id}"`);
+      const blockChunk = onlyChunks[0];
+      const height = Math.max(
+        blockChunk.offset ? blockChunk.offset[1] : 0,
+        ...(blockChunk.children
+          ? blockChunk.children.map((child) => child.offset[1])
+          : [])
+      );
+      for (let i = 0; i <= height; i++)
+        for (let x = 0; x < 4; x++)
+          for (let z = 0; z < 4; z++) {
+            if (!myChunk.blocks[x]) myChunk.blocks[x] = [];
+            if (!myChunk.blocks[x][index + i])
+              myChunk.blocks[x][index + i] = [];
+            myChunk.blocks[x][index + i][z] = 0;
+          }
+      if (
+        blockChunk.offset &&
+        !(
+          blockChunk.offset[0] === 0 &&
+          blockChunk.offset[1] === 0 &&
+          blockChunk.offset[2] === 0
+        )
+      ) {
+        if (!myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]])
+          myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]] =
+            [];
+        myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]][
+          blockChunk.offset[2]
+        ] = block.id;
+        objWires[index] = blockChunk.offset;
+      } else {
+        myChunk.blocks[0][index][0] = block.id;
+      }
+      if (blockChunk.children)
+        blockChunk.children.forEach((item) => {
+          if (!myChunk.blocks[item.offset[0]][index + item.offset[1]])
+            myChunk.blocks[item.offset[0]][index + item.offset[1]] = [];
+          myChunk.blocks[item.offset[0]][index + item.offset[1]][
+            item.offset[2]
+          ] = item.uuid;
+        });
+    } else {
+      myChunk.blocks[0][index][0] = block.id;
+      FanScriptBlocks[block.name].children.forEach((child) => {
+        myChunk.blocks[child.offset[0]][index][child.offset[2]] = child.blockId;
+      });
+      myChunk.wires.push(
+        ...block.wires.map((wire) =>
+          wire.position[0][0] === 0 &&
+          wire.position[0][2] === 0 &&
+          objWires[wire.position[0][1]]
+            ? {
+                position: [objWires[wire.position[0][1]], wire.position[1]] as [
+                  [number, number, number],
+                  [number, number, number]
+                ],
+                offset: wire.offset,
+              }
+            : wire
+        )
+      );
+      myChunk.values.push(...block.values);
+    }
   });
 
   return arr;

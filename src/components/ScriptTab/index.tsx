@@ -62,8 +62,8 @@ function ScriptTab({
             if (building || script.current === null) return;
             setBuilding(true);
             try {
-              const parsed = parse(script.current.getValue());
-              game.chunks.push(...fancadeResult(parsed));
+              const parsed = parse(script.current.getValue(), game.chunks);
+              game.chunks.push(...fancadeResult(parsed, game.chunks));
             } catch (error) {
               dialogTitle.current = "Compilation Error";
               dialogBody.current = (error as Error).message;
@@ -125,7 +125,7 @@ function ScriptTab({
               .then((fileContent) =>
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(
                   fileContent,
-                  "defaultLib:lib.es6.d.ts"
+                  "FanScript.d.ts"
                 )
               )
           );

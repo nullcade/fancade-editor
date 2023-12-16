@@ -379,3 +379,11 @@ declare function getConstraintItem(
 ): [ConWire];
 declare function increase(variable?: NumWire): void;
 declare function decrease(variable?: NumWire): void;
+
+// Utilities
+declare function Object(
+  blockId: number | string,
+  wireX: number,
+  wireY: number,
+  wireZ: number
+): [ObjWire];
