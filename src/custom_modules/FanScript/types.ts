@@ -194,6 +194,7 @@ export enum ArgumentTypes {
 type WireArgument = {
   type: ArgumentTypes.Wire;
   offset: [number, number, number];
+  callback?: true;
 };
 type ParameterArgument = {
   type: ArgumentTypes.Parameter;
@@ -535,9 +536,11 @@ export const FanScriptBlocks: {
   },
   onPlay: {
     blockId: Block.Ids.E_PLAY_EE,
-    arguments: [{ type: ArgumentTypes.Wire, offset: [14, 1, 11] }],
+    arguments: [
+      { type: ArgumentTypes.Wire, offset: [14, 1, 11], callback: true },
+    ],
     beforeOffset: [3, 1, 14],
     afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.EO_DESTROY_E, 2, 2),
+    children: getBlockChildren(Block.Ids.E_PLAY_EE, 2, 2),
   },
 };

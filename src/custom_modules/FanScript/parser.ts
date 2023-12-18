@@ -3,6 +3,7 @@ import {
   ArgumentTypes,
   FanScript,
   FanScriptBlocks,
+  FunctionArgument,
   SelectableParameters,
 } from "./types";
 import ts from "typescript";
@@ -388,9 +389,17 @@ function parseProgramStatement(
       );
       return outputValues;
     }
+    const callbacks: {
+      argumentType: FunctionArgument;
+      expression: ts.Expression;
+    }[] = [];
     myExpression.arguments.forEach((value, index) => {
       const argumentType = FanScriptBlocks[funcName].arguments[index + skips];
       if (!argumentType) throw new Error("Argument out of index");
+      if (argumentType.type === ArgumentTypes.Wire && argumentType.callback) {
+        callbacks.push({ argumentType: argumentType, expression: value });
+        return;
+      }
       if (ts.isSpreadElement(value)) {
         if (!ts.isCallExpression(value.expression))
           throw new Error("Spreading is only supported for function calls");
@@ -414,7 +423,9 @@ function parseProgramStatement(
             return;
           const currentArgumentType =
             FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
-          if (currentArgumentType.type === ArgumentTypes.Wire)
+          if (currentArgumentType.type === ArgumentTypes.Wire) {
+            if (currentArgumentType.callback)
+              throw new Error("Cannot assign wires to callbacks");
             wires.push({
               position: [
                 [0, wireValue.blockY, 0],
@@ -422,6 +433,7 @@ function parseProgramStatement(
               ],
               offset: [wireValue.offset, currentArgumentType.offset],
             });
+          } else throw new Error("Cannot assign wires to parameters");
         });
         skips += realValue.length - 1;
         return;
@@ -493,8 +505,114 @@ function parseProgramStatement(
       wires,
       values,
     });
+    const blockY = result.blocks.length - 1;
+    callbacks.forEach((callback) => {
+      if (ts.isIdentifier(callback.expression)) {
+        if (callback.argumentType.type !== ArgumentTypes.Wire) return;
+        if (!stack.functionStack[callback.expression.text])
+          throw new Error("Only arrow function are assignable to callbacks");
+        const callbackArgs =
+          stack.functionStack[callback.expression.text].parameters;
+        if (stack.functionStack[callback.expression.text].wiresStart > 0)
+          throw new Error(
+            "Cannot use a function with parameter arguments as a callback"
+          );
+        const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
+        if (callbackArgs.length > outputWires.length)
+          throw new Error(
+            "Not enought arguments are provided to the arrow function"
+          );
+        const variableStack: {
+          [key: string]:
+            | string
+            | number
+            | boolean
+            | {
+                blockY: number;
+                offset: [number, number, number];
+              };
+        } = {};
+        callbackArgs.forEach(
+          (value, index) =>
+            (variableStack[value] = {
+              blockY,
+              offset: outputWires[index],
+            })
+        );
+        stack.afterStack.push({ blockY, offset: callback.argumentType.offset });
+        stack.functionStack[callback.expression.text].body.statements.forEach(
+          (statement) => {
+            if (ts.isReturnStatement(statement)) return;
+            parseProgramStatement(
+              statement,
+              {
+                ...stack,
+                variableStack,
+              },
+              chunks,
+              result
+            );
+          }
+        );
+        stack.afterStack.pop();
+      } else if (ts.isArrowFunction(callback.expression)) {
+        if (callback.argumentType.type !== ArgumentTypes.Wire) return;
+        const callbackArgs = callback.expression.parameters.map(
+          (parameter, index) => {
+            if (!ts.isIdentifier(parameter.name))
+              throw new Error("Can only use a solid name for arguments");
+            if (parameter.type)
+              throw new Error(
+                "Please do not use types for direct arrow function declaration"
+              );
+            if ((FanScriptBlocks[funcName].outputWires?.length ?? 0) <= index)
+              throw new Error("Do not assign more parameters than available");
+            return parameter.name.text;
+          }
+        );
+        const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
+        const variableStack: {
+          [key: string]:
+            | string
+            | number
+            | boolean
+            | {
+                blockY: number;
+                offset: [number, number, number];
+              };
+        } = {};
+        callbackArgs.forEach(
+          (value, index) =>
+            (variableStack[value] = {
+              blockY,
+              offset: outputWires[index],
+            })
+        );
+        stack.afterStack.push({ blockY, offset: callback.argumentType.offset });
+        if (!ts.isBlock(callback.expression.body))
+          throw new Error("Please put your callback inside of curly brackets");
+        callback.expression.body.statements.forEach((statement) => {
+          if (ts.isReturnStatement(statement))
+            throw new Error(
+              "Please remove the return from the directly declared arrow function as it does nothing"
+            );
+          parseProgramStatement(
+            statement,
+            {
+              ...stack,
+              variableStack,
+            },
+            chunks,
+            result
+          );
+        });
+        stack.afterStack.pop();
+      } else {
+        throw new Error("Only arrow function are assignable to callbacks");
+      }
+    });
     return FanScriptBlocks[funcName].outputWires?.map((vec) => ({
-      blockY: result.blocks.length - 1,
+      blockY,
       offset: vec,
     }));
   } else if (
