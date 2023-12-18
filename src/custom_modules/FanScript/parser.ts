@@ -229,6 +229,7 @@ function parseProgramStatement(
         throw new Error(
           "Object function can only take number values for wire position."
         );
+      const blockY = result.blocks.length;
       if (typeof blockId === "number") {
         result.blocks.push({
           id: blockId,
@@ -249,7 +250,6 @@ function parseProgramStatement(
         if (onlyChunks.length === 0)
           throw new Error(`uuid "${blockId}" not found!`);
         const blockChunk = onlyChunks[0];
-        const blockY = result.blocks.length;
         let height = Math.max(
           blockChunk.offset ? blockChunk.offset[1] : 0,
           ...(blockChunk.children
@@ -269,13 +269,13 @@ function parseProgramStatement(
             wires: [],
             values: [],
           });
-        return [
-          {
-            blockY,
-            offset: [offsetX, offsetY, offsetZ] as [number, number, number],
-          },
-        ];
       }
+      return [
+        {
+          blockY,
+          offset: [offsetX, offsetY, offsetZ] as [number, number, number],
+        },
+      ];
     }
     if (!FanScriptBlocks[funcName] && !stack.functionStack[funcName])
       throw new Error(`"${funcName}" is not a function name`);
