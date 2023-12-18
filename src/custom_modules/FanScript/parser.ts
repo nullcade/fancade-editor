@@ -759,10 +759,15 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
   } = {};
   const result: FanScript.Result = {
     originalScript: script,
+    scriptName: "ScriptBlock",
     blocks: [],
     newBlocks: [],
   };
   scriptObject.statements.forEach((item, index, statementsArray) => {
+    if (ts.isExpressionStatement(item) && ts.isStringLiteral(item.expression) && index === 0) {
+      result.scriptName = item.expression.text;
+      return;
+    }
     parseProgramStatement(
       item,
       { afterStack, beforeStack, variableStack, functionStack },
@@ -795,7 +800,7 @@ export function fancadeResult(
         uuid: nanoid(),
         type: Chunk.Type.Script,
         offset: [0, 0, 0],
-        name: "scriptBlock",
+        name: result.scriptName,
         locked: false,
         blocks: JSON.parse(
           JSON.stringify(

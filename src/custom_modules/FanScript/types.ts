@@ -14,6 +14,7 @@ type ParameterId = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3;
 export namespace FanScript {
   export interface Result {
     originalScript: string;
+    scriptName: string;
     blocks: {
       id: Block.Id;
       name: string;
