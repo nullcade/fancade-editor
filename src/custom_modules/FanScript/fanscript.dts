@@ -76,12 +76,24 @@ declare enum Blocks {
   PARTICLE = 0x22b,
 }
 
-declare interface NumWire {}
-declare interface VecWire {}
-declare interface BoolWire {}
-declare interface RotWire {}
-declare interface ObjWire {}
-declare interface ConWire {}
+declare interface NumWire {
+  readonly "": "NumWire";
+}
+declare interface VecWire {
+  readonly "": "VecWire";
+}
+declare interface BoolWire {
+  readonly "": "BoolWire";
+}
+declare interface RotWire {
+  readonly "": "RotWire";
+}
+declare interface ObjWire {
+  readonly "": "ObjWire";
+}
+declare interface ConWire {
+  readonly "": "ConWire";
+}
 
 // Game
 declare enum Price {
