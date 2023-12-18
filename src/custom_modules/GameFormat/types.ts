@@ -143,7 +143,7 @@ export namespace Block {
     EOpO_SET_VAR_E = 0x4a,
     ECpC_SET_VAR_E = 0x4e,
     FpF_LIST_ELEMENT_Fp = 0x52,
-    VpF_LIST_ELEMENT_Fp = 0x56,
+    OpF_LIST_ELEMENT_Op = 0x56,
     F_NEG_F = 0x5a,
     FF_ADD_F = 0x5c,
     VV_ADD_V = 0x60,

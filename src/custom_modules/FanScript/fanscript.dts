@@ -257,6 +257,10 @@ declare enum Count {
   Second = 1,
   Third = 2,
 }
+declare enum JoystickMode {
+  XY = 0,
+  Screen = 1,
+}
 declare function onPlay(callback?: () => void): void;
 declare function onUpdate(callback?: () => void): void;
 declare function onBoxart(callback?: () => void): void;
@@ -267,7 +271,7 @@ declare function onTouch(
 ): [NumWire, NumWire];
 declare function onSwipe(callback?: (direction: VecWire) => void): [VecWire];
 declare function addButton(callback?: () => void): void;
-declare function addJoystick(): [VecWire];
+declare function addJoystick(mode: JoystickMode): [VecWire];
 declare function onCollision(
   firstObject?: ObjWire,
   callback?: (secondObject: ObjWire, impluse: NumWire, normal: VecWire) => void
@@ -275,7 +279,7 @@ declare function onCollision(
 declare function loop(
   from?: NumWire,
   to?: NumWire,
-  callback: (counter: NumWire) => void
+  callback?: (counter: NumWire) => void
 ): [NumWire];
 
 // Math
@@ -345,10 +349,10 @@ declare function lineVsPlane(
 declare function lookRotation(direction?: VecWire, up?: VecWire): [RotWire];
 
 // Values
-declare function Number(number?: number): NumWire;
-declare function Vector(vector?: [number, number, number]): VecWire;
-declare function Rotation(rotation?: [number, number, number]): RotWire;
-declare function Boolean(boolean?: boolean): BoolWire;
+declare function Number(number: number): NumWire;
+declare function Vector(x: number, y: number, z: number): VecWire;
+declare function Rotation(x: number, y: number, z: number): RotWire;
+declare function Boolean(boolean: boolean): BoolWire;
 declare function inspectNumber(value?: NumWire): void;
 declare function inspectVector(value?: VecWire): void;
 declare function inspectRotation(value?: RotWire): void;

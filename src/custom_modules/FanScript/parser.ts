@@ -278,6 +278,33 @@ function parseProgramStatement(
         },
       ];
     }
+    if (funcName === "Vector" || funcName === "Rotation") {
+      const vec: [number, number, number] = [0, 0, 0];
+      myExpression.arguments.forEach((value, index) => {
+        if (index > 2) throw new Error(`Cannot pass more than 3 parameters to "${funcName}"`)
+        const realValue = valueSolver(value, stack.variableStack, stack.functionStack);
+        if (typeof realValue !== "number") throw new Error(`"${funcName}" only accepts number as parameter`);
+        vec[index] = realValue;
+      });
+      result.blocks.push({
+        id: FanScriptBlocks[funcName].blockId,
+        name: funcName,
+        wires: [],
+        values: (vec[0] === 0 && vec[1] === 0 && vec[2] === 0) ? [] : [{
+          index: 0,
+          position: [0, result.blocks.length, 0],
+          type: 5,
+          value: vec
+        }],
+      });
+      const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
+      return [
+        {
+          blockY: result.blocks.length - 1,
+          offset: outputWires[0] ?? [14, 1, 11],
+        },
+      ];
+    }
     if (!FanScriptBlocks[funcName] && !stack.functionStack[funcName])
       throw new Error(`"${funcName}" is not a function name`);
     const wires: {
@@ -476,29 +503,32 @@ function parseProgramStatement(
         });
       }
     });
-    if (stack.afterStack.length > 0) {
-      wires.push({
-        position: [
-          stack.afterStack[stack.afterStack.length - 1].blockY === 32769
-            ? [32769, 32769, 32769]
-            : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
-          [0, result.blocks.length, 0],
-        ],
-        offset: [
-          stack.afterStack[stack.afterStack.length - 1].offset,
-          FanScriptBlocks[funcName].beforeOffset,
-        ],
-      });
-      stack.afterStack[stack.afterStack.length - 1] = {
-        blockY: result.blocks.length,
-        offset: FanScriptBlocks[funcName].afterOffset,
-      };
-    } else {
-      stack.afterStack.push({
-        blockY: result.blocks.length,
-        offset: FanScriptBlocks[funcName].afterOffset,
-      });
-    }
+    const beforeOffset = FanScriptBlocks[funcName].beforeOffset;
+    const afterOffset = FanScriptBlocks[funcName].afterOffset;
+    if (beforeOffset && afterOffset)
+      if (stack.afterStack.length > 0) {
+        wires.push({
+          position: [
+            stack.afterStack[stack.afterStack.length - 1].blockY === 32769
+              ? [32769, 32769, 32769]
+              : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
+            [0, result.blocks.length, 0],
+          ],
+          offset: [
+            stack.afterStack[stack.afterStack.length - 1].offset,
+            beforeOffset,
+          ],
+        });
+        stack.afterStack[stack.afterStack.length - 1] = {
+          blockY: result.blocks.length,
+          offset: afterOffset,
+        };
+      } else {
+        stack.afterStack.push({
+          blockY: result.blocks.length,
+          offset: afterOffset,
+        });
+      }
     result.blocks.push({
       id: FanScriptBlocks[funcName].blockId,
       name: funcName,
@@ -764,7 +794,11 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
     newBlocks: [],
   };
   scriptObject.statements.forEach((item, index, statementsArray) => {
-    if (ts.isExpressionStatement(item) && ts.isStringLiteral(item.expression) && index === 0) {
+    if (
+      ts.isExpressionStatement(item) &&
+      ts.isStringLiteral(item.expression) &&
+      index === 0
+    ) {
       result.scriptName = item.expression.text;
       return;
     }
