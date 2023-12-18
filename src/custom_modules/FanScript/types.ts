@@ -760,7 +760,7 @@ export const FanScriptBlocks: {
     afterOffset: [3, 1, 0],
     children: getBlockChildren(Block.Ids.ECpC_SET_VAR_E, 2, 2),
   },
-  getNumberItem: {
+  numberList: {
     blockId: Block.Ids.FpF_LIST_ELEMENT_Fp,
     arguments: [
       {
@@ -775,7 +775,7 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.FpF_LIST_ELEMENT_Fp, 2, 2),
   },
-  getObjectItem: {
+  objectList: {
     blockId: Block.Ids.OpF_LIST_ELEMENT_Op,
     arguments: [
       {
@@ -790,7 +790,7 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.OpF_LIST_ELEMENT_Op, 2, 2),
   },
-  getVectorItem: {
+  vectorList: {
     blockId: Block.Ids.VpF_LIST_ELEMENT_Vp,
     arguments: [
       {
@@ -805,7 +805,7 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.VpF_LIST_ELEMENT_Vp, 2, 2),
   },
-  getRotationItem: {
+  rotationList: {
     blockId: Block.Ids.QpF_LIST_ELEMENT_Qp,
     arguments: [
       {
@@ -820,7 +820,7 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.QpF_LIST_ELEMENT_Qp, 2, 2),
   },
-  getBooleanItem: {
+  booleanList: {
     blockId: Block.Ids.TpF_LIST_ELEMENT_Tp,
     arguments: [
       {
@@ -835,7 +835,7 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.TpF_LIST_ELEMENT_Tp, 2, 2),
   },
-  getConstraintItem: {
+  constraintList: {
     blockId: Block.Ids.CpF_LIST_ELEMENT_Cp,
     arguments: [
       {
@@ -875,5 +875,27 @@ export const FanScriptBlocks: {
     ],
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.ROT_Q, 2, 2),
+  },
+  if: {
+    blockId: Block.Ids.ET_IF_EEE,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [14, 1, 11],
+        callback: true
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [14, 1, 3],
+        callback: true
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.ET_IF_EEE, 2, 2),
   },
 };

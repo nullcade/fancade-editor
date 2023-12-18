@@ -281,21 +281,34 @@ function parseProgramStatement(
     if (funcName === "Vector" || funcName === "Rotation") {
       const vec: [number, number, number] = [0, 0, 0];
       myExpression.arguments.forEach((value, index) => {
-        if (index > 2) throw new Error(`Cannot pass more than 3 parameters to "${funcName}"`)
-        const realValue = valueSolver(value, stack.variableStack, stack.functionStack);
-        if (typeof realValue !== "number") throw new Error(`"${funcName}" only accepts number as parameter`);
+        if (index > 2)
+          throw new Error(
+            `Cannot pass more than 3 parameters to "${funcName}"`
+          );
+        const realValue = valueSolver(
+          value,
+          stack.variableStack,
+          stack.functionStack
+        );
+        if (typeof realValue !== "number")
+          throw new Error(`"${funcName}" only accepts number as parameter`);
         vec[index] = realValue;
       });
       result.blocks.push({
         id: FanScriptBlocks[funcName].blockId,
         name: funcName,
         wires: [],
-        values: (vec[0] === 0 && vec[1] === 0 && vec[2] === 0) ? [] : [{
-          index: 0,
-          position: [0, result.blocks.length, 0],
-          type: 5,
-          value: vec
-        }],
+        values:
+          vec[0] === 0 && vec[1] === 0 && vec[2] === 0
+            ? []
+            : [
+                {
+                  index: 0,
+                  position: [0, result.blocks.length, 0],
+                  type: 5,
+                  value: vec,
+                },
+              ],
       });
       const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
       return [
@@ -759,6 +772,105 @@ function parseProgramStatement(
         }
       }
     });
+  } else if (ts.isIfStatement(statement)) {
+    if (ts.isCallExpression(statement))
+      throw new Error("Do not call functions as if condition");
+    const realValue = valueSolver(
+      statement.expression,
+      stack.variableStack,
+      stack.functionStack
+    );
+    if (typeof realValue === "boolean")
+      throw new Error(
+        "Cannot use literal boolean in an if statement; please use Boolean/Truth wire instead."
+      );
+    if (typeof realValue === "number" || typeof realValue === "string")
+      throw new Error("The if block only works with wires!");
+    const ifBlock = FanScriptBlocks["if"];
+    if (!ifBlock) return;
+    const beforeOffset = ifBlock.beforeOffset ?? [3, 1, 14];
+    const blockY = result.blocks.length;
+    const truthWire =
+      ifBlock.arguments[0].type === ArgumentTypes.Wire
+        ? ifBlock.arguments[0].offset ??
+          ([0, 1, 11] as [number, number, number])
+        : ([0, 1, 11] as [number, number, number]);
+    const wires: {
+      position: [[number, number, number], [number, number, number]];
+      offset: [[number, number, number], [number, number, number]];
+    }[] = [
+      {
+        position: [
+          [0, realValue.blockY, 0],
+          [0, blockY, 0],
+        ],
+        offset: [realValue.offset, truthWire],
+      },
+      {
+        position: [
+          stack.afterStack[stack.afterStack.length - 1].blockY === 32769
+            ? [32769, 32769, 32769]
+            : [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
+          [0, result.blocks.length, 0],
+        ],
+        offset: [
+          stack.afterStack[stack.afterStack.length - 1].offset,
+          beforeOffset,
+        ],
+      },
+    ];
+    const trueWire =
+      ifBlock.arguments[1].type === ArgumentTypes.Wire
+        ? ifBlock.arguments[1].offset ??
+          ([14, 1, 11] as [number, number, number])
+        : ([14, 1, 11] as [number, number, number]);
+    const falseWire =
+      ifBlock.arguments[2].type === ArgumentTypes.Wire
+        ? ifBlock.arguments[2].offset ??
+          ([14, 1, 3] as [number, number, number])
+        : ([14, 1, 3] as [number, number, number]);
+    result.blocks.push({
+      id: ifBlock.blockId,
+      name: "if",
+      wires,
+      values: [],
+    });
+
+    stack.afterStack.push({
+      blockY: blockY,
+      offset: trueWire,
+    });
+    const tempVariableStack = { ...stack.variableStack };
+    if (ts.isBlock(statement.thenStatement))
+      statement.thenStatement.statements.forEach((value) =>
+        parseProgramStatement(
+          value,
+          { ...stack, variableStack: tempVariableStack },
+          chunks,
+          result
+        )
+      );
+    else parseProgramStatement(statement.thenStatement, stack, chunks, result);
+    stack.afterStack.pop();
+
+    if (!statement.elseStatement) return;
+
+    stack.afterStack.push({
+      blockY: blockY,
+      offset: falseWire,
+    });
+    const tempElseVariableStack = { ...stack.variableStack };
+    if (ts.isBlock(statement.elseStatement))
+      statement.elseStatement.statements.forEach((value) =>
+        parseProgramStatement(
+          value,
+          { ...stack, variableStack: tempElseVariableStack },
+          chunks,
+          result
+        )
+      );
+    else parseProgramStatement(statement.elseStatement, stack, chunks, result);
+    stack.afterStack.pop();
   }
 }
 

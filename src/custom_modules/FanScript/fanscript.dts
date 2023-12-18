@@ -79,20 +79,38 @@ declare enum Blocks {
 declare interface NumWire {
   readonly "": "NumWire";
 }
+declare interface NumPointer extends NumWire {
+  readonly ".": "NumPointer";
+}
 declare interface VecWire {
   readonly "": "VecWire";
+}
+declare interface VecPointer extends VecWire {
+  readonly ".": "VecPointer";
 }
 declare interface BoolWire {
   readonly "": "BoolWire";
 }
+declare interface BoolPointer extends BoolWire {
+  readonly ".": "BoolPointer";
+}
 declare interface RotWire {
   readonly "": "RotWire";
+}
+declare interface RotPointer extends RotWire {
+  readonly ".": "RotPointer";
 }
 declare interface ObjWire {
   readonly "": "ObjWire";
 }
+declare interface ObjPointer extends ObjWire {
+  readonly ".": "ObjPointer";
+}
 declare interface ConWire {
   readonly "": "ConWire";
+}
+declare interface ConPointer extends ConWire {
+  readonly ".": "ConPointer";
 }
 
 // Game
@@ -135,7 +153,7 @@ declare function addMenuItem(
   name: string,
   count: number,
   price: Price,
-  variable?: NumWire,
+  variable?: NumPointer,
   picture?: ObjWire
 ): void;
 
@@ -360,41 +378,41 @@ declare function inspectBoolean(value?: BoolWire): void;
 declare function inspectObject(value?: ObjWire): void;
 
 // Variables
-declare function getNumber(name: string): [NumWire];
-declare function getObject(name: string): [ObjWire];
-declare function getVector(name: string): [VecWire];
-declare function getRotation(name: string): [RotWire];
-declare function getBoolean(name: string): [BoolWire];
-declare function getConstraint(name: string): [ConWire];
+declare function getNumber(name: string): [NumPointer];
+declare function getObject(name: string): [ObjPointer];
+declare function getVector(name: string): [VecPointer];
+declare function getRotation(name: string): [RotPointer];
+declare function getBoolean(name: string): [BoolPointer];
+declare function getConstraint(name: string): [ConPointer];
 declare function setNumber(name: string, value?: NumWire): void;
 declare function setObject(name: string, value?: ObjWire): void;
 declare function setVector(name: string, value?: VecWire): void;
 declare function setRotation(name: string, value?: RotWire): void;
 declare function setBoolean(name: string, value?: BoolWire): void;
 declare function setConstraint(name: string, value?: ConWire): void;
-declare function setNumberVar(variable?: NumWire, value?: NumWire): void;
-declare function setObjectVar(variable?: ObjWire, value?: ObjWire): void;
-declare function setVectorVar(variable?: VecWire, value?: VecWire): void;
-declare function setRotationVar(variable?: RotWire, value?: RotWire): void;
-declare function setBooleanVar(variable?: BoolWire, value?: BoolWire): void;
-declare function setConstraintVar(variable?: ConWire, value?: ConWire): void;
-declare function getNumberItem(variable?: NumWire, index?: NumWire): [NumWire];
-declare function getObjectItem(variable?: ObjWire, index?: NumWire): [ObjWire];
-declare function getVectorItem(variable?: VecWire, index?: NumWire): [VecWire];
-declare function getRotationItem(
-  variable?: RotWire,
+declare function setNumberVar(variable?: NumPointer, value?: NumWire): void;
+declare function setObjectVar(variable?: ObjPointer, value?: ObjWire): void;
+declare function setVectorVar(variable?: VecPointer, value?: VecWire): void;
+declare function setRotationVar(variable?: RotPointer, value?: RotWire): void;
+declare function setBooleanVar(variable?: BoolPointer, value?: BoolWire): void;
+declare function setConstraintVar(variable?: ConPointer, value?: ConWire): void;
+declare function numberList(variable?: NumPointer, index?: NumWire): [NumPointer];
+declare function objectList(variable?: ObjPointer, index?: NumWire): [ObjPointer];
+declare function vectorList(variable?: VecPointer, index?: NumWire): [VecPointer];
+declare function rotationList(
+  variable?: RotPointer,
   index?: NumWire
-): [RotWire];
-declare function getBooleanItem(
-  variable?: BoolWire,
+): [RotPointer];
+declare function booleanList(
+  variable?: BoolPointer,
   index?: NumWire
-): [BoolWire];
-declare function getConstraintItem(
-  variable?: ConWire,
+): [BoolPointer];
+declare function constraintList(
+  variable?: ConPointer,
   index?: NumWire
-): [ConWire];
-declare function increase(variable?: NumWire): void;
-declare function decrease(variable?: NumWire): void;
+): [ConPointer];
+declare function increase(variable?: NumPointer): void;
+declare function decrease(variable?: NumPointer): void;
 
 // Utilities
 declare function Object(
