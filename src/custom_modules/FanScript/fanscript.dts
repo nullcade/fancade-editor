@@ -311,7 +311,7 @@ declare function multiply(a?: NumWire, b?: NumWire): [NumWire];
 declare function scale(vector?: VecWire, by?: NumWire): [VecWire];
 declare function rotate(vector?: VecWire, by?: RotWire): [RotWire];
 declare function combine(a?: RotWire, b?: RotWire): [RotWire];
-declare function devide(a?: NumWire, b?: NumWire): [NumWire];
+declare function divide(a?: NumWire, b?: NumWire): [NumWire];
 declare function power(a?: NumWire, b?: NumWire): [NumWire];
 declare function equalNumbers(a?: NumWire, b?: NumWire): [BoolWire];
 declare function equalVector(a?: VecWire, b?: VecWire): [BoolWire];
