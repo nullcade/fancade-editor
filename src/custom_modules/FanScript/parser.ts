@@ -278,6 +278,65 @@ function parseProgramStatement(
         },
       ];
     }
+    if (funcName === "Boolean") {
+      if (myExpression.arguments.length > 1)
+        throw new Error(`Cannot pass more than 1 parameters to "${funcName}"`);
+      const realValue = valueSolver(
+        myExpression.arguments[0],
+        stack.variableStack,
+        stack.functionStack
+      );
+      if (typeof realValue !== "boolean")
+        throw new Error(`"${funcName}" only accepts number as parameter`);
+      result.blocks.push({
+        id: FanScriptBlocks[realValue ? "True" : "False"].blockId,
+        name: realValue ? "True" : "False",
+        wires: [],
+        values: [],
+      });
+      const outputWires =
+        FanScriptBlocks[realValue ? "True" : "False"].outputWires ?? [];
+      return [
+        {
+          blockY: result.blocks.length - 1,
+          offset: outputWires[0] ?? [14, 1, 3],
+        },
+      ];
+    }
+    if (funcName === "Number") {
+      if (myExpression.arguments.length > 1)
+        throw new Error(`Cannot pass more than 1 parameters to "${funcName}"`);
+      const realValue = valueSolver(
+        myExpression.arguments[0],
+        stack.variableStack,
+        stack.functionStack
+      );
+      if (typeof realValue !== "number")
+        throw new Error(`"${funcName}" only accepts number as parameter`);
+      result.blocks.push({
+        id: FanScriptBlocks[funcName].blockId,
+        name: funcName,
+        wires: [],
+        values:
+          realValue === 0
+            ? []
+            : [
+                {
+                  index: 0,
+                  position: [0, result.blocks.length, 0],
+                  type: 4,
+                  value: realValue,
+                },
+              ],
+      });
+      const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
+      return [
+        {
+          blockY: result.blocks.length - 1,
+          offset: outputWires[0] ?? [14, 1, 3],
+        },
+      ];
+    }
     if (funcName === "Vector" || funcName === "Rotation") {
       const vec: [number, number, number] = [0, 0, 0];
       myExpression.arguments.forEach((value, index) => {

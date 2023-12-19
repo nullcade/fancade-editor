@@ -1241,6 +1241,31 @@ export const FanScriptBlocks: {
     outputWires: [[14, 1, 11]],
     children: getBlockChildren(Block.Ids.CpF_LIST_ELEMENT_Cp, 2, 2),
   },
+  True: {
+    blockId: Block.Ids.TRUE_T,
+    arguments: [],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.TRUE_T, 1, 2),
+  },
+  False: {
+    blockId: Block.Ids.FALSE_T,
+    arguments: [],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.TRUE_T, 1, 2),
+  },
+  Number: {
+    blockId: Block.Ids.NUMBER_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 4,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.NUMBER_F, 1, 2),
+  },
   Vector: {
     blockId: Block.Ids.VECTOR_V,
     arguments: [
