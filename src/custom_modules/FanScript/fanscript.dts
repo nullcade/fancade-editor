@@ -367,10 +367,10 @@ declare function lineVsPlane(
 declare function lookRotation(direction?: VecWire, up?: VecWire): [RotWire];
 
 // Values
-declare function Number(number: number): NumWire;
-declare function Vector(x: number, y: number, z: number): VecWire;
-declare function Rotation(x: number, y: number, z: number): RotWire;
-declare function Boolean(boolean: boolean): BoolWire;
+declare function Number(number: number): [NumWire];
+declare function Vector(x: number, y: number, z: number): [VecWire];
+declare function Rotation(x: number, y: number, z: number): [RotWire];
+declare function Boolean(boolean: boolean): [BoolWire];
 declare function inspectNumber(value?: NumWire): void;
 declare function inspectVector(value?: VecWire): void;
 declare function inspectRotation(value?: RotWire): void;
