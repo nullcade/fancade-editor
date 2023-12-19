@@ -84,7 +84,7 @@ function ScriptTab({
         theme="vs-dark"
         language="typescript"
         defaultValue={
-          "onTouch(Touching.Begins, Count.First, () => {\n\twin();\n});"
+          "\"Touch To Win\";\n\nonTouch(Touching.Begins, Count.First, () => {\n\twin();\n});"
         }
         options={{
           fontFamily: "JetBrainsMono-Regular",
