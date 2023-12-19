@@ -332,7 +332,6 @@ declare function round(number?: NumWire): [NumWire];
 declare function floor(number?: NumWire): [NumWire];
 declare function ceil(number?: NumWire): [NumWire];
 declare function abs(number?: NumWire): [NumWire];
-declare function sin(number?: NumWire): [NumWire];
 declare function mod(a?: NumWire, b?: NumWire): [NumWire];
 declare function log(number?: NumWire, base?: NumWire): [NumWire];
 declare function breakVector(vector?: VecWire): [NumWire, NumWire, NumWire];
