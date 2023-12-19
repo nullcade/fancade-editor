@@ -995,6 +995,1088 @@ export const FanScriptBlocks: {
     children: getBlockChildren(Block.Ids.EFF_LOOP_EFE, 2, 2),
   },
 
+  negate: {
+    blockId: Block.Ids.F_NEG_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_NEG_F, 1, 2),
+  },
+  inverse: {
+    blockId: Block.Ids.Q_INV_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.Q_INV_Q, 1, 2),
+  },
+  addNumbers: {
+    blockId: Block.Ids.FF_ADD_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_ADD_F, 2, 2),
+  },
+  addVectors: {
+    blockId: Block.Ids.VV_ADD_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_ADD_V, 2, 2),
+  },
+  subtractNumbers: {
+    blockId: Block.Ids.FF_SUB_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_SUB_F, 2, 2),
+  },
+  subtractVectors: {
+    blockId: Block.Ids.VV_SUB_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_SUB_V, 2, 2),
+  },
+  multiply: {
+    blockId: Block.Ids.FF_MUL_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_MUL_F, 2, 2),
+  },
+  scale: {
+    blockId: Block.Ids.VF_MUL_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VF_MUL_V, 2, 2),
+  },
+  rotate: {
+    blockId: Block.Ids.VQ_MUL_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VQ_MUL_V, 2, 2),
+  },
+  combine: {
+    blockId: Block.Ids.QQ_MUL_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.QQ_MUL_Q, 2, 2),
+  },
+  divide: {
+    blockId: Block.Ids.FF_DIV_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_DIV_F, 2, 2),
+  },
+  power: {
+    blockId: Block.Ids.FF_POW_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_POW_F, 2, 2),
+  },
+  equalNumbers: {
+    blockId: Block.Ids.FF_EQL_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_EQL_T, 2, 2),
+  },
+  equalVector: {
+    blockId: Block.Ids.VV_EQL_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_EQL_T, 2, 2),
+  },
+  equalObjects: {
+    blockId: Block.Ids.OO_EQL_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.OO_EQL_T, 2, 2),
+  },
+  equalBoolean: {
+    blockId: Block.Ids.TT_EQL_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.TT_EQL_T, 2, 2),
+  },
+  lessThan: {
+    blockId: Block.Ids.FF_LT_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_LT_T, 2, 2),
+  },
+  greaterThan: {
+    blockId: Block.Ids.FF_GT_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_GT_T, 2, 2),
+  },
+  and: {
+    blockId: Block.Ids.TT_AND_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.TT_AND_T, 2, 2),
+  },
+  or: {
+    blockId: Block.Ids.TT_OR_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.TT_OR_T, 2, 2),
+  },
+  not: {
+    blockId: Block.Ids.T_NOT_T,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.T_NOT_T, 1, 2),
+  },
+  random: {
+    blockId: Block.Ids.FF_RANDOM_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_RANDOM_F, 2, 2),
+  },
+  setRandomSeed: {
+    blockId: Block.Ids.EF_RANDOM_SEED_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EF_RANDOM_SEED_E, 2, 2),
+  },
+  min: {
+    blockId: Block.Ids.FF_MIN_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_MIN_F, 2, 2),
+  },
+  max: {
+    blockId: Block.Ids.FF_MAX_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_MAX_F, 2, 2),
+  },
+  sin: {
+    blockId: Block.Ids.F_SIN_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_SIN_F, 1, 2),
+  },
+  cos: {
+    blockId: Block.Ids.F_COS_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_COS_F, 1, 2),
+  },
+  round: {
+    blockId: Block.Ids.F_ROUND_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_ROUND_F, 1, 2),
+  },
+  floor: {
+    blockId: Block.Ids.F_FLOOR_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_FLOOR_F, 1, 2),
+  },
+  ceil: {
+    blockId: Block.Ids.F_CEIL_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_CEIL_F, 1, 2),
+  },
+  abs: {
+    blockId: Block.Ids.F_ABS_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.F_ABS_F, 1, 2),
+  },
+  mod: {
+    blockId: Block.Ids.FF_MOD_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_MOD_F, 2, 2),
+  },
+  log: {
+    blockId: Block.Ids.FF_LOG_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FF_LOG_F, 2, 2),
+  },
+  breakVector: {
+    blockId: Block.Ids.V_SPLIT_FFF,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+    ],
+    outputWires: [
+      [14, 1, 19],
+      [14, 1, 11],
+      [14, 1, 3],
+    ],
+    children: getBlockChildren(Block.Ids.V_SPLIT_FFF, 3, 2),
+  },
+  makeVector: {
+    blockId: Block.Ids.FFF_JOIN_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 19]],
+    children: getBlockChildren(Block.Ids.FFF_JOIN_V, 3, 2),
+  },
+  normalize: {
+    blockId: Block.Ids.V_NORMALIZE_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.V_NORMALIZE_V, 1, 2),
+  },
+  dotProduct: {
+    blockId: Block.Ids.VV_DOT_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_DOT_F, 2, 2),
+  },
+  crossProduct: {
+    blockId: Block.Ids.VV_CROSS_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_CROSS_V, 2, 2),
+  },
+  breakRotation: {
+    blockId: Block.Ids.Q_EULER_FFF,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+    ],
+    outputWires: [
+      [14, 1, 19],
+      [14, 1, 11],
+      [14, 1, 3],
+    ],
+    children: getBlockChildren(Block.Ids.Q_EULER_FFF, 3, 2),
+  },
+  makeRotation: {
+    blockId: Block.Ids.FFF_EULER_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 19]],
+    children: getBlockChildren(Block.Ids.FFF_EULER_Q, 3, 2),
+  },
+  distance: {
+    blockId: Block.Ids.VV_DIST_F,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_DIST_F, 2, 2),
+  },
+  lerp: {
+    blockId: Block.Ids.QQF_LERP_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 19]],
+    children: getBlockChildren(Block.Ids.QQF_LERP_Q, 3, 2),
+  },
+  axisAngle: {
+    blockId: Block.Ids.VF_AXIS_ANG_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VF_AXIS_ANG_Q, 2, 2),
+  },
+  screenToWorld: {
+    blockId: Block.Ids.FF_S2W_VV,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [
+      [14, 1, 11],
+      [14, 1, 3],
+    ],
+    children: getBlockChildren(Block.Ids.FF_S2W_VV, 2, 2),
+  },
+  worldToScreen: {
+    blockId: Block.Ids.V_W2S_FF,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+    ],
+    outputWires: [
+      [14, 1, 11],
+      [14, 1, 3],
+    ],
+    children: getBlockChildren(Block.Ids.V_W2S_FF, 2, 2),
+  },
+  lineVsPlane: {
+    blockId: Block.Ids.VVVV_LINE_VS_PLANE_V,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 27],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 19],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 27]],
+    children: getBlockChildren(Block.Ids.VVVV_LINE_VS_PLANE_V, 4, 2),
+  },
+  lookRotation: {
+    blockId: Block.Ids.VV_LOOK_ROT_Q,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VV_LOOK_ROT_Q, 2, 2),
+  },
+
+  getNumber: {
+    blockId: Block.Ids.VAR_Fp,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Fp, 1, 2),
+  },
+  getObject: {
+    blockId: Block.Ids.VAR_Op,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Op, 1, 2),
+  },
+  getVector: {
+    blockId: Block.Ids.VAR_Vp,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Vp, 1, 2),
+  },
+  getRotation: {
+    blockId: Block.Ids.VAR_Qp,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Qp, 1, 2),
+  },
+  getBoolean: {
+    blockId: Block.Ids.VAR_Tp,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Tp, 1, 2),
+  },
+  getConstraint: {
+    blockId: Block.Ids.VAR_Cp,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+    ],
+    outputWires: [[14, 1, 3]],
+    children: getBlockChildren(Block.Ids.VAR_Cp, 1, 2),
+  },
+  setNumber: {
+    blockId: Block.Ids.EF_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EF_SET_VAR_E, 1, 2),
+  },
+  setObject: {
+    blockId: Block.Ids.EO_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EO_SET_VAR_E, 1, 2),
+  },
+  setVector: {
+    blockId: Block.Ids.EV_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EV_SET_VAR_E, 1, 2),
+  },
+  setRotation: {
+    blockId: Block.Ids.EQ_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EQ_SET_VAR_E, 1, 2),
+  },
+  setBoolean: {
+    blockId: Block.Ids.ET_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.ET_SET_VAR_E, 1, 2),
+  },
+  setConstraint: {
+    blockId: Block.Ids.EC_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Parameter,
+        index: 0,
+        valueType: 6,
+        required: false,
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EC_SET_VAR_E, 1, 2),
+  },
+  setNumberPointer: {
+    blockId: Block.Ids.EFpF_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EFpF_SET_VAR_E, 2, 2),
+  },
+  setObjectPointer: {
+    blockId: Block.Ids.EOpO_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EOpO_SET_VAR_E, 2, 2),
+  },
+  setVectorPointer: {
+    blockId: Block.Ids.EVpV_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EVpV_SET_VAR_E, 2, 2),
+  },
+  setRotationPointer: {
+    blockId: Block.Ids.EQpQ_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EQpQ_SET_VAR_E, 2, 2),
+  },
+  setBooleanPointer: {
+    blockId: Block.Ids.ETpT_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.ETpT_SET_VAR_E, 2, 2),
+  },
+  setConstraintPointer: {
+    blockId: Block.Ids.ECpC_SET_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 14],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.ECpC_SET_VAR_E, 2, 2),
+  },
+  listNumber: {
+    blockId: Block.Ids.FpF_LIST_ELEMENT_Fp,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.FpF_LIST_ELEMENT_Fp, 2, 2),
+  },
+  listObject: {
+    blockId: Block.Ids.OpF_LIST_ELEMENT_Op,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.OpF_LIST_ELEMENT_Op, 2, 2),
+  },
+  listVector: {
+    blockId: Block.Ids.VpF_LIST_ELEMENT_Vp,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.VpF_LIST_ELEMENT_Vp, 2, 2),
+  },
+  listRotation: {
+    blockId: Block.Ids.QpF_LIST_ELEMENT_Qp,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.QpF_LIST_ELEMENT_Qp, 2, 2),
+  },
+  listBoolean: {
+    blockId: Block.Ids.TpF_LIST_ELEMENT_Tp,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.TpF_LIST_ELEMENT_Tp, 2, 2),
+  },
+  listConstraint: {
+    blockId: Block.Ids.CpF_LIST_ELEMENT_Cp,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 11],
+      },
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    outputWires: [[14, 1, 11]],
+    children: getBlockChildren(Block.Ids.CpF_LIST_ELEMENT_Cp, 2, 2),
+  },
+  increase: {
+    blockId: Block.Ids.EFp_INC_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EFp_INC_VAR_E, 1, 2),
+  },
+  decrease: {
+    blockId: Block.Ids.EFp_DEC_VAR_E,
+    arguments: [
+      {
+        type: ArgumentTypes.Wire,
+        offset: [0, 1, 3],
+      },
+    ],
+    beforeOffset: [3, 1, 6],
+    afterOffset: [3, 1, 0],
+    children: getBlockChildren(Block.Ids.EFp_DEC_VAR_E, 1, 2),
+  },
+
   inspectNumber: {
     blockId: Block.Ids.EF_INSPECT_E,
     arguments: [
@@ -1055,192 +2137,7 @@ export const FanScriptBlocks: {
     afterOffset: [3, 1, 0],
     children: getBlockChildren(Block.Ids.EO_INSPECT_E, 2, 2),
   },
-  setNumberVar: {
-    blockId: Block.Ids.EFpF_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.EFpF_SET_VAR_E, 2, 2),
-  },
-  setObjectVar: {
-    blockId: Block.Ids.EOpO_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.EOpO_SET_VAR_E, 2, 2),
-  },
-  setVectorVar: {
-    blockId: Block.Ids.EVpV_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.EVpV_SET_VAR_E, 2, 2),
-  },
-  setRotationVar: {
-    blockId: Block.Ids.EQpQ_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.EQpQ_SET_VAR_E, 2, 2),
-  },
-  setBooleanVar: {
-    blockId: Block.Ids.ETpT_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.ETpT_SET_VAR_E, 2, 2),
-  },
-  setConstraintVar: {
-    blockId: Block.Ids.ECpC_SET_VAR_E,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    beforeOffset: [3, 1, 14],
-    afterOffset: [3, 1, 0],
-    children: getBlockChildren(Block.Ids.ECpC_SET_VAR_E, 2, 2),
-  },
-  numberList: {
-    blockId: Block.Ids.FpF_LIST_ELEMENT_Fp,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.FpF_LIST_ELEMENT_Fp, 2, 2),
-  },
-  objectList: {
-    blockId: Block.Ids.OpF_LIST_ELEMENT_Op,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.OpF_LIST_ELEMENT_Op, 2, 2),
-  },
-  vectorList: {
-    blockId: Block.Ids.VpF_LIST_ELEMENT_Vp,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.VpF_LIST_ELEMENT_Vp, 2, 2),
-  },
-  rotationList: {
-    blockId: Block.Ids.QpF_LIST_ELEMENT_Qp,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.QpF_LIST_ELEMENT_Qp, 2, 2),
-  },
-  booleanList: {
-    blockId: Block.Ids.TpF_LIST_ELEMENT_Tp,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.TpF_LIST_ELEMENT_Tp, 2, 2),
-  },
-  constraintList: {
-    blockId: Block.Ids.CpF_LIST_ELEMENT_Cp,
-    arguments: [
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 11],
-      },
-      {
-        type: ArgumentTypes.Wire,
-        offset: [0, 1, 3],
-      },
-    ],
-    outputWires: [[14, 1, 11]],
-    children: getBlockChildren(Block.Ids.CpF_LIST_ELEMENT_Cp, 2, 2),
-  },
+
   True: {
     blockId: Block.Ids.TRUE_T,
     arguments: [],

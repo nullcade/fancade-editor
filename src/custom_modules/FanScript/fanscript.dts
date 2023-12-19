@@ -389,24 +389,24 @@ declare function setVector(name: string, value?: VecWire): void;
 declare function setRotation(name: string, value?: RotWire): void;
 declare function setBoolean(name: string, value?: BoolWire): void;
 declare function setConstraint(name: string, value?: ConWire): void;
-declare function setNumberVar(variable?: NumPointer, value?: NumWire): void;
-declare function setObjectVar(variable?: ObjPointer, value?: ObjWire): void;
-declare function setVectorVar(variable?: VecPointer, value?: VecWire): void;
-declare function setRotationVar(variable?: RotPointer, value?: RotWire): void;
-declare function setBooleanVar(variable?: BoolPointer, value?: BoolWire): void;
-declare function setConstraintVar(variable?: ConPointer, value?: ConWire): void;
-declare function numberList(variable?: NumPointer, index?: NumWire): [NumPointer];
-declare function objectList(variable?: ObjPointer, index?: NumWire): [ObjPointer];
-declare function vectorList(variable?: VecPointer, index?: NumWire): [VecPointer];
-declare function rotationList(
+declare function setNumberPointer(variable?: NumPointer, value?: NumWire): void;
+declare function setObjectPointer(variable?: ObjPointer, value?: ObjWire): void;
+declare function setVectorPointer(variable?: VecPointer, value?: VecWire): void;
+declare function setRotationPointer(variable?: RotPointer, value?: RotWire): void;
+declare function setBooleanPointer(variable?: BoolPointer, value?: BoolWire): void;
+declare function setConstraintPointer(variable?: ConPointer, value?: ConWire): void;
+declare function listNumber(variable?: NumPointer, index?: NumWire): [NumPointer];
+declare function listObject(variable?: ObjPointer, index?: NumWire): [ObjPointer];
+declare function listVector(variable?: VecPointer, index?: NumWire): [VecPointer];
+declare function listRotation(
   variable?: RotPointer,
   index?: NumWire
 ): [RotPointer];
-declare function booleanList(
+declare function listBoolean(
   variable?: BoolPointer,
   index?: NumWire
 ): [BoolPointer];
-declare function constraintList(
+declare function listConstraint(
   variable?: ConPointer,
   index?: NumWire
 ): [ConPointer];
