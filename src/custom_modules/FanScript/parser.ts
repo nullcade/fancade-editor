@@ -682,7 +682,7 @@ function parseProgramStatement(
                 blockY: number;
                 offset: [number, number, number];
               };
-        } = {};
+        } = { ...stack.variableStack };
         callbackArgs.forEach(
           (value, index) =>
             (variableStack[value] = {
@@ -832,7 +832,7 @@ function parseProgramStatement(
       }
     });
   } else if (ts.isIfStatement(statement)) {
-    if (ts.isCallExpression(statement))
+    if (ts.isCallExpression(statement.expression))
       throw new Error("Do not call functions as if condition");
     const realValue = valueSolver(
       statement.expression,
