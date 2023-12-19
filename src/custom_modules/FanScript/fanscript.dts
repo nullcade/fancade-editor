@@ -214,7 +214,7 @@ declare function addForce(
   torque?: VecWire
 ): void;
 declare function getVelocity(object?: ObjWire): [VecWire, VecWire];
-declare function addForce(
+declare function addVelocity(
   object?: ObjWire,
   velocity?: VecWire,
   spin?: VecWire
