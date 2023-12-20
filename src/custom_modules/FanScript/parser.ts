@@ -25,7 +25,7 @@ function valueSolver(
       parameters: string[];
       wiresStart: number;
     };
-  }
+  },
 ):
   | number
   | string
@@ -167,7 +167,7 @@ function valueSolver(
       SelectableParameters[value.expression.text][value.name.text];
     if (parameter === undefined)
       throw new Error(
-        `${value.expression.text} have no parameter "${value.name.text}"`
+        `${value.expression.text} have no parameter "${value.name.text}"`,
       );
     return parameter;
   }
@@ -204,7 +204,7 @@ function parseProgramStatement(
     };
   },
   chunks: Chunk.Data[],
-  result: FanScript.Result
+  result: FanScript.Result,
 ) {
   const myExpression = ts.isExpressionStatement(statement)
     ? statement.expression
@@ -218,7 +218,7 @@ function parseProgramStatement(
     if (funcName === "Object") {
       const [blockId, offsetX, offsetY, offsetZ] = myExpression.arguments.map(
         (argument) =>
-          valueSolver(argument, stack.variableStack, stack.functionStack)
+          valueSolver(argument, stack.variableStack, stack.functionStack),
       );
       if (!(typeof blockId === "string" || typeof blockId === "number"))
         throw new Error("blockId can only be a number or string");
@@ -228,7 +228,7 @@ function parseProgramStatement(
         typeof offsetZ !== "number"
       )
         throw new Error(
-          "Object function can only take number values for wire position."
+          "Object function can only take number values for wire position.",
         );
       const blockY = result.blocks.length;
       if (typeof blockId === "number") {
@@ -255,7 +255,7 @@ function parseProgramStatement(
           blockChunk.offset ? blockChunk.offset[1] : 0,
           ...(blockChunk.children
             ? blockChunk.children.map((child) => child.offset[1])
-            : [])
+            : []),
         );
         result.blocks.push({
           id: blockId,
@@ -284,7 +284,7 @@ function parseProgramStatement(
       const realValue = valueSolver(
         myExpression.arguments[0],
         stack.variableStack,
-        stack.functionStack
+        stack.functionStack,
       );
       if (typeof realValue !== "boolean")
         throw new Error(`"${funcName}" only accepts number as parameter`);
@@ -309,7 +309,7 @@ function parseProgramStatement(
       const realValue = valueSolver(
         myExpression.arguments[0],
         stack.variableStack,
-        stack.functionStack
+        stack.functionStack,
       );
       if (typeof realValue !== "number")
         throw new Error(`"${funcName}" only accepts number as parameter`);
@@ -342,12 +342,12 @@ function parseProgramStatement(
       myExpression.arguments.forEach((value, index) => {
         if (index > 2)
           throw new Error(
-            `Cannot pass more than 3 parameters to "${funcName}"`
+            `Cannot pass more than 3 parameters to "${funcName}"`,
           );
         const realValue = valueSolver(
           value,
           stack.variableStack,
-          stack.functionStack
+          stack.functionStack,
         );
         if (typeof realValue !== "number")
           throw new Error(`"${funcName}" only accepts number as parameter`);
@@ -399,14 +399,14 @@ function parseProgramStatement(
             throw new Error("Spreading is only supported for function calls");
           if (index < stack.functionStack[funcName].wiresStart)
             throw new Error(
-              "Cannot pass Spreaded function as parameter, please fill in the parameters first"
+              "Cannot pass Spreaded function as parameter, please fill in the parameters first",
             );
           const realValue =
             parseProgramStatement(argument.expression, stack, chunks, result) ??
             [];
           if (realValue.length === 0)
             throw new Error(
-              "Function has no output, call it instead of passing it as an argument"
+              "Function has no output, call it instead of passing it as an argument",
             );
           realValue.forEach((wireValue, outputIndex) => {
             if (
@@ -428,7 +428,7 @@ function parseProgramStatement(
         const realValue = valueSolver(
           argument,
           tempVariableStack,
-          stack.functionStack
+          stack.functionStack,
         );
         tempVariableStack[
           stack.functionStack[funcName].parameters[index + skips]
@@ -450,7 +450,7 @@ function parseProgramStatement(
               const realValue = valueSolver(
                 element,
                 tempVariableStack,
-                stack.functionStack
+                stack.functionStack,
               );
               if (
                 typeof realValue === "string" ||
@@ -458,7 +458,7 @@ function parseProgramStatement(
                 typeof realValue === "boolean"
               )
                 throw new Error(
-                  "Only wires are accepted as values to be returned."
+                  "Only wires are accepted as values to be returned.",
                 );
               outputValues.push(realValue);
             });
@@ -482,9 +482,9 @@ function parseProgramStatement(
               functionStack: stack.functionStack,
             },
             chunks,
-            result
+            result,
           );
-        }
+        },
       );
       return outputValues;
     }
@@ -504,13 +504,13 @@ function parseProgramStatement(
         throw new Error("Spreading is only supported for function calls");
       if (argumentType.type === ArgumentTypes.Parameter)
         throw new Error(
-          "Cannot pass Spreaded function as parameter, please fill in the parameters first"
+          "Cannot pass Spreaded function as parameter, please fill in the parameters first",
         );
       const realValue =
         parseProgramStatement(value.expression, stack, chunks, result) ?? [];
       if (realValue.length === 0)
         throw new Error(
-          "Function has no output, call it instead of passing it as an argument"
+          "Function has no output, call it instead of passing it as an argument",
         );
       realValue.forEach((wireValue, outputIndex) => {
         if (
@@ -548,7 +548,7 @@ function parseProgramStatement(
       const realValue = valueSolver(
         value,
         stack.variableStack,
-        stack.functionStack
+        stack.functionStack,
       );
       if (argumentType.type === ArgumentTypes.Parameter) {
         if (
@@ -625,12 +625,12 @@ function parseProgramStatement(
           stack.functionStack[callback.expression.text].parameters;
         if (stack.functionStack[callback.expression.text].wiresStart > 0)
           throw new Error(
-            "Cannot use a function with parameter arguments as a callback"
+            "Cannot use a function with parameter arguments as a callback",
           );
         const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
         if (callbackArgs.length > outputWires.length)
           throw new Error(
-            "Not enought arguments are provided to the arrow function"
+            "Not enought arguments are provided to the arrow function",
           );
         const variableStack: {
           [key: string]:
@@ -647,7 +647,7 @@ function parseProgramStatement(
             (variableStack[value] = {
               blockY,
               offset: outputWires[index],
-            })
+            }),
         );
         stack.afterStack.push({ blockY, offset: callback.argumentType.offset });
         stack.functionStack[callback.expression.text].body.statements.forEach(
@@ -660,9 +660,9 @@ function parseProgramStatement(
                 variableStack,
               },
               chunks,
-              result
+              result,
             );
-          }
+          },
         );
         stack.afterStack.pop();
       } else if (ts.isArrowFunction(callback.expression)) {
@@ -673,12 +673,12 @@ function parseProgramStatement(
               throw new Error("Can only use a solid name for arguments");
             if (parameter.type)
               throw new Error(
-                "Please do not use types for direct arrow function declaration"
+                "Please do not use types for direct arrow function declaration",
               );
             if ((FanScriptBlocks[funcName].outputWires?.length ?? 0) <= index)
               throw new Error("Do not assign more parameters than available");
             return parameter.name.text;
-          }
+          },
         );
         const outputWires = FanScriptBlocks[funcName].outputWires ?? [];
         const variableStack: {
@@ -696,7 +696,7 @@ function parseProgramStatement(
             (variableStack[value] = {
               blockY,
               offset: outputWires[index],
-            })
+            }),
         );
         stack.afterStack.push({ blockY, offset: callback.argumentType.offset });
         if (!ts.isBlock(callback.expression.body))
@@ -704,7 +704,7 @@ function parseProgramStatement(
         callback.expression.body.statements.forEach((statement) => {
           if (ts.isReturnStatement(statement))
             throw new Error(
-              "Please remove the return from the directly declared arrow function as it does nothing"
+              "Please remove the return from the directly declared arrow function as it does nothing",
             );
           parseProgramStatement(
             statement,
@@ -713,7 +713,7 @@ function parseProgramStatement(
               variableStack,
             },
             chunks,
-            result
+            result,
           );
         });
         stack.afterStack.pop();
@@ -740,7 +740,7 @@ function parseProgramStatement(
         !ts.isArrayBindingPattern(child.name)
       ) {
         throw new Error(
-          "Cannot assign function calls to anything other than arrays."
+          "Cannot assign function calls to anything other than arrays.",
         );
       }
       if (
@@ -757,11 +757,11 @@ function parseProgramStatement(
         child.name.elements.forEach((element, elementIndex) => {
           if (!ts.isBindingElement(element))
             throw new Error(
-              "Function calls are only assignable to simple arrays."
+              "Function calls are only assignable to simple arrays.",
             );
           if (!ts.isIdentifier(element.name))
             throw new Error(
-              "Function calls are only assignable to name arrays."
+              "Function calls are only assignable to name arrays.",
             );
           if (!(elementIndex < outputWires.length))
             throw new Error("Argument out of index.");
@@ -783,7 +783,9 @@ function parseProgramStatement(
                 throw new Error("Only single type referencing is valid.");
               if (!FanScript.scriptTypes.includes(parameter.type.typeName.text))
                 throw new Error(
-                  `Only valid types are "${FanScript.scriptTypes.join('", "')}"`
+                  `Only valid types are "${FanScript.scriptTypes.join(
+                    '", "',
+                  )}"`,
                 );
               type = parameter.type.typeName.text;
             } else if (
@@ -793,19 +795,19 @@ function parseProgramStatement(
             ) {
               if (parameter.questionToken)
                 throw new Error(
-                  "Cannot assign optional parametes to arrow functions"
+                  "Cannot assign optional parametes to arrow functions",
                 );
               type =
                 parameter.type.kind === ts.SyntaxKind.StringKeyword
                   ? "string"
                   : parameter.type.kind === ts.SyntaxKind.NumberKeyword
-                  ? "number"
-                  : parameter.type.kind === ts.SyntaxKind.BooleanKeyword
-                  ? "boolean"
-                  : "";
+                    ? "number"
+                    : parameter.type.kind === ts.SyntaxKind.BooleanKeyword
+                      ? "boolean"
+                      : "";
               if (wiresStart < parameters.length)
                 throw new Error(
-                  "Parameters are always before wires in function arguments"
+                  "Parameters are always before wires in function arguments",
                 );
               wiresStart++;
             } else {
@@ -813,7 +815,7 @@ function parseProgramStatement(
             }
             if (!FanScript.scriptTypes.includes(type))
               throw new Error(
-                `Only valid types are "${FanScript.scriptTypes.join('", "')}"`
+                `Only valid types are "${FanScript.scriptTypes.join('", "')}"`,
               );
             if (!ts.isIdentifier(parameter.name))
               throw new Error("parameters can only be a name");
@@ -821,7 +823,7 @@ function parseProgramStatement(
           });
           if (!ts.isBlock(child.initializer.body))
             throw new Error(
-              "Only block initializer is possible for arrow function"
+              "Only block initializer is possible for arrow function",
             );
           // if (child.initializer.type)
           //   throw new Error("Do not use return types for functions")
@@ -834,7 +836,7 @@ function parseProgramStatement(
           stack.variableStack[child.name.text] = valueSolver(
             child.initializer,
             stack.variableStack,
-            stack.functionStack
+            stack.functionStack,
           );
         }
       }
@@ -845,11 +847,11 @@ function parseProgramStatement(
     const realValue = valueSolver(
       statement.expression,
       stack.variableStack,
-      stack.functionStack
+      stack.functionStack,
     );
     if (typeof realValue === "boolean")
       throw new Error(
-        "Cannot use literal boolean in an if statement; please use Boolean/Truth wire instead."
+        "Cannot use literal boolean in an if statement; please use Boolean/Truth wire instead.",
       );
     if (typeof realValue === "number" || typeof realValue === "string")
       throw new Error("The if block only works with wires!");
@@ -914,8 +916,8 @@ function parseProgramStatement(
           value,
           { ...stack, variableStack: tempVariableStack },
           chunks,
-          result
-        )
+          result,
+        ),
       );
     else parseProgramStatement(statement.thenStatement, stack, chunks, result);
     stack.afterStack.pop();
@@ -933,8 +935,8 @@ function parseProgramStatement(
           value,
           { ...stack, variableStack: tempElseVariableStack },
           chunks,
-          result
-        )
+          result,
+        ),
       );
     else parseProgramStatement(statement.elseStatement, stack, chunks, result);
     stack.afterStack.pop();
@@ -945,7 +947,7 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
   const scriptObject = ts.createSourceFile(
     "x.ts",
     script,
-    ts.ScriptTarget.Latest
+    ts.ScriptTarget.Latest,
   );
   const afterStack: { blockY: number; offset: [number, number, number] }[] = [
     { blockY: 32769, offset: [3, 1, 14] },
@@ -985,7 +987,7 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
       item,
       { afterStack, beforeStack, variableStack, functionStack },
       chunks,
-      result
+      result,
     );
     if (index === statementsArray.length - 1 && result.blocks.length > 0) {
       result.blocks[result.blocks.length - 1].wires.push({
@@ -1002,7 +1004,8 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
 
 export function fancadeResult(
   result: FanScript.Result,
-  chunks: Chunk.Data[]
+  chunks: Chunk.Data[],
+  uuid: string,
 ): (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] {
   const arr: (Chunk.Data & { type: Chunk.Type.Script; offset: [0, 0, 0] })[] =
     [];
@@ -1010,15 +1013,15 @@ export function fancadeResult(
   result.blocks.forEach((block, index, blocksArray) => {
     if (index === 0) {
       arr.push({
-        uuid: nanoid(),
+        uuid: uuid,
         type: Chunk.Type.Script,
         offset: [0, 0, 0],
         name: result.scriptName,
         locked: false,
         blocks: JSON.parse(
           JSON.stringify(
-            new Array(4).fill(new Array(blocksArray.length).fill(new Array(4)))
-          )
+            new Array(4).fill(new Array(blocksArray.length).fill(new Array(4))),
+          ),
         ),
         faces: ScriptBlockFaces.bottomLeft,
         values: [
@@ -1082,7 +1085,7 @@ export function fancadeResult(
         blockChunk.offset ? blockChunk.offset[1] : 0,
         ...(blockChunk.children
           ? blockChunk.children.map((child) => child.offset[1])
-          : [])
+          : []),
       );
       for (let i = 0; i <= height; i++)
         for (let x = 0; x < 4; x++)
@@ -1131,12 +1134,12 @@ export function fancadeResult(
             ? {
                 position: [objWires[wire.position[0][1]], wire.position[1]] as [
                   [number, number, number],
-                  [number, number, number]
+                  [number, number, number],
                 ],
                 offset: wire.offset,
               }
-            : wire
-        )
+            : wire,
+        ),
       );
       myChunk.values.push(...block.values);
     }

@@ -8,6 +8,10 @@ export namespace Game {
     description: string;
     idOffset: number;
     chunks: Chunk.Data[];
+    script?: {
+      uuid: string;
+      code: string;
+    };
   }
 }
 export namespace Chunk {
@@ -452,24 +456,24 @@ export type Grid<
   N extends readonly number[] | readonly [],
   T = number,
   Acc extends never[] = [],
-  S extends number = N["length"]
+  S extends number = N["length"],
 > = Acc["length"] extends S
   ? T
   : Grid<N, Fill<[never, ...Acc, ...N][S], T>, [...Acc, never], S>;
 export type Fill<
   N extends number,
   T = undefined,
-  Acc extends T[] = []
+  Acc extends T[] = [],
 > = number extends N
   ? T[]
   : N extends Acc["length"]
-  ? Acc
-  : Fill<N, T, [...Acc, T]>;
+    ? Acc
+    : Fill<N, T, [...Acc, T]>;
 export type Multiply<
   A extends number,
   B extends number,
   Acc extends undefined[] = [],
-  I extends never[] = []
+  I extends never[] = [],
 > = I["length"] extends A
   ? Acc["length"]
   : Multiply<A, B, [...Acc, ...Fill<B>], [...I, never]>;
