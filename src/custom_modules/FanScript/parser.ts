@@ -171,7 +171,7 @@ function valueSolver(
       );
     return parameter;
   }
-  if (ts.isNumericLiteral(value)) return parseInt(value.text);
+  if (ts.isNumericLiteral(value)) return parseFloat(value.text);
   if (ts.isStringLiteral(value)) return value.text;
   if (value.kind === ts.SyntaxKind.TrueKeyword) return true;
   if (value.kind === ts.SyntaxKind.FalseKeyword) return false;
