@@ -1103,11 +1103,11 @@ export function fancadeResult(
           blockChunk.offset[2] === 0
         )
       ) {
-        if (!myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]])
-          myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]] =
+        if (!myChunk.blocks[blockChunk.offset[2]][index + blockChunk.offset[1]])
+          myChunk.blocks[blockChunk.offset[2]][index + blockChunk.offset[1]] =
             [];
-        myChunk.blocks[blockChunk.offset[0]][index + blockChunk.offset[1]][
-          blockChunk.offset[2]
+        myChunk.blocks[blockChunk.offset[2]][index + blockChunk.offset[1]][
+          blockChunk.offset[0]
         ] = block.id;
         objWires[index] = blockChunk.offset;
       } else {
@@ -1115,10 +1115,10 @@ export function fancadeResult(
       }
       if (blockChunk.children)
         blockChunk.children.forEach((item) => {
-          if (!myChunk.blocks[item.offset[0]][index + item.offset[1]])
-            myChunk.blocks[item.offset[0]][index + item.offset[1]] = [];
-          myChunk.blocks[item.offset[0]][index + item.offset[1]][
-            item.offset[2]
+          if (!myChunk.blocks[item.offset[2]][index + item.offset[1]])
+            myChunk.blocks[item.offset[2]][index + item.offset[1]] = [];
+          myChunk.blocks[item.offset[2]][index + item.offset[1]][
+            item.offset[0]
           ] = item.uuid;
         });
     } else {
