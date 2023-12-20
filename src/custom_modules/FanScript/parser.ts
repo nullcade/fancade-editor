@@ -34,6 +34,14 @@ function valueSolver(
   if (ts.isParenthesizedExpression(value)) {
     return valueSolver(value.expression, variableStack, functionStack);
   }
+  if (ts.isPrefixUnaryExpression(value)) {
+    switch (value.operator) {
+      case ts.SyntaxKind.MinusToken:
+        return -valueSolver(value.operand, variableStack, functionStack);
+      default:
+        throw new Error("Unsupported prefix token");
+    }
+  }
   if (ts.isBinaryExpression(value)) {
     const left = valueSolver(value.left, variableStack, functionStack);
     const right = valueSolver(value.right, variableStack, functionStack);
