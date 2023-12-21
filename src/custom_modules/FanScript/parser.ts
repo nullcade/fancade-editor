@@ -400,7 +400,7 @@ function parseProgramStatement(
           | string
           | boolean
           | { blockY: number; offset: [number, number, number] };
-      } = {};
+      } = { ...stack.variableStack };
       myExpression.arguments.forEach((argument, index) => {
         if (ts.isSpreadElement(argument)) {
           if (!ts.isCallExpression(argument.expression))
@@ -649,7 +649,7 @@ function parseProgramStatement(
                 blockY: number;
                 offset: [number, number, number];
               };
-        } = {};
+        } = { ...stack.variableStack };
         callbackArgs.forEach(
           (value, index) =>
             (variableStack[value] = {
