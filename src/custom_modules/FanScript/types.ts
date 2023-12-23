@@ -1,4 +1,5 @@
 import { Block, Value } from "custom_modules/GameFormat";
+import ts from "typescript";
 
 type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
@@ -12,6 +13,31 @@ type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
 type ParameterId = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3;
 
 export namespace FanScript {
+  export interface ExecuteWire {
+    blockY: number;
+    offset: [number, number, number];
+  }
+  export type ExecuteStack = ExecuteWire[];
+  export interface WireVariable {
+    blockY: number;
+    offset: [number, number, number];
+    splits: number;
+    source?: {
+      function: string;
+      name: string;
+    };
+  }
+  export type Variable = number | string | boolean | WireVariable;
+  export interface VariableStack {
+    [key: string]: Variable;
+  }
+  export interface FunctionStack {
+    [key: string]: {
+      body: ts.Block;
+      parameters: string[];
+      wiresStart: number;
+    };
+  }
   export interface Result {
     originalScript: string;
     scriptName: string;
@@ -212,7 +238,7 @@ export type FunctionArgument = WireArgument | ParameterArgument;
 function getBlockChildren(
   blockId: number,
   xSize: number,
-  zSize: number
+  zSize: number,
 ): { blockId: number; offset: [number, number, number] }[] {
   return new Array(xSize * zSize - 1).fill({}).map((_, index) => ({
     blockId: blockId + index + 1,

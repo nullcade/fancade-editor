@@ -377,12 +377,12 @@ declare function inspectBoolean(value?: BoolWire): void;
 declare function inspectObject(value?: ObjWire): void;
 
 // Variables
-declare function getNumber(name: string): [NumPointer];
-declare function getObject(name: string): [ObjPointer];
-declare function getVector(name: string): [VecPointer];
-declare function getRotation(name: string): [RotPointer];
-declare function getBoolean(name: string): [BoolPointer];
-declare function getConstraint(name: string): [ConPointer];
+declare function getNumber(name?: string): [NumPointer];
+declare function getObject(name?: string): [ObjPointer];
+declare function getVector(name?: string): [VecPointer];
+declare function getRotation(name?: string): [RotPointer];
+declare function getBoolean(name?: string): [BoolPointer];
+declare function getConstraint(name?: string): [ConPointer];
 declare function setNumber(name: string, value?: NumWire): void;
 declare function setObject(name: string, value?: ObjWire): void;
 declare function setVector(name: string, value?: VecWire): void;
