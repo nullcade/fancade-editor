@@ -487,9 +487,10 @@ function parseProgramStatement(
             if (!ts.isReturnStatement(statement))
               throw new Error("No return found in function.");
             if (!statement.expression) return;
-            if (!ts.isArrayLiteralExpression(statement.expression))
+            const returnExpression = ts.isAsExpression(statement.expression) ? statement.expression.expression : statement.expression;
+            if (!ts.isArrayLiteralExpression(returnExpression))
               throw new Error("Only arrays are allowed for return statement.");
-            statement.expression.elements.forEach((element) => {
+            returnExpression.elements.forEach((element) => {
               const realValue = valueSolver(
                 element,
                 tempVariableStack,
