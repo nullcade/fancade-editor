@@ -1084,7 +1084,9 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
     { blockY: 32769, offset: [3, 1, 14] },
   ];
   const beforeStack: FanScript.ExecuteStack = [];
-  const variableStack: FanScript.VariableStack = {};
+  const variableStack: FanScript.VariableStack = {
+    "Inf": 340282346638528859811704183484516925440.0
+  };
   const functionStack: FanScript.FunctionStack = {};
   const result: FanScript.Result = {
     originalScript: script,
