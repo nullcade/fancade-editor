@@ -366,7 +366,7 @@ declare function lineVsPlane(
 declare function lookRotation(direction?: VecWire, up?: VecWire): [RotWire];
 
 // Values
-declare const Inf = 340282346638528859811704183484516925440;
+declare const Inf = 340282346638528859811704183484516925440.0;
 declare function Number(number: number): [NumWire];
 declare function Vector(x: number, y: number, z: number): [VecWire];
 declare function Rotation(x: number, y: number, z: number): [RotWire];

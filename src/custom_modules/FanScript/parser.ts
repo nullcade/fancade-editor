@@ -487,7 +487,9 @@ function parseProgramStatement(
             if (!ts.isReturnStatement(statement))
               throw new Error("No return found in function.");
             if (!statement.expression) return;
-            const returnExpression = ts.isAsExpression(statement.expression) ? statement.expression.expression : statement.expression;
+            const returnExpression = ts.isAsExpression(statement.expression)
+              ? statement.expression.expression
+              : statement.expression;
             if (!ts.isArrayLiteralExpression(returnExpression))
               throw new Error("Only arrays are allowed for return statement.");
             returnExpression.elements.forEach((element) => {
@@ -760,6 +762,272 @@ function parseProgramStatement(
       offset: vec,
       splits: 0,
     }));
+  } else if (
+    ts.isWhileStatement(statement)
+    //while loop
+  ) {
+    if (!ts.isIdentifier(statement.expression))
+      throw new Error("Can only accept variable identifier for condition.");
+    if (!ts.isBlock(statement.statement))
+      throw new Error("While loops only accept block for statement.");
+    const condition = stack.variableStack[statement.expression.text];
+    if (!condition)
+      throw new Error(`"${statement.expression.text}" is not defined`);
+    if (
+      typeof condition === "string" ||
+      typeof condition === "boolean" ||
+      typeof condition === "number"
+    )
+      throw new Error("While loop condition can only be a boolean wire");
+    const numArg = FanScriptBlocks["Number"].arguments[0];
+    const varArg = FanScriptBlocks["getNumber"].arguments[0];
+    if (
+      numArg.type !== ArgumentTypes.Parameter ||
+      varArg.type !== ArgumentTypes.Parameter
+    )
+      throw new Error("UNKNOWN ERROR");
+
+    stack.afterStack.push({
+      blockY: result.blocks.length + 6,
+      offset: [14, 1, 11],
+    });
+    stack.beforeStack.push({
+      blockY: result.blocks.length + 8,
+      offset: [3, 1, 14],
+    });
+    result.blocks.push(
+      {
+        id: FanScriptBlocks["Number"].blockId,
+        name: "Number",
+        wires: [],
+        values: [
+          {
+            index: 0,
+            position: [0, result.blocks.length, 0],
+            type: numArg.valueType,
+            value: 1,
+          },
+        ],
+      },
+      {
+        id: FanScriptBlocks["Number"].blockId,
+        name: "Number",
+        wires: [],
+        values: [
+          {
+            index: 0,
+            position: [0, result.blocks.length + 1, 0],
+            type: numArg.valueType,
+            value: 340282346638528859811704183484516925440.0,
+          },
+        ],
+      },
+      {
+        id: FanScriptBlocks["getNumber"].blockId,
+        name: "getNumber",
+        wires: [],
+        values: [
+          {
+            index: 0,
+            position: [0, result.blocks.length + 2, 0],
+            type: varArg.valueType,
+            value: nanoidVarPrefix() + nanoidVar(),
+          },
+        ],
+      },
+      {
+        id: FanScriptBlocks["setNumberPointer"].blockId,
+        name: "setNumberPointer",
+        wires: [
+          {
+            position: [
+              stack.afterStack[stack.afterStack.length - 2].blockY === 32769
+                ? [32769, 32769, 32769]
+                : [0, stack.afterStack[stack.afterStack.length - 2].blockY, 0],
+              [0, result.blocks.length + 3, 0],
+            ],
+            offset: [
+              stack.afterStack[stack.afterStack.length - 2].offset,
+              [3, 1, 14],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length + 2, 0],
+              [0, result.blocks.length + 3, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 11],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length, 0],
+              [0, result.blocks.length + 3, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 3],
+            ],
+          },
+        ],
+        values: [],
+      },
+      {
+        id: FanScriptBlocks["multiply"].blockId,
+        name: "multiply",
+        wires: [
+          {
+            position: [
+              [0, result.blocks.length + 1, 0],
+              [0, result.blocks.length + 4, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 11],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length + 2, 0],
+              [0, result.blocks.length + 4, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 3],
+            ],
+          },
+        ],
+        values: [],
+      },
+      {
+        id: FanScriptBlocks["loop"].blockId,
+        name: "loop",
+        wires: [
+          {
+            position: [
+              [0, result.blocks.length + 3, 0],
+              [0, result.blocks.length + 5, 0],
+            ],
+            offset: [
+              [3, 1, 0],
+              [3, 1, 14],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length + 4, 0],
+              [0, result.blocks.length + 5, 0],
+            ],
+            offset: [
+              [14, 1, 11],
+              [0, 1, 3],
+            ],
+          },
+        ],
+        values: [],
+      },
+      {
+        id: FanScriptBlocks["if"].blockId,
+        name: "if",
+        wires: [
+          {
+            position: [
+              [0, result.blocks.length + 5, 0],
+              [0, result.blocks.length + 6, 0],
+            ],
+            offset: [
+              [14, 1, 11],
+              [3, 1, 14],
+            ],
+          },
+          {
+            position: [
+              [0, condition.blockY, 0],
+              [0, result.blocks.length + 6, 0],
+            ],
+            offset: [condition.offset, [0, 1, 11]],
+          },
+        ],
+        values: [],
+      },
+      {
+        id: FanScriptBlocks["Number"].blockId,
+        name: "Number",
+        wires: [],
+        values: [],
+      },
+      {
+        id: FanScriptBlocks["setNumberPointer"].blockId,
+        name: "setNumberPointer",
+        wires: [
+          {
+            position: [
+              [0, result.blocks.length + 6, 0],
+              [0, result.blocks.length + 8, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [3, 1, 14],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length + 2, 0],
+              [0, result.blocks.length + 8, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 11],
+            ],
+          },
+          {
+            position: [
+              [0, result.blocks.length + 7, 0],
+              [0, result.blocks.length + 8, 0],
+            ],
+            offset: [
+              [14, 1, 3],
+              [0, 1, 3],
+            ],
+          },
+        ],
+        values: [],
+      },
+    );
+    stack.afterStack[stack.afterStack.length - 2] = {
+      blockY: result.blocks.length - 4,
+      offset: [3, 1, 0],
+    };
+
+    statement.statement.statements.forEach((statement) =>
+      parseProgramStatement(statement, stack, chunks, result),
+    );
+
+    stack.afterStack.pop();
+    stack.beforeStack.pop();
+  } else if (
+    ts.isBreakStatement(statement)
+    //break
+  ) {
+    if (result.blocks.length === 0)
+      throw new Error("No blocks are assigned, cannot use break");
+    if (
+      stack.afterStack[stack.afterStack.length - 1].blockY === 32769 ||
+      stack.beforeStack[stack.beforeStack.length - 1].blockY === 32769
+    )
+      throw new Error("Break is only usable in while loops");
+    result.blocks[result.blocks.length - 1].wires.push({
+      position: [
+        [0, stack.afterStack[stack.afterStack.length - 1].blockY, 0],
+        [0, stack.beforeStack[stack.beforeStack.length - 1].blockY, 0],
+      ],
+      offset: [
+        stack.afterStack[stack.afterStack.length - 1].offset,
+        stack.beforeStack[stack.beforeStack.length - 1].offset,
+      ],
+    });
   } else if (
     ts.isVariableStatement(statement)
     //variable assignment
@@ -1085,7 +1353,7 @@ export function parse(script: string, chunks: Chunk.Data[]): FanScript.Result {
   ];
   const beforeStack: FanScript.ExecuteStack = [];
   const variableStack: FanScript.VariableStack = {
-    "Inf": 340282346638528859811704183484516925440.0
+    Inf: 340282346638528859811704183484516925440.0,
   };
   const functionStack: FanScript.FunctionStack = {};
   const result: FanScript.Result = {
