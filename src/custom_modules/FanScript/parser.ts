@@ -188,6 +188,7 @@ function valueSolver(
   if (value.kind === ts.SyntaxKind.TrueKeyword) return true;
   if (value.kind === ts.SyntaxKind.FalseKeyword) return false;
   if (ts.isIdentifier(value)) {
+    if (value.text === "undefined") return "undefined";
     if (!variableStack[value.text])
       throw new Error(`"${value.text}" is not defined`);
     const variable = variableStack[value.text];
@@ -249,7 +250,7 @@ function parseProgramStatement(
   if (
     ts.isCallExpression(myExpression) &&
     ts.isIdentifier(myExpression.expression)
-    // funxtion call
+    // function call
   ) {
     const funcName = myExpression.expression.text;
     if (funcName === "Object") {
@@ -604,6 +605,7 @@ function parseProgramStatement(
         stack.functionStack,
         result,
       );
+      if (realValue === "undefined") return;
       if (argumentType.type === ArgumentTypes.Parameter) {
         if (
           !(
