@@ -81,6 +81,12 @@ export namespace FanScript {
     "RotWire",
     "ObjWire",
     "ConWire",
+    "NumPointer",
+    "VecPointer",
+    "BoolPointer",
+    "RotPointer",
+    "ObjPointer",
+    "ConPointer",
   ];
 }
 
