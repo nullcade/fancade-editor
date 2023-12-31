@@ -1156,6 +1156,7 @@ function parseProgramStatement(
             parseProgramStatement(child.initializer, stack, chunks, result) ??
             [];
           child.name.elements.forEach((element, elementIndex) => {
+            if (ts.isOmittedExpression(element)) return;
             if (!ts.isBindingElement(element))
               throw new Error(
                 "Function calls are only assignable to simple arrays.",
