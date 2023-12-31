@@ -288,6 +288,12 @@ function parseProgramStatement(
             values: [],
           });
         }
+        result.blocks.push({
+          id: 0,
+          name: "",
+          wires: [],
+          values: [],
+        });
       } else {
         const onlyChunks = chunks.filter((item) => item.uuid === blockId);
         if (onlyChunks.length === 0)
