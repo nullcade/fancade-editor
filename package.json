@@ -4,7 +4,7 @@
   "homepage": "https://fancade-editor.onrender.com/",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^7.1.0",
+    "@craco/craco": "^5.9.0",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.14.13",
     "@mui/lab": "^5.0.0-alpha.148",
@@ -46,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "*",
     "@types/node": "^20.8.5",
     "@types/pako": "^2.0.1",
     "@types/react-color": "^3.0.10",
@@ -54,7 +55,7 @@
     "@types/tinycolor2": "^1.4.6",
     "@types/wicg-file-system-access": "^2023.10.2",
     "craco-alias": "^3.0.1",
-    "prettier": "3.1.1",
+    "prettier": "^3.1.1",
     "raw-loader": "^4.0.2"
   }
 }
