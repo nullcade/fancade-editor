@@ -197,33 +197,68 @@ function valueSolver(
       typeof variable !== "number" &&
       typeof variable !== "boolean"
     ) {
-      if (variable.splits === 8) {
-        if (!variable.source)
-          throw new Error(
-            `you're using "${value.text}" more than 8 times which ` +
-              `will create more than 8 wire splits, resulting in ` +
-              `"Too Many Wire Splits!" error. Please assign the ` +
-              `variable to a pointer.`,
-          );
-        const funcName = variable.source.function;
-        const argument = FanScriptBlocks[funcName].arguments[0];
-        if (argument.type !== ArgumentTypes.Parameter)
-          throw new Error("UNKNOWN ERROR!");
-        variable.blockY = result.blocks.length;
-        variable.splits = 1;
-        result.blocks.push({
-          id: FanScriptBlocks[funcName].blockId,
-          name: funcName,
-          wires: [],
-          values: [
-            {
-              index: 0,
-              position: [0, result.blocks.length, 0],
-              type: argument.valueType,
-              value: variable.source.name,
-            },
-          ],
-        });
+      if (variable.splits >= 7) {
+        if (!variable.source) {
+          // throw new Error(
+          //   `you're using "${value.text}" more than 8 times which ` +
+          //     `will create more than 8 wire splits, resulting in ` +
+          //     `"Too Many Wire Splits!" error. Please assign the ` +
+          //     `variable to a pointer.`,
+          // );
+
+          const addVectors = FanScriptBlocks["addVectors"];
+          const bridgeInputWire = addVectors.arguments[0];
+          if (
+            bridgeInputWire.type !== ArgumentTypes.Wire ||
+            !addVectors.outputWires
+          )
+            throw new Error("UNKNOWN ERROR!");
+          const bridgeInput = bridgeInputWire.offset;
+          const bridgeOutput = addVectors.outputWires[0];
+
+          const oldBlockY = variable.blockY;
+          const oldOffset = variable.offset;
+          variable.blockY = result.blocks.length;
+          variable.splits = 1;
+          variable.offset = bridgeOutput;
+
+          result.blocks.push({
+            id: addVectors.blockId,
+            name: "addVectors",
+            wires: [
+              {
+                position: [
+                  [0, oldBlockY, 0],
+                  [0, variable.blockY, 0],
+                ],
+                offset: [oldOffset, bridgeInput],
+              },
+            ],
+            values: [],
+          });
+        } else if (variable.splits === 8) {
+          const funcName = variable.source.function;
+          const argument = FanScriptBlocks[funcName].arguments[0];
+          if (argument.type !== ArgumentTypes.Parameter)
+            throw new Error("UNKNOWN ERROR!");
+          variable.blockY = result.blocks.length;
+          variable.splits = 1;
+          result.blocks.push({
+            id: FanScriptBlocks[funcName].blockId,
+            name: funcName,
+            wires: [],
+            values: [
+              {
+                index: 0,
+                position: [0, result.blocks.length, 0],
+                type: argument.valueType,
+                value: variable.source.name,
+              },
+            ],
+          });
+        } else {
+          variable.splits++;
+        }
       } else {
         variable.splits++;
       }
