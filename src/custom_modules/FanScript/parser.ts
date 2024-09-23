@@ -481,12 +481,23 @@ function parseProgramStatement(
         ...stack.variableStack,
       };
       myExpression.arguments.forEach((argument, index) => {
-        if (ts.isSpreadElement(argument)) {
+        if (
+          ts.isSpreadElement(argument) ||
+          ts.isElementAccessExpression(argument)
+        ) {
           if (!ts.isCallExpression(argument.expression))
-            throw new Error("Spreading is only supported for function calls");
+            throw new Error(
+              `${
+                ts.isSpreadElement(argument) ? "Spreading" : "Element Access"
+              } is only supported for function calls`,
+            );
           if (index < stack.functionStack[funcName].wiresStart)
             throw new Error(
-              "Cannot pass Spreaded function as parameter, please fill in the parameters first",
+              `Cannot pass ${
+                ts.isSpreadElement(argument)
+                  ? "Spreaded function"
+                  : "Element Access"
+              } as parameter, please fill in the parameters first`,
             );
           const realValue =
             parseProgramStatement(argument.expression, stack, chunks, result) ??
@@ -495,21 +506,35 @@ function parseProgramStatement(
             throw new Error(
               "Function has no output, call it instead of passing it as an argument",
             );
-          realValue.forEach((wireValue, outputIndex) => {
-            if (
-              !(
-                stack.functionStack[funcName].parameters.length >
-                index + skips + outputIndex
+          if (ts.isSpreadElement(argument)) {
+            realValue.forEach((wireValue, outputIndex) => {
+              if (
+                !(
+                  stack.functionStack[funcName].parameters.length >
+                  index + skips + outputIndex
+                )
               )
-            )
-              return;
+                return;
+              tempVariableStack[
+                stack.functionStack[funcName].parameters[
+                  index + skips + outputIndex
+                ]
+              ] = wireValue;
+            });
+            skips += realValue.length - 1;
+          } else if (ts.isElementAccessExpression(argument)) {
+            const wireIndex = valueSolver(
+              argument.argumentExpression,
+              tempVariableStack,
+              stack.functionStack,
+              result,
+            );
+            if (typeof wireIndex !== "number")
+              throw new Error("Can only assign a number as array index");
             tempVariableStack[
-              stack.functionStack[funcName].parameters[
-                index + skips + outputIndex
-              ]
-            ] = wireValue;
-          });
-          skips += realValue.length - 1;
+              stack.functionStack[funcName].parameters[index + skips]
+            ] = realValue[wireIndex];
+          }
           return;
         }
         const realValue = valueSolver(
@@ -582,7 +607,8 @@ function parseProgramStatement(
       expression: ts.Expression;
     }[] = [];
     myExpression.arguments.forEach((value, index) => {
-      if (!ts.isSpreadElement(value)) return;
+      if (!ts.isSpreadElement(value) && !ts.isElementAccessExpression(value))
+        return;
       const argumentType = FanScriptBlocks[funcName].arguments[index + skips];
       if (!argumentType) throw new Error("Argument out of index");
       if (argumentType.type === ArgumentTypes.Wire && argumentType.callback) {
@@ -590,10 +616,16 @@ function parseProgramStatement(
         return;
       }
       if (!ts.isCallExpression(value.expression))
-        throw new Error("Spreading is only supported for function calls");
+        throw new Error(
+          `${
+            ts.isSpreadElement(value) ? "Spreading" : "Element Access"
+          } is only supported for function calls`,
+        );
       if (argumentType.type === ArgumentTypes.Parameter)
         throw new Error(
-          "Cannot pass Spreaded function as parameter, please fill in the parameters first",
+          `Cannot pass ${
+            ts.isSpreadElement(value) ? "Spreaded function" : "Element Access"
+          } as parameter, please fill in the parameters first`,
         );
       const realValue =
         parseProgramStatement(value.expression, stack, chunks, result) ?? [];
@@ -601,16 +633,42 @@ function parseProgramStatement(
         throw new Error(
           "Function has no output, call it instead of passing it as an argument",
         );
-      realValue.forEach((wireValue, outputIndex) => {
-        if (
-          !(
-            FanScriptBlocks[funcName].arguments.length >
-            index + skips + outputIndex
+      if (ts.isSpreadElement(value)) {
+        realValue.forEach((wireValue, outputIndex) => {
+          if (
+            !(
+              FanScriptBlocks[funcName].arguments.length >
+              index + skips + outputIndex
+            )
           )
-        )
-          return;
+            return;
+          const currentArgumentType =
+            FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
+          if (currentArgumentType.type === ArgumentTypes.Wire) {
+            if (currentArgumentType.callback)
+              throw new Error("Cannot assign wires to callbacks");
+            wires.push({
+              position: [
+                [0, wireValue.blockY, 0],
+                [0, result.blocks.length, 0],
+              ],
+              offset: [wireValue.offset, currentArgumentType.offset],
+            });
+          } else throw new Error("Cannot assign wires to parameters");
+        });
+        skips += realValue.length - 1;
+      } else if (ts.isElementAccessExpression(value)) {
+        const wireIndex = valueSolver(
+          value.argumentExpression,
+          stack.variableStack,
+          stack.functionStack,
+          result,
+        );
+        if (typeof wireIndex !== "number")
+          throw new Error("Can only assign a number as array index");
+        const wireValue = realValue[wireIndex];
         const currentArgumentType =
-          FanScriptBlocks[funcName].arguments[index + skips + outputIndex];
+          FanScriptBlocks[funcName].arguments[index + skips];
         if (currentArgumentType.type === ArgumentTypes.Wire) {
           if (currentArgumentType.callback)
             throw new Error("Cannot assign wires to callbacks");
@@ -622,12 +680,12 @@ function parseProgramStatement(
             offset: [wireValue.offset, currentArgumentType.offset],
           });
         } else throw new Error("Cannot assign wires to parameters");
-      });
-      skips += realValue.length - 1;
+      }
     });
     wires.forEach((value) => (value.position[1][1] = result.blocks.length));
     myExpression.arguments.forEach((value, index) => {
-      if (ts.isSpreadElement(value)) return;
+      if (ts.isSpreadElement(value) || ts.isElementAccessExpression(value))
+        return;
       const argumentType = FanScriptBlocks[funcName].arguments[index + skips];
       if (!argumentType) throw new Error("Argument out of index");
       if (argumentType.type === ArgumentTypes.Wire && argumentType.callback) {
