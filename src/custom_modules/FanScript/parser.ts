@@ -206,15 +206,15 @@ function valueSolver(
           //     `variable to a pointer.`,
           // );
 
-          const addVectors = FanScriptBlocks["addVectors"];
-          const bridgeInputWire = addVectors.arguments[0];
+          const combine = FanScriptBlocks["combine"];
+          const bridgeInputWire = combine.arguments[0];
           if (
             bridgeInputWire.type !== ArgumentTypes.Wire ||
-            !addVectors.outputWires
+            !combine.outputWires
           )
             throw new Error("UNKNOWN ERROR!");
           const bridgeInput = bridgeInputWire.offset;
-          const bridgeOutput = addVectors.outputWires[0];
+          const bridgeOutput = combine.outputWires[0];
 
           const oldBlockY = variable.blockY;
           const oldOffset = variable.offset;
@@ -223,8 +223,8 @@ function valueSolver(
           variable.offset = bridgeOutput;
 
           result.blocks.push({
-            id: addVectors.blockId,
-            name: "addVectors",
+            id: combine.blockId,
+            name: "combine",
             wires: [
               {
                 position: [
@@ -236,7 +236,7 @@ function valueSolver(
             ],
             values: [],
           });
-        } else if (variable.splits === 8) {
+        } else if (variable.splits >= 6) {
           const funcName = variable.source.function;
           const argument = FanScriptBlocks[funcName].arguments[0];
           if (argument.type !== ArgumentTypes.Parameter)
@@ -1404,6 +1404,13 @@ function parseProgramStatement(
       name: "if",
       wires,
       values: [],
+    });
+
+    const afterWire = ifBlock.afterOffset;
+    if (afterWire === undefined) throw new Error("UNKNOWN ERROR!");
+    stack.afterStack.push({
+      blockY: blockY,
+      offset: afterWire,
     });
 
     stack.afterStack.push({
