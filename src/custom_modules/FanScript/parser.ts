@@ -1408,10 +1408,10 @@ function parseProgramStatement(
 
     const afterWire = ifBlock.afterOffset;
     if (afterWire === undefined) throw new Error("UNKNOWN ERROR!");
-    stack.afterStack.push({
+    stack.afterStack[stack.afterStack.length - 1] = {
       blockY: blockY,
       offset: afterWire,
-    });
+    };
 
     stack.afterStack.push({
       blockY: blockY,
