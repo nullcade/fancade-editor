@@ -682,7 +682,6 @@ function parseProgramStatement(
         } else throw new Error("Cannot assign wires to parameters");
       }
     });
-    wires.forEach((value) => (value.position[1][1] = result.blocks.length));
     myExpression.arguments.forEach((value, index) => {
       if (ts.isSpreadElement(value) || ts.isElementAccessExpression(value))
         return;
@@ -732,6 +731,9 @@ function parseProgramStatement(
         });
       }
     });
+
+    wires.forEach((value) => (value.position[1][1] = result.blocks.length));
+
     const beforeOffset = FanScriptBlocks[funcName].beforeOffset;
     const afterOffset = FanScriptBlocks[funcName].afterOffset;
     if (beforeOffset && afterOffset)
